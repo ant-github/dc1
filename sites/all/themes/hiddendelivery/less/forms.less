@@ -1,0 +1,327 @@
+/*
+
+	Forms
+
+*/
+
+label {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-size: @font-small;
+	font-weight: @font-semi;
+	margin-bottom: 0;
+}
+
+.form-control,
+.form-email,
+.form-text {
+	background-color: @lgrey;
+	border: 0 none;
+	border-radius: 0;
+	box-shadow: none;
+	color: @grey;
+	padding: 6px 12px;
+}
+
+textarea.form-control {
+	background: @white;
+	border: 2px solid @dark-border-color;
+	border-radius: 0;
+}
+
+.form-email {
+	width: 100%;
+}
+
+.form-control:focus {
+	border-color: @teal;
+	box-shadow: 0 0 1px rgba(0, 178, 155, 1) inset, 0 0 8px rgba(0, 178, 155, 1);
+}
+
+.form-select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+
+fieldset.panel {
+	border: 0 none;
+
+	.panel-heading {
+		background: 0 none;
+		border: 0 none;
+		padding: 0;
+
+		.h3();
+		margin-top: 20px;
+	}
+
+	.panel-body {
+		padding: 0;
+	}
+}
+
+.form-submit {
+	background-color: @teal;
+  border: 0 none;
+  color: @white;
+  font-family: @font-family-hd;
+  font-weight: @font-bold;
+  span {
+  	display: inline-block;
+  }
+}
+
+.form-submit:hover {
+	background-color: @teal-hover;
+	color: @white;
+}
+
+/* User register page */
+
+.page-user .panel,
+.page-create-a-wishlist .panel {
+	-webkit-box-shadow: 0 0 0;
+	box-shadow: 0 0 0;
+}
+
+.page-user-edit {
+
+	.form-item {
+		.form-type-password,
+		.password-suggestions {
+			width: 100%;
+		}
+	}
+
+	.password-strength {
+		width: 160px;
+	}
+
+	.form-submit {
+		width: 100%;
+	}
+}
+
+.page-create-a-wishlist .user-info-from-cookie {
+
+	h3 {
+		font-weight: 600;
+		color: #000;
+		font-family: "Open Sans",Arial,Helvetica,sans-serif;
+		font-size: 18px;
+		line-height: 1.1em;
+		margin-bottom: 20px;
+		margin-top: 0;
+		font-size: 18px;
+	}
+	.panel-title {
+		display: none;
+	}
+	.panel-heading {
+		display: none;
+	}
+
+	#edit-social-login {
+
+		position: relative;
+		top: -174px;
+
+		label {
+
+		}
+
+		a {
+			display: block;
+		}
+
+		.facebook-action-connect {
+			display: block;
+		}
+
+	}
+}
+
+/* Contact page */
+
+.page-node-7 {
+
+	.social-links {
+		color: @black;
+		margin-top: 17px;
+		margin-bottom: 15px;
+		font-size: @font-medium;
+		font-weight: @font-semi;
+		padding: 28px 10px;
+		border: solid 1px @lgrey;
+
+		.social-links-title,
+		.social-icons {
+			display: inline-block;
+		}
+
+		.bg-sprite {
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: 20px;
+			.text-hide();
+		}
+	}
+
+	.contact-form {
+		.contact-form-header {
+			padding-bottom: 23px;
+			border-bottom: 1px solid @dark-border-color;
+		}
+		.form-item {
+			margin-bottom: 12px;
+			&.webform-component-textarea {
+				margin-bottom: 23px;
+			}
+		}
+		textarea.form-control {
+			background-color: @white;
+			border: 2px solid @dark-border-color;
+			border-radius: 0;
+			height: 250px;
+		}
+
+		.contact-btn {
+			max-width: 398px;
+			margin-bottom: 20px;
+			padding: 0;
+		}
+	}
+}
+
+/* Become a retailer */
+
+.become-a-retailer-form {
+
+	.standard-border();
+
+	.form-item {
+		margin-bottom: 18px;
+	}
+
+	.webform-component-textarea .form-textarea-wrapper textarea.form-control {
+		background-color: @white;
+		border: 2px solid @dark-border-color;
+		height: 248px;
+	}
+
+	.form-submit {
+		margin-bottom: 20px;
+
+		span {
+			margin-right: 13px;
+		}
+	}
+}
+
+
+.btn#edit-submit-wishlist-page {
+	background-color: @teal;
+}
+
+.register-btn {
+	font-size: @font-smedium;
+	&::after {
+		content: '';
+		background: url(@sprite) -5px -1853px no-repeat;
+		display: inline-block;
+		height: 14px;
+		width: 15px;
+	}
+	/* Hack for margins on registration page */
+	display: block;
+	width: 90%;
+	padding: 9px 10px;
+	margin: 0 auto 10px;
+}
+
+#user-login,
+#user-login-form {
+	.form-item {
+		float: left;
+		width: 50%;
+		padding: 0 0 0 15px;
+		&:first-child {
+			padding: 0 15px 0 0;
+		}
+	}
+	.form-submit {
+		display: block;
+		margin: 0 auto;
+	}
+}
+
+#user-login-form {
+	ul {
+		margin-bottom: -10px;
+		padding-left: 0;
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.first {
+			display: none;
+		}
+	}
+}
+@media(min-width: @screen-sm) {
+	.register-btn {
+		margin-right: 15px;
+		width: 408px;
+		float: right;
+	}
+}
+
+@media(max-width: 1199px) {
+	.register-btn {
+		width: 334px;
+	}
+}
+
+
+.block-simplenews h2 {
+	margin-bottom: 9px;
+	padding-bottom: 0;
+}
+
+.simplenews-subscribe .form-submit,
+.simplenews-unsubscribe .form-submit {
+	width: 100%;
+	padding: 6px 10px;
+	white-space: normal;
+	.bg-sprite.bg-sprite-chevron {
+		background: url(@sprite) no-repeat -10px -1858px;
+		display: inline-block;
+		height: 8px;
+		width: 10px;
+		padding: 0;
+		min-height: 0;
+		margin: 0 0 0 3px;
+	}
+}
+
+
+@media(max-width: @screen-md-max) {
+	.page-node-7 {
+		.bg-sprite {
+			&.bg-sprite-message {
+				margin-right: -10px;
+			}
+		}
+		.social-links {
+			padding: 14px 0;
+			margin-bottom: 10px;
+			text-align: center;
+			.bg-sprite {
+				&:first-child {
+					margin-left: 0;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,10 @@
+name = DC Entities
+description = Provides custom entities for Delivery Code.
+package = Delivery Code
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = views
+
+files[] = hd_entities.controller.inc
+files[] = hd_entities.info.inc

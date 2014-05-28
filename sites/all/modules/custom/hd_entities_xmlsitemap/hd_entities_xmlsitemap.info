@@ -1,0 +1,5 @@
+name = DC Entities XML Sitemap
+description = Provides integration between DC entities and the XML sitemap module.
+package = Delivery Code
+core = 7.x
+dependencies[] = hd_entities

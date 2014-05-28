@@ -1,0 +1,171 @@
+/*
+
+News
+
+*/
+
+.node-type-news {
+	font-family: @font-family-hd;
+	.field-name-field-news-image {
+		margin: 15px 0;
+	}
+	.bg-sprite {
+		padding-left: 40px;
+		.title {
+			line-height: 32px;
+		}
+		min-height: 32px;
+	}
+
+	.node-news h2 {
+		text-transform: none;
+		color: @black;
+	}
+
+	.submitted {
+		.p-text-grey-s();
+	}
+
+	p {
+		.p-text-grey-s();
+	}
+
+
+}
+
+.page-article-search,
+.page-news {
+	.field-name-field-news-image {
+		border: 1px solid @dark-border-color;
+		margin-bottom: 15px;
+		margin-right: 10px;
+	}
+
+	.bg-sprite {
+		.node-type-news .bg-sprite();
+	}
+}
+
+
+/*
+
+View
+
+*/
+
+.view-news,
+.view-article-search {
+
+	h2 {
+		.h2-subtitle();
+		font-size: @font-xmedium;
+
+	}
+
+	.submitted {
+		.p-text-grey-s();
+
+		margin-bottom: 22px;
+	}
+
+	.field-item {
+		.p-text-grey-s();
+
+		line-height: 1.5em;
+	}
+
+	.views-field-field-store-logo {
+		padding: 25px;
+		border: solid @grey 1px;
+	}
+
+	.more-link {
+		float: left;
+		clear: both;
+		margin-top: 22px;
+		width: 100%;
+		font-weight: @font-bold;
+	}
+
+	.more-link:hover {
+		color: @teal-hover;
+	}
+
+	.media {
+		margin-top: 20px;
+	}
+}
+
+.search-articles-block {
+	.views-exposed-form {
+		margin-top: 1em;
+		.views-exposed-widget {
+			padding: 0;
+			margin: 5px 0px 5px 0px;
+			width: 100%;
+			.form-submit {
+				margin: 5px 0px 5px 0px;
+				width: 100%;
+				&::after {
+					content: '';
+					background: url(@sprite) -5px -1853px no-repeat;
+					display: inline-block;
+					height: 14px;
+					width: 15px;
+				}
+			}
+
+			.form-type-select {
+				position: relative;
+				&:after {
+					background: url("@{sprite}") -8px -2276px no-repeat;
+					content: '';
+					display: block;
+					position: absolute;
+					right: 10px;
+					top: 12px;
+					height: 10px;
+					width: 16px;
+				}
+			}
+		}
+	}
+}
+
+@media(max-width: @screen-xs-max) {
+	.view-news {
+		.media {
+			margin-bottom: 30px;
+			.pull-left {
+				float: none!important;
+				margin-right: 0;
+				text-align: center;
+			}
+		}
+
+		.more-link {
+			margin-top: 10px;
+		}
+	}
+	.node-type-news {
+		.content img {
+			height: auto;
+			width: 100%;
+		}
+	}
+}
+
+@media(max-width: @screen-md-max) {
+	.page-news {
+		.col-sm-3 {
+			padding-left: 5px;
+			padding-right: 5px;
+			.bg-sprite-circle-search-teal {
+				padding-left: 37px;
+				h2 {
+					font-size: @font-medium;
+				}
+			}
+		}
+	}
+}

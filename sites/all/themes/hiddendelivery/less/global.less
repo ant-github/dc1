@@ -1,0 +1,290 @@
+/*
+
+	Global
+
+*/
+
+body {
+	font-family: @font-family-hd;
+}
+
+h1 {
+	font-family: @font-family-hd;
+	font-size: @font-xmedium;
+	font-weight: @font-bold;
+	text-transform: uppercase;
+	margin: 10px 0;
+}
+
+.page-title-wrapper {
+	background: @black;
+	min-height: 130px;
+	overflow: hidden;
+}
+
+h1.page-header {
+
+	.font-semi-bold();
+
+	background-color: @black;
+	border: 0 none;
+	color: @white;
+	font-size: @font-xl;
+	margin: 0 0 10px;
+	padding: 35px 0 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+h2 {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-size: @font-xmedium;
+	font-weight: @font-semi;
+	padding-bottom: 16px;
+	text-transform: uppercase;
+}
+
+h2.title {
+	margin: 0;
+	padding: 0;
+}
+
+h3,
+.h3 {
+	color: @black;
+	font-family: @font-family-hd;
+	font-size: @font-xmedium;
+	font-weight: @font-semi;
+	line-height: 1.1em;
+	margin-bottom: 20px;
+}
+
+h4 {
+	margin-top: 0;
+}
+
+a {
+	color: @teal;
+}
+
+a:focus {
+	outline: 0 none;
+}
+
+/* Layout */
+
+.main-container {
+	margin-bottom: 40px;
+}
+
+.tabs--primary {
+}
+
+.nav-tabs {
+	border-bottom: 0;
+}
+.nav-tabs>li>a {
+	border: 0;
+	background-color: @grey;
+	color: white;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+.nav-tabs>li:first-child>a {
+	margin-left: 0;
+}
+
+.nav-tabs>li.active>a {
+	border: 0;
+	background-color: @teal;
+	color: white;
+	font-weight: bold;
+}
+
+.nav-tabs>li.active>a:hover {
+	border: 0;
+	background-color: @teal;
+	color: white;
+	font-weight: bold;
+}
+
+.nav-tabs>li>a:hover {
+	color: @teal;
+	background-color: @lgrey;
+}
+
+.well {
+
+	.standard-border();
+
+	background-color: @white;
+	border-radius: 0;
+	box-shadow: none;
+
+		.menu-name-user-menu {
+
+			a {
+				.border-title-underline();
+
+				color: @grey;
+				font-family: @font-family-hd;
+				font-size: @font-medium;
+				font-weight: @font-bold;
+				text-transform: uppercase;
+
+				&:hover {
+					background-color: @white;
+					text-decoration: underline;
+				}
+			}
+
+			.active {
+				a {
+					color: @teal;
+				}
+			}
+
+			.last {
+
+				a {
+					border: 0 none;
+				}
+			}
+
+		}
+}
+
+/* User info panel */
+.user-info-panel {
+	text-align: right;
+	a {
+		.font-semi-bold-active();
+	}
+}
+
+/* breadcrumb */
+
+.breadcrumb-wrapper {
+	// padding-left: 0;
+}
+
+.breadcrumb {
+	background-color: #FFFFFF;
+	border-radius: 0;
+	margin: 15px 0;
+	.font-semi-bold();
+	font-size: 13px;
+
+	a {
+		.font-semi-bold-active();
+	}
+
+	>.active,
+	a.active {
+		color: @grey;
+	}
+}
+
+/* pager */
+
+.pagination {
+	border: 0 none;
+	border-radius: 0;
+	margin: 0;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+	border: 0 none;
+	color: @grey;
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+	font-weight: @font-bold;
+	padding: 2px 6px;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+	background-color: @white;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+	background-color: @white;
+	border: 0 none;
+	border-radius: 0;
+	color: @teal;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span,
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+	border-radius: 0;
+}
+
+/* Text under header */
+
+.news-title {
+	font-size: 20px;
+	text-align: center;
+	color: white;
+	margin-bottom: 10px;
+}
+
+.user-info-panel {
+	padding: 8px 15px;
+}
+
+.user-info-panel a {
+	font-size: @font-small;
+}
+
+
+.node .node-column-image img {
+	margin-top: 10px;
+}
+
+@media(max-width: @screen-xs-max) {
+	.main-container {
+		padding: 0 15px 0 30px;
+	}
+	.breadcrumb {
+		margin: 10px 0 0;
+	}
+
+	.user-info-panel {
+		// padding-left: 30px;
+		padding-top: 0;
+		margin-bottom: 10px;
+	}
+
+	.region-sidebar-second {
+		margin-top: 20px;
+	}
+
+	.footer {
+		padding: 0;
+		p {
+			padding: 11px 0;
+		}
+	}
+}
+
+@media(min-width: @screen-sm) {
+	.user-info-panel {
+		padding-top: 21px;
+		padding-right: 30px;
+		.page-wishlist & {
+			padding-right: 45px;
+		}
+	}
+}

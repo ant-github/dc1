@@ -1,0 +1,130 @@
+.page-user-my-purchases {
+  .nav-tabs > li {
+    margin-bottom: 0;
+    > a {
+      font-size: @font-medium;
+      padding-left: 9px;
+      padding-right: 9px;
+      text-align: center;
+      width: 180px;
+    }
+
+    &:first-child {
+      margin-right: 5px;
+    }
+  }
+
+}
+//  My purchases
+.purchase-item-list {
+  border-top: 1px solid @dark-border-color;
+  .purchase-item {
+    padding: 12px 0;
+    border-bottom: 1px solid @dark-border-color;
+
+    .product-image {
+      margin-right: 10px;
+    }
+
+    .product-title {
+      font-size: @font-smedium;
+      margin: 0;
+    }
+
+    .product-info {
+      font-size: @font-xsmall;
+      color: @grey;
+      margin: 5px 0 10px;
+    }
+
+    .product-price {
+      font-size: @font-smedium;
+      font-weight: @font-semi;
+    }
+
+    .store-info {
+      margin: 10px 0 20px;
+    }
+
+    .wishlist-info,
+    .date-added {
+      font-size: @font-small;
+      font-weight: @font-semi;
+      h3 {
+        font-size: @font-smedium;
+        margin: 0 0 5px;
+        &.purchased-by {
+          margin-top: 15px;
+        }
+      }
+
+      a {
+        display: inline-block;
+        margin-bottom: 12px;
+        font-weight: @font-semi;
+      }
+    }
+  }
+}
+
+
+
+@media(max-width: @screen-xs-max) {
+  .page-user-my-purchases {
+    .nav-tabs > li {
+      > a {
+        margin-left: 0;
+        padding-left: 7px;
+        padding-right: 7px;
+        width: auto;
+      }
+    }
+  }
+
+  .purchase-item-list {
+    .product-image {
+      width: 75px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+    .purchase-item {
+      .product-title {
+        font-size: @font-small;
+        margin-bottom: 12px;
+      }
+      .product-info {
+        display: none;
+      }
+
+      .store-info {
+        margin: 3px 0;
+      }
+
+      .wishlist-info,
+      .date-added {
+        margin-left: 85px;
+        clear: left;
+        font-size: @font-small;
+        h3 {
+          margin: 10px 0 0;
+          font-size: @font-small;
+        }
+        a {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+  .page-user-login {
+    .nav-tabs > li {
+      float: none;
+      margin: 0 0 10px;
+      text-align: center;
+      a {
+        margin: 0;
+      }
+    }
+  }
+}

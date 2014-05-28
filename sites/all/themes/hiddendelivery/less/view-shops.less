@@ -1,0 +1,94 @@
+/*
+
+	View shops
+
+*/
+
+.view-shops {
+
+	.view-filters {
+		.border-title-underline();
+		padding-bottom: 25px;
+		padding-left: 15px;
+		margin-bottom: 35px;
+
+		.views-widget-filter-name {
+
+			label {
+				.header-grey-all-caps();
+				.bg-sprite();
+				.bg-sprite-circle-search-teal();
+
+				float: left;
+				font-size: @font-smedium;
+				padding: 6px 10px 6px 40px;
+				text-indent: 0;
+			}
+
+			.views-widget {
+				display: inline-block;
+			}
+		}
+
+		.form-submit {
+			margin-top: 0;
+		}
+	}
+
+	.view-content {
+
+		.border-title-underline();
+
+		clear: both;
+		padding-bottom: 30px;
+
+
+		.views-field-field-store-logo {
+
+			.standard-border();
+
+			.field-content {
+
+				display: table;
+				height: 172px;
+				text-align: center;
+				width: 100%;
+
+				a {
+					display: table-cell;
+					vertical-align: middle;
+				}
+			}
+		}
+
+		.views-field-name {
+
+			margin-top: 10px;
+
+			a {
+				.h3();
+			}
+		}
+
+
+	}
+	@media(max-width: @screen-sm-max) {
+		.view-content .views-field-field-store-logo {
+			.field-content {
+				height: auto;
+				img {
+					height: auto;
+					width: 100%;
+				}
+			}
+		}
+	}
+}
+
+@media(max-width: @screen-xs-max) {
+	.view-shops {
+		table td {
+			display: block;
+		}
+	}
+}

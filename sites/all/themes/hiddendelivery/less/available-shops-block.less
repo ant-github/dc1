@@ -1,0 +1,52 @@
+/*
+
+Available shops block
+
+*/
+
+.available-shops-block {
+
+	.standard-border-darker();
+	padding: 15px 15px 40px 15px;
+
+	h2 {
+		.border-title-underline-darker();
+		margin-top: 0;
+	}
+
+	.view-featured-stores {
+		text-align: center;
+
+		.view-content {
+			display: table;
+			margin: 0 auto 0 auto;
+		}
+
+		.views-row {
+			margin-top: 20px;
+
+			.field-content {
+				.standard-border();
+
+				display: table-cell;
+				height: 170px;
+				vertical-align: middle;
+				width: 170px;
+
+				img {
+					height: auto;
+					width: 75%;
+				}
+			}
+		}
+	}
+}
+
+@media(max-width: @screen-sm-max) {
+	.available-shops-block {
+		.view-featured-stores .views-row .field-content {
+			height: 100px;
+
+		}
+	}
+}

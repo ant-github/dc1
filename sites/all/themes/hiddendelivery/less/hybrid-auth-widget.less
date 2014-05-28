@@ -1,0 +1,61 @@
+/* hybridauth-widget-wrapper - custom overrides */
+
+.hybridauth-widget-wrapper {
+	clear: both;
+	margin-bottom: 30px;
+	// margin-top: 20px;
+	overflow: hidden;
+}
+
+.hybridauth-widget-wrapper h3 {
+	margin-bottom: 10px;
+	padding-top: 10px;
+	padding-bottom: 0;
+
+	.border-title-line-break();
+	.p-text-grey();
+}
+
+
+.hybridauth-widget-wrapper ul.hybridauth-widget li {
+	display: block;
+	float: left;
+	width: 50%;
+	margin-bottom: 6px;
+	margin: 0 0 6px;
+	padding: 0 15px 0 0;
+}
+
+.hybridauth-widget-wrapper ul.hybridauth-widget .last {
+	padding: 0 15px;
+}
+
+.hybridauth-widget-wrapper ul.hybridauth-widget li a {
+
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+	font-weight: @font-bold;
+	opacity: 1;
+	padding: 0;
+
+	.btn-social-link();
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+
+@media(max-width: 1199px) {
+	.hybridauth-widget-wrapper {
+		margin-top: 28px;
+	}
+}
+@media(max-width: 560px) {
+	.hybridauth-widget-wrapper ul.hybridauth-widget li,
+	.hybridauth-widget-wrapper ul.hybridauth-widget .last {
+		float: none;
+		width: auto;
+		padding: 0;
+	}
+}

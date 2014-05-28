@@ -1,0 +1,112 @@
+/*
+	Override BOOTSTRAP theme
+*/
+
+// Global overrides
+.submitted {
+	font-style: normal;
+}
+
+.form-control::-webkit-input-placeholder {
+	color: @grey;
+}
+.form-control::-moz-placeholder {
+	color: @grey;
+}
+.form-control:-moz-placeholder {
+	color: @grey;
+}
+.form-control:-ms-input-placeholder {
+	color: @grey;
+}
+
+
+div.form-item div.password-suggestions {
+  width: auto;
+}
+
+.confirm-parent,
+.password-parent {
+  width: auto;
+}
+
+.password-strength {
+  float: none;
+  width: auto;
+  margin: 5px 0;
+}
+
+.password-strength-title {
+  font-size: @font-xsmall;
+  color: @nav-grey;
+}
+.password-indicator {
+  display: inline-block;
+  background-color: @lgrey;
+  margin-left: 10px;
+  height: 0.45em;
+  width: 150px;
+}
+
+/* Warning / alert message boxes */
+.alert {
+  &.alert-warning {
+    background: @orange-bg;
+    border: 3px solid @orange;
+    border-radius: 5px;
+    text-align: center;
+    h3 {
+      color: @orange;
+      margin: 0 0 0.5em;
+      text-transform: uppercase;
+    }
+    p {
+      color: @black;
+      font-size: @font-smedium;
+      font-weight: @font-semi;
+    }
+  }
+}
+
+.password-indicator div {
+  background-color: @teal;
+}
+
+input.password-field,
+input.password-confirm {
+  width: 100%;
+}
+
+div.password-confirm {
+  margin-top: 0;
+}
+// Override the Bootstrap modal window because its re-positioning the modal windows
+@media screen and (min-width: @screen-tablet) {
+
+  .modal-dialog {
+    left: 0;
+  }
+}
+
+@media (max-width: @screen-sm) {
+  .navbar {
+    text-align: center;
+    .navbar-btn {
+      float: none!important;
+      img {
+        padding: 10px 0;
+      }
+    }
+  }
+}
+
+.page-node-1 {
+  h1 {
+    margin-top: 0;
+  }
+  h2 {
+      color: @black;
+      margin-top: 10px;
+      text-transform: none;
+  }
+}

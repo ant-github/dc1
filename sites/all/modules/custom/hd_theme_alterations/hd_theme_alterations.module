@@ -1,0 +1,55 @@
+<?php
+
+function hd_theme_alterations_form_alter(&$form, &$form_state, $form_id){
+  if($form_id == "views_exposed_form"){
+    $form['title']['#attributes'] = array('placeholder' => array(t('Enter keyword here')));
+  }
+  if ($form_id == "user_register_form") {
+    $form['actions']['submit']['#attributes']['class'][] = 'col-md-6 register-btn';
+  }
+  if ($form_id == "webform_client_form_7") {
+  $form['actions']['submit']['#value'] = '<span class="bg-sprite bg-sprite-tick">Submit</span>';
+   $form['actions']['submit']['#attributes']['class'] = array('col-xs-12', 'col-md-6', 'col-md-offset-3', 'contact-btn');
+  }
+
+
+
+}
+
+function hd_theme_alterations_preprocess_page(&$vars) {
+// Front page does not need text under title
+  if (($vars['is_front']) != 'TRUE') {
+// Theming for the news pages
+    if ((isset($vars['node'])) && (($vars['node']->type) == 'news')) {
+      $node = $vars['node'];
+      $vars['theme_hook_suggestions'][] = 'page__'. $vars['node']->type;
+// Don't set empty variable
+      if (!empty($node->field_text_under_title)) {
+        $vars['title2'] = $node->field_text_under_title[LANGUAGE_NONE][0]['safe_value'];
+      }
+    }
+    if ((isset($vars['node'])) && (($vars['node']->type) == 'page')) {
+      $node = $vars['node'];
+// Don't set empty variable
+      if (!empty($node->field_text_under_title)) {
+        $vars['title2'] = $node->field_text_under_title[LANGUAGE_NONE][0]['safe_value'];
+      }
+    }
+  }
+ if(!empty($vars['user'])) {
+      if (drupal_match_path(current_path(),"user") ||
+          drupal_match_path(current_path(),"user/*")){
+          menu_set_active_item('user');
+      }
+  }
+}
+
+function hd_theme_alterations_preprocess_node(&$vars) {
+// Pass webform to node 8
+    if ((isset($vars['nid'])) && ($vars['nid'] == '8')) {
+    $node = node_load(9);
+    webform_node_view($node, 'full');
+    $vars['webform'] = theme_webform_view($node->content);
+  }
+
+}

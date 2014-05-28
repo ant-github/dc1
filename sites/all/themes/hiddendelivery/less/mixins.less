@@ -1,0 +1,450 @@
+/* Generic font colours, family and weights */
+
+.h1-title {
+	font-size: @font-xmedium;
+	line-height: 1.75em;
+	margin: 10px 15px 0 15px;
+	padding: 0 0 10px;
+	text-indent: 2.25em;
+}
+
+.h2-subtitle {
+	color: @black;
+	font-family: @font-family-hd;
+	font-size: @font-smedium;
+	font-weight: @font-semi;
+	text-transform: none;
+
+		a {
+			color: @black;
+		}
+}
+
+.font-main-nav {
+	color: @nav-grey;
+	font-family: @font-family-default;
+	font-size: @font-regular;
+	font-weight: @font-bold;
+}
+
+.font-regular {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-weight: @font-normal;
+}
+
+.font-semi-bold {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-weight: @font-semi;
+}
+
+
+.font-semi-bold-active {
+	.font-semi-bold();
+
+	color: @teal;
+}
+
+.font-bold {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-weight: @font-bold;
+}
+
+.btn-primary {
+	padding: 10px 12px;
+}
+
+.btn-lg {
+	border-radius: @button-border-radius;
+}
+/* Specific styles */
+
+.header-grey-all-caps {
+	.font-bold();
+	margin-top: 0;
+	text-transform: uppercase;
+}
+
+.header-grey-all-caps-underline {
+	.header-grey-all-caps();
+	.border-title-underline();
+	padding-bottom: 16px;
+}
+
+.block-xlarge-white-grey {
+	background-color: @grey;
+	border-radius: @button-border-radius;
+	color: @white;
+	display: inline;
+	font-family: @font-family-hd;
+	font-size: @font-xl;
+	font-weight: @font-bold;
+	letter-spacing: -2px;
+	padding: 0 10px;
+}
+
+.block-xxlarge-white-mgrey {
+	background-color: @med-grey;
+	border-radius: @button-border-radius;
+	color: @white;
+	display: inline;
+	font-family: @font-family-hd;
+	font-size: @font-xxl;
+	font-weight: @font-bold;
+	letter-spacing: -3px;
+	padding: 0 10px;
+}
+
+.p-text-white-m {
+	color: @white;
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+}
+
+.p-text-grey {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-size: @font-small;
+}
+
+.p-text-grey-s {
+	color: @grey;
+	font-family: @font-family-hd;
+	font-size: @font-small;
+	font-weight: @font-semi;
+}
+
+.a-teal {
+	color: @teal;
+}
+
+.a-teal-bold {
+	color: @teal;
+	font-weight: @font-bold;
+}
+
+/* ----- Borders ----- */
+
+.standard-border() {
+	border: 1px solid @lgrey;
+}
+
+.border-title-underline {
+	border-bottom: 1px solid @lgrey;
+}
+
+.standard-border-darker() {
+	border: 1px solid @dark-border-color;
+}
+
+.border-title-underline-darker {
+	border-bottom: 1px solid @dark-border-color;
+}
+
+.border-title-line-break {
+	border-top: 1px solid @lgrey;
+}
+
+/* ----- Buttons ----- */
+
+.white-button {
+	background-color: @white;
+
+	border-radius: @button-border-radius;
+	color: @grey;
+	display: inline-block;
+	font-family: @font-family-hd;
+	font-size: @font-smedium;
+	font-weight: @font-bold;
+	margin-left: -10px;
+	margin-bottom: 10px;
+	padding: 8px 10px;
+
+	.bg-sprite {
+		margin-right: 13px;
+	}
+
+	.standard-border();
+
+	&:hover {
+		background-color: @grey-hover;
+		color: @white;
+		.standard-border();
+	}
+}
+
+.color-button-m {
+	background-color: @teal;
+	border: 0 none;
+	border-radius: @button-border-radius;
+	color: @white;
+	display: inline-block;
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+	font-weight: @font-semi;
+	padding: 8px 20px;
+
+	a {
+		color: @white;
+	}
+
+	&:hover {
+		background-color: @teal-hover;
+		text-decoration:none;
+	}
+}
+
+.grey-button-m {
+	background-color: @grey;
+	border: 0 none;
+	border-radius: @button-border-radius;
+	color: @white;
+	display: inline-block;
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+	font-weight: @font-semi;
+	padding: 8px 20px;
+
+	a {
+		color: @white;
+	}
+
+	&:hover {
+		background-color: @grey-hover;
+		text-decoration: none;
+	}
+}
+
+.grey-button-s {
+	.grey-button-m();
+	font-size: @font-regular;
+}
+
+.bold-color-button {
+	background-color: @teal;
+	border-radius: @button-border-radius;
+	color: @white;
+	display: inline-block;
+	font-family: @font-family-hd;
+	font-size: @font-medium;
+	font-weight: @font-bold;
+	padding: 5px 20px;
+
+	a {
+		color: @white;
+	}
+}
+
+/* Block sprite */
+
+.block-sprite {
+	display: inline-block;
+	height: 1em;
+	width: 1em;
+}
+
+.block-sprite-fixed {
+	display: block;
+	height: 32px;
+	width: 32px;
+}
+
+/* Circle Background sprite (should have done it all like this - hindsight is a beautiful thing) */
+
+.bg-sprite {
+	background: url("@{sprite}") no-repeat scroll left top transparent;
+}
+
+.bg-sprite-circle-star {
+	background-position: left 3px;
+	&:hover,
+	&.active {
+		.bg-sprite-circle-star-teal();
+	}
+}
+
+.bg-sprite-circle-star-teal {
+	background-position: left -48px;
+}
+
+.basic-page-title.bg-sprite {
+	margin-bottom: 0;
+	padding: 8px 0px 8px 42px;
+}
+
+.bg-sprite-circle-star2 {
+	background-position: -7px -2001px;
+	&:hover,
+	&.active {
+		.bg-sprite-circle-star2-hover();
+	}
+}
+
+.bg-sprite-circle-star2-hover {
+	background-position: -7px -2039px;
+}
+
+/* here because they are stylings for the icon */
+.share-wishlist {
+	background-position: -7px -2038px;
+	padding-left: 19px;
+}
+
+.white-button:focus .share-wishlist,
+.white-button:hover .share-wishlist {
+	background-position: -7px -1964px;
+}
+
+.bg-sprite-circle-share {
+	background-position: left -99px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-share-teal();
+	}
+}
+
+.bg-sprite-circle-share-teal {
+	background-position: left -150px;
+}
+
+.bg-sprite-circle-basket {
+	background-position: left -201px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-basket-teal();
+	}
+}
+
+.bg-sprite-read {
+	background-position: left -866px;
+}
+
+.bg-sprite-read-teal {
+	background-position: left -815px;
+}
+
+
+.bg-sprite-circle-basket-teal {
+	background-position: left -252px;
+}
+
+.bg-sprite-circle-delivery {
+	background-position: left -303px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-delivery-teal();
+	}
+}
+
+.bg-sprite-circle-delivery-teal {
+	background-position: left -354px;
+}
+
+.bg-sprite-circle-question {
+	background-position: left -714px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-question-teal();
+	}
+}
+
+.bg-sprite-circle-question-teal {
+	background-position: left -765px;
+}
+
+.bg-sprite-circle-search {
+	background-position: left -509px;
+}
+
+.bg-sprite-circle-search-teal {
+	background-position: left -560px;
+}
+
+.bg-sprite-circle-facebook {
+	background-position: left -1071px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-facebook-hover();
+	}
+}
+
+.bg-sprite-circle-facebook-hover {
+	background-position: left -1122px;
+}
+
+.bg-sprite-circle-twitter {
+	background-position: left -1224px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-twitter-hover();
+	}
+}
+
+.bg-sprite-circle-twitter-hover {
+	background-position: left -1275px;
+}
+
+.bg-sprite-circle-email {
+	background-position: left -1376px;
+	&:hover,
+	&.active  {
+		.bg-sprite-circle-email-hover();
+	}
+}
+
+.bg-sprite-circle-email-hover {
+	background-position: left -1427px;
+}
+
+/* Icon sprites */
+
+.bg-sprite-ico-star {
+	background-position: 5px -1956px;
+}
+
+.bg-sprite-ico-basket {
+	background-position: 5px -1773px;
+}
+
+.bg-sprite-ico-double-chevron {
+	background-position: center -1852px;
+}
+
+.bg-sprite-ico-twitter {
+	background-position: 5px -2223px;
+}
+
+.bg-sprite-ico-facebook {
+	background-position: 4px -2186px;
+}
+
+.bg-sprite-message {
+	padding: 10px 0px 10px 42px;
+	background-position: 0 -1374px;
+}
+
+.bg-sprite-tick {
+	padding: 10px 0px 10px 35px;
+	background-position: 0 -1875px;
+}
+
+.bg-sprite-boxes {
+	padding: 10px 0px 10px 35px;
+	background-position: 15px -2058px;
+}
+
+.bg-sprite-message-hover {
+	background-position: 0px -1375px;
+}
+
+.hd-glyphicon-double-chevron {
+	padding: 10px 15px 10px 15px;
+	background: url("@{sprite}") no-repeat scroll left top transparent;
+	background-position: 2px -1840px;
+}
+
+.bg-sprite-pencil {
+	background-position: 2px -1920px;
+}

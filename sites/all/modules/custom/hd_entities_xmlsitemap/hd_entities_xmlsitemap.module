@@ -1,0 +1,117 @@
+<?php
+/**
+ * @file
+ * Integrate HD entities with XML sitemap.
+ *
+ * Currently we just support wishlist entities.
+ */
+
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function hd_entities_xmlsitemap_entity_info_alter(array &$entity_info) {
+  $entity_info['wishlist']['bundle label'] = $entity_info['wishlist']['label'];
+  $entity_info['wishlist']['xmlsitemap'] = array(
+    'process callback' => 'hd_entities_xmlsitemap_process_hd_entities_links',
+  );
+}
+
+/**
+ * Implements hook_cron().
+ */
+function hd_entities_xmlsitemap_cron() {
+  hd_entities_xmlsitemap_xmlsitemap_index_links(xmlsitemap_var('batch_limit'));
+}
+
+/**
+ * Implements hook_xmlsitemap_index_links().
+ */
+function hd_entities_xmlsitemap_xmlsitemap_index_links($limit) {
+  $ids = db_query_range("SELECT w.wishlist_id FROM {wishlist} w LEFT JOIN {xmlsitemap} x ON x.type = 'wishlist' AND w.wishlist_id = x.id WHERE x.id IS NULL ORDER BY w.wishlist_id DESC", 0, $limit)->fetchCol();
+  hd_entities_xmlsitemap_process_hd_entities_links($ids);
+}
+
+/**
+ * Process HD entity sitemap links.
+ *
+ * @param array $ids
+ *   An array of entity IDs.
+ */
+function hd_entities_xmlsitemap_process_hd_entities_links(array $ids) {
+  $entities = entity_load('wishlist', $ids);
+  foreach ($entities as $entity) {
+    $link = hd_entities_xmlsitemap_create_link($entity);
+    xmlsitemap_link_save($link);
+  }
+}
+
+
+/**
+ * Implements hook_entity_insert().
+ */
+function hd_entities_xmlsitemap_entity_insert($entity, $type) {
+  if ($type != 'wishlist') {
+    return;
+  }
+  hd_entities_xmlsitemap_entity_update($entity, $type);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function hd_entities_xmlsitemap_entity_update($entity, $type) {
+  if ($type != 'wishlist') {
+    return;
+  }
+  $link = hd_entities_xmlsitemap_create_link($entity);
+  xmlsitemap_link_save($link);
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function hd_entities_xmlsitemap_entity_delete($entity, $type) {
+  if ($type != 'wishlist') {
+    return;
+  }
+  xmlsitemap_link_delete('wishlist', $entity->wishlist_id);
+}
+
+/**
+ * Create a sitemap link from a entity.
+ *
+ * The link will be saved as $entity->xmlsitemap.
+ *
+ * @param object $entity
+ */
+function hd_entities_xmlsitemap_create_link($entity) {
+  if (!isset($entity->xmlsitemap)) {
+    $entity->xmlsitemap = array();
+    if ($entity->wishlist_id && $link = xmlsitemap_link_load('wishlist', $entity->wishlist_id)) {
+      $entity->xmlsitemap = $link;
+    }
+  }
+
+  $settings = xmlsitemap_link_bundle_load('wishlist', $entity->type);
+  $uri = entity_uri('wishlist', $entity);
+
+  $entity->xmlsitemap += array(
+    'id' => $entity->wishlist_id,
+    'type' => 'wishlist',
+    'subtype' => 'wishlist',
+    'status' => 1,
+    'status_default' => $settings['status'],
+    'status_override' => 0,
+    'priority' => $settings['priority'],
+    'priority_default' => $settings['priority'],
+    'priority_override' => 0,
+  );
+
+  $entity->xmlsitemap['loc'] = $uri['path'];
+  $entity->xmlsitemap['access'] = hd_wishlist_access('view', $entity, drupal_anonymous_user());
+  $entity->xmlsitemap['language'] = isset($entity->language) ? $entity->language : LANGUAGE_NONE;
+  $entity->xmlsitemap['lastmod'] = $entity->changed;
+
+  return $entity->xmlsitemap;
+}

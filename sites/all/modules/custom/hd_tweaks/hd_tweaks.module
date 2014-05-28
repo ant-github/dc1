@@ -1,0 +1,319 @@
+<?php
+
+function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
+  switch($form_id) {
+    //contact us form
+    case 'webform_client_form_7':
+      $form['#attributes']['class'][] = 'contact-form';
+      break;
+    //become a retailer form
+    case 'webform_client_form_9':
+      $form['#attributes']['class'][] = 'become-a-retailer-form row';
+      $form['submitted']['name']['#prefix'] = '<h2 class="col-md-12">Retailer Information</h2><div class="column column-1 col-md-6">';
+      $form['submitted']['url']['#suffix'] = '</div>';
+      $form['submitted']['description']['#prefix'] = '<div class="column column-2 col-md-6">';
+      $form['submitted']['description']['#suffix'] = '</div>';
+      $form['actions']['submit']['#attributes'] = array(
+        'class' => array('col-xs-6 col-xs-offset-3')
+      );
+      break;
+
+    // Placeholder on search form
+    case 'views_exposed_form' :
+      if(isset($form['name']) && $form['#info']['filter-name']['label'] == 'Find an Item') {
+        $form['name']['#placeholder'] = 'Enter product name here';
+      }
+      break;
+
+    // Change 'subscribe' button text on newsletter form
+    case 'simplenews_block_form_1' :
+      if(isset($form['submit']['#value']) && $form['submit']['#value'] == 'Subscribe') {
+        $form['submit']['#value'] = t('Sign up to our newsletter') . '<span class="bg-sprite bg-sprite-chevron"></span>';
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_menu();
+ */
+function hd_tweaks_menu() {
+  // Create a wishlist page.
+  $items['create-a-wishlist'] = array(
+    'title' => 'Create a Wishlist',
+    'page callback' => 'hd_tweaks_wishlist_page_add',
+    'access callback' => TRUE,
+  );
+  // Create a wishlist page.
+  $items['user/shop-admin/purchases/add'] = array(
+    'title' => 'Add a Purchase',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hd_tweaks_shop_purchase_form'),
+    'access arguments' => array('create purchase entities'),
+    'type' => MENU_LOCAL_ACTION,
+  );
+  return $items;
+}
+
+/**
+ * Page callback from create a wishlist page.
+ */
+function hd_tweaks_wishlist_page_add() {
+  // Sign up form non anonymous users.
+  if (user_is_anonymous()) {
+    return drupal_get_form('user_register_form');
+  }
+  // Create a wishlist form for registered users.
+  else {
+    return hd_wishlist_page_add();
+  }
+}
+
+function hd_tweaks_shop_purchase_form($form, &$form_state) {
+  $code = !empty($form_state['values']['code']) ? $form_state['values']['code'] : FALSE;
+  $wishlist_item_markup = '';
+  $wishlist_item = FALSE;
+
+  //$code = 'AB9081DE830E4C13BB15';
+  // If we have a code then we load the wishlist item and delivery details.
+  if ($code && (($wishlist_item = hd_tweaks_get_wishlist_item_by_code($code)) !== FALSE)) {
+
+    // Wishlist Item.
+    $wishlist_item = hd_wishlist_item_load($wishlist_item->wishlist_item_id);
+
+    // Validate the wishlist item has not been purchased.
+    $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+    if ($wr->field_status->value() == 'purchased') {
+      $wishlist_item = FALSE;
+      form_set_error('code', t('The wishlist item has already been purchased.'));
+    }
+    else {
+      $wishlist_item_view = hd_wishlist_item_view($wishlist_item, 'purchase');
+      $wishlist_item_markup = drupal_render($wishlist_item_view);
+
+      // Address info.
+      $wishlist_owner = user_load($wishlist_item->uid);
+      $address['address'] = field_view_field('user', $wishlist_owner, 'field_delivery_address');
+      $address['name'] = field_view_field('user', $wishlist_owner, 'field_name');
+      $wishlist_item_markup .= drupal_render($address);
+
+      // Fix ajax issue with default value not being set.
+      unset($form_state['input']['wishlist_item_ref']);
+    }
+  }
+
+  // No item found with the code provided.
+  if ($code && $wishlist_item == FALSE) {
+    form_set_error('code', t('No wishlist item found with the provided code.'));
+  }
+
+  $form['code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Code'),
+    '#default_value' => $code,
+    '#prefix' => '<div id="hd-tweaks-shop-purchase-form-wrapper">',
+  );
+  $form['find_item'] = array(
+    '#type' => 'button',
+    '#button_type' => 'submit ajax-trigger',
+    '#value' => t('Find Item'),
+    '#ajax' => array(
+      'submitter' => FALSE,
+      'event' => 'click',
+      'callback' => 'hd_tweaks_shop_purhcase_form_code_ajax_callback',
+      'wrapper' => 'hd-tweaks-shop-purchase-form-wrapper',
+      'method' => 'replace',
+      'effect' => 'fade',
+    ),
+  );
+  $form['wishlist_item_view'] = array(
+    '#markup' => $wishlist_item_markup,
+  );
+
+  $form['wishlist_item_ref'] = array(
+    '#type' => 'hidden',
+    '#default_value' => $wishlist_item !== FALSE ? $wishlist_item->wishlist_item_id : FALSE,
+  );
+
+  if ($wishlist_item !== FALSE) {
+    $form['email'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Purchaser Email'),
+      '#required' => TRUE,
+    );
+  }
+
+  if ($wishlist_item !== FALSE) {
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+    );
+  }
+
+  $form['from_wrap_close'] = array(
+    '#markup' => '</div>',
+  );
+
+  return $form;
+}
+
+function hd_tweaks_shop_purchase_form_validate($form, &$form_state) {
+  if (isset($form_state['values']['email']) && valid_email_address($form_state['values']['email']) === FALSE) {
+    form_set_error('email', t('Invalid email address provided.'));
+  }
+}
+
+function hd_tweaks_shop_purchase_form_submit($form, &$form_state) {
+  global $user;
+
+  // Update the wishlist item status to purchased
+  $wishlist_item = hd_wishlist_item_load($form_state['values']['wishlist_item_ref']);
+  $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+  $wr->field_status = 'purchased';
+  $wr->save();
+
+  // Create a purchase entity for the wishlist item.
+  $purchase_entity = entity_get_controller('purchase')->create();
+  $pw = entity_metadata_wrapper('purchase', $purchase_entity);
+  $pw->user = $user->uid;
+  $pw->field_wishlist_item = $form_state['values']['wishlist_item_ref'];
+
+  // If the purchaser did not reserve the item then we require the email from the retailer
+  // and either create a new account or associate the purchase with an existing account.
+  if (isset($form_state['values']['email'])) {
+    $email = $form_state['values']['email'];
+
+    if (($purchasing_user = user_load_by_mail($email)) === FALSE) {
+      $purchasing_user = _hd_tweaks_create_user_from_email($email);
+    }
+
+    $pw->field_purchasing_user = $purchasing_user->uid;
+  }
+  $pw->save();
+
+  drupal_set_message(t('The wishlist item has been set as purchased.'));
+
+  $form_state['redirect'] = 'user/shop-admin/purchases';
+}
+
+function _hd_tweaks_create_user_from_email($email) {
+  //set up the user fields.
+  $fields = array(
+    'name' => $email,
+    'mail' => $email,
+    'pass' => user_password(8),
+    'status' => 1,
+    'init' => $email,
+    'roles' => array(
+      DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    ),
+  );
+
+  // The first parameter is left blank so a new user is created.
+  $account = user_save('', $fields);
+
+  // Rules is having an issue generating the one time login so we pass it instead.
+  $user_one_time_login = user_pass_reset_url($account);
+
+  // Invoke the rules component to send the welcome email.
+  rules_invoke_component('rules_send_purchaser_welcome_email', $account, $user_one_time_login);
+
+  return $account;
+}
+
+function hd_tweaks_shop_purhcase_form_code_ajax_callback($form, $form_state) {
+  return array(
+    $form['code'],
+    $form['find_item'],
+    $form['wishlist_item_view'],
+    $form['wishlist_item_ref'],
+    isset($form['email']) ? $form['email'] : NULL,
+    isset($form['submit']) ? $form['submit'] : NULL,
+    $form['from_wrap_close'],
+  );
+}
+
+function hd_tweaks_get_wishlist_item_by_code($code) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'wishlist_item')
+    ->fieldCondition('field_item_code', 'value', $code, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+  $result = $query->execute();
+  if (isset($result['wishlist_item'])) {
+    return reset($result['wishlist_item']);
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function hd_tweaks_form_user_login_alter(&$form, &$form_state) {
+  // Move the hybridauth to the end of the form.
+  if (isset($form['hybridauth'])) {
+    $form['hybridauth']['#weight'] = '999';
+  }
+
+
+}
+
+function hd_tweaks_form_user_register_form_alter(&$form, &$form_state) {
+  // $form['account']['hybridauth'] = $form['hybridauth'];
+  dpm($form);
+  $form['#prefix'] = render($form['hybridauth']);
+  unset($form['hybridauth']);
+  $form['#attributes']['class'][] = 'row';
+
+  $form['#groups']['group_personal_information']->label = NULL;
+
+  // Column fix.
+  $form['field_name']['#prefix'] = '<h2 class="register-header">Create an account</h2><div class="col-md-6"><h3>' . t('Personal Information') . '</h3>';
+  $form['account']['#suffix'] = '</div>';
+  $form['field_delivery_address']['#prefix'] = '<div class="col-md-6">';
+  // Add the captcha to the right hand column
+  $form['field_delivery_address']['captcha'] = $form['captcha'];
+  unset($form['captcha']);
+  $form['actions']['#suffix'] = '</div>';
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add the bootstrap classes to field groups
+ */
+function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
+  $form['#attributes'] = array('class' => 'row');
+  $form['#groups']['group_personal_information']->format_settings['instance_settings']['classes'] .= ' col-md-6';
+  $form['#groups']['group_size_guide']->format_settings['instance_settings']['classes'] .= ' col-md-6';
+  $form['#groups']['group_profile_information']->format_settings['instance_settings']['classes'] .= ' col-md-6';
+  $form['actions']['#attributes'] = array('class' => array('col-md-6'));
+}
+
+/**
+ * Implements hook_libraries_info().
+ *
+ * Add the bootstrap confirmation library.
+ */
+function hd_tweaks_libraries_info() {
+  $libraries['bootstrap_confirmation'] = array(
+    'name' => 'Bootstrap Confirmation',
+    'vendor url' => 'http://ethaizone.github.io/Bootstrap-Confirmation',
+    'download url' => 'https://raw.github.com/ethaizone/Bootstrap-Confirmation/master/bootstrap-confirmation.js',
+    'files' => array(
+      'js' => array('bootstrap-confirmation.js'),
+    ),
+    // Specify arguments for the version callback. By default,
+    // libraries_get_version() takes a named argument array:
+    'version arguments' => array(
+      'file' => 'bootstrap-confirmation.js',
+      'pattern' => '/bootstrap-confirmation.js v(\d+)/',
+      'lines' => 5,
+    ),
+  );
+  return $libraries;
+}
+
+function hd_tweaks_form_views_exposed_form_alter(&$form, &$form_state) {
+  if ($form['#id'] == 'views-exposed-form-wishlist-page-default') {
+    $form['#action'] = '/' . current_path();
+  }
+}

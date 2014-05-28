@@ -1,0 +1,4 @@
+name = DC Tweaks
+description = Provides custom tweaks for Delivery Code.
+package = Delivery Code
+core = 7.x

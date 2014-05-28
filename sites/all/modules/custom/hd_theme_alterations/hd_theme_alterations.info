@@ -1,0 +1,4 @@
+name = DC theme
+description = Theme tweaks for Delivery Code.
+package = Delivery Code
+core = 7.x

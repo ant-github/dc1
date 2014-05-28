@@ -1,0 +1,17 @@
+{
+  "name": "hiddendelivery",
+  "version": "0.0.0",
+  "description": "Hidden delivery LESS watch compiler - run grunt from the terminal in the root theme folder to start the watch process",
+  "main": "gruntfile.js",
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-less": "~0.9.0",
+    "grunt-contrib-watch": "~0.5.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Will Richards",
+  "license": "BSD-2-Clause"
+}
