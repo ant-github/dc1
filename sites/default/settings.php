@@ -564,3 +564,11 @@ $conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
  * Remove the leading hash signs to disable.
  */
 # $conf['allow_authorize_operations'] = FALSE;
+
+// Add Varnish as the page cache handler.
+$conf['cache_backends'][] = 'sites/all/modules/contrib/varnish/varnish.cache.inc';
+$conf['cache_class_cache_page'] = 'VarnishCache';
+
+// Drupal 7 does not cache pages when we invoke hooks during bootstrap. This needs
+// to be disabled.
+$conf['page_cache_invoke_hooks'] = FALSE;
