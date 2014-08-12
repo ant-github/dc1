@@ -43,6 +43,10 @@
           e.preventDefault();
         });
       }
+        // Extension notifier
+        // if (not logged into extension) {
+          $('#extension-notifier').prependTo($('body')).slideDown(1000);
+        // }
 		}
 	}
 })(jQuery);

@@ -59,6 +59,9 @@
   <?php print $scripts; ?>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 </head>
+  <div id="extension-notifier">
+    <p>Have you got the extension?</p>
+  </div>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
