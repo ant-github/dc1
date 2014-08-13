@@ -215,9 +215,9 @@ $databases = array (
   array (
     'default' => 
     array (
-      'database' => 'hiddendelivery',
-      'username' => 'zoocha',
-      'password' => '2011z00cha',
+      'database' => 'dc',
+      'username' => 'george',
+      'password' => 'okdokdok1-',
       'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',

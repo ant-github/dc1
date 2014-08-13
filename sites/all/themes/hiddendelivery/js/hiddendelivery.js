@@ -43,10 +43,17 @@
           e.preventDefault();
         });
       }
-        // Extension notifier
-        // if (not logged into extension) {
-          $('#extension-notifier').prependTo($('body')).slideDown(1000);
-        // }
 		}
 	}
+
+  $(window).on("load", function(){
+
+  // Extension notifier
+  if (!$("div#extensionInstalled").length) {
+    $('#extension-notifier').prependTo($('body')).slideDown(1000);
+  }
+  console.log($("div#extensionInstalled").length);
+  })
+
 })(jQuery);
+

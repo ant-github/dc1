@@ -258,7 +258,6 @@ function hd_tweaks_form_user_login_alter(&$form, &$form_state) {
 
 function hd_tweaks_form_user_register_form_alter(&$form, &$form_state) {
   // $form['account']['hybridauth'] = $form['hybridauth'];
-  dpm($form);
   $form['#prefix'] = render($form['hybridauth']);
   unset($form['hybridauth']);
   $form['#attributes']['class'][] = 'row';
