@@ -61,7 +61,7 @@
 			}
 		}
 		ul.flex-direction-nav {
-			display: none;
+			// display: none;
 		}
 
 		.flexslider .slides {
@@ -77,7 +77,10 @@
 				.views-field-title {
 					margin-top: 30px;
 				}
-			}			
+			}
+
+// Seperate Shops on Slider ====================================================
+// =============================================================================
 			li#slide-1 {
 				border: 2px solid #9a0b1a;
 				.views-field-title {
@@ -89,10 +92,9 @@
 					and (max-width : 460px) {
 						background-size: contain;
 					}
-					
-					span {
-						display: none;
-					}
+					// span {
+					// 	display: none;
+					// }
 				}
 				.views-field-field-body {
 					color: #fff;
@@ -238,12 +240,43 @@
 					}
 				}
 			}
-			li#slide-5 {
-				border: 1px solid #fff;
+			li#slide-6 {
+				border: 2px solid #9a0b1a;
 				.views-field-title {
-					background: url("../images/HomePage/");
+					height: 150px;
+					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
 					span {
 						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #9a0b1a;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
 					}
 				}
 			}
@@ -287,6 +320,8 @@
 					}
 				}
 			}
+// =============================================================================
+
 		}
 
 		.flexslider .slides {
