@@ -53,6 +53,7 @@
   <?php print $styles; ?>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <?php print $scripts; ?>
+  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jfoemdhjganhhccomidjodmikemlkajo" />
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">

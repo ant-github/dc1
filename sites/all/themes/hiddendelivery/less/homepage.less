@@ -22,7 +22,7 @@
 		.home-carousel-inner {
 			background: @black;
 			width: 100%;
-			padding: 22px 0 22px 0;
+			// padding: 22px 0 22px 0;
 		}
 
 		h2.block-title {
@@ -36,47 +36,301 @@
 			margin: 0;
 		}
 
-		.flexslider .slides {
-			margin: 30px 0;
+		ol.flex-control-nav.flex-control-paging {
+			width: 50%;
+			bottom: 0;
+			top: 315px;
+			@media only screen 
+			and (max-width : 991px) {
+				width: 100%;
+				bottom: 12px;
+				top: auto;
+			}
+			li {
+				margin: 0 4px;
+			}
+			a {
+				background: #fff;
+				box-shadow: none;
+				height: 9px;
+				width: 9px;
+			}
+			a.flex-active {
+				background: @teal;
+				box-shadow: none;
+			}
 		}
-
-		.flexslider .slides img {
-			height: auto;
+		ul.flex-direction-nav {
 			display: none;
-			width: 100%;
 		}
 
-		.view-homepage-carousel .views-field-title {
+		.flexslider .slides {
+			margin: 5px;
+			div.brand-img {
+				padding: 0;
+			}
+			li {
+				padding: 5px;
+				div.field-content {
+					text-align: center;
+				}
+				.views-field-title {
+					margin-top: 30px;
+				}
+			}			
+			li#slide-1 {
+				border: 2px solid #9a0b1a;
+				.views-field-title {
+					height: 150px;
+					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
+					span {
+						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #9a0b1a;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
+					}
+				}
+			}
+			li#slide-2 {
+				border: 2px solid #5f6062;
+				.views-field-title {
+					height: 150px;
+					background: url("../images/HomePage/saks-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
+					span {
+						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #5f6062;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
+					}
+				}
+			}
+			li#slide-3 {
+				border: 2px solid #9a0b1a;
+				.views-field-title {
+					height: 150px;
+					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
+					span {
+						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #9a0b1a;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
+					}
+				}
+			}
+			li#slide-4 {
+				border: 2px solid #9a0b1a;
+				.views-field-title {
+					height: 150px;
+					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
+					span {
+						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #9a0b1a;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
+					}
+				}
+			}
+			li#slide-5 {
+				border: 1px solid #fff;
+				.views-field-title {
+					background: url("../images/HomePage/");
+					span {
+						display: none;
+					}
+				}
+			}
+			li#slide-6 {
+				border: 2px solid #9a0b1a;
+				.views-field-title {
+					height: 150px;
+					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center top;
+					color: #000;
+					
+					@media only screen 
+					and (max-width : 460px) {
+						background-size: contain;
+					}
+					
+					span {
+						display: none;
+					}
+				}
+				.views-field-field-body {
+					color: #fff;
+				}
+				.views-field-field-call-to-action-url {
+					.field-content {
+						margin: 0 auto;
+						width: 210px;
+					}
+					a {
+						background-color: #9a0b1a;
+						border: 0 none;
+						border-radius: 3px;
+						display: inline-block;
+						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-size: 17px;
+						font-weight: 600;
+						padding: 8px 20px;
+						margin-top: 20px;
+						margin-bottom: 20px;
+						padding-left: 40px;
+						color: #fff;
+					}
+				}
+			}
+		}
+
+		.flexslider .slides {
+			img {
+				height: auto;
+				width: 100%;
+			}
+			.flex-caption {
+				display: none;
+			}
+		}
+
+		.view-homep.views-field-title {
+			background: url("../images/HomePage/");
 			margin: 55px 0 8px 0;
 		}
 
-		.view-homepage-carousel .views-field-title .field-content {
+		.view-homep.views-field-title .field-content {
 			text-transform: uppercase;
 
 			.block-xxlarge-white-mgrey();
 		}
 
-		.view-homepage-carousel .views-field-field-subtitle {
-			margin-bottom: 20px;
+		.view-homep.views-field-field-subtitle {
+			margin-bottom: 20px;	
 		}
 
-		.view-homepage-carousel .views-field-field-subtitle .field-content {
+		.view-homep.views-field-field-subtitle .field-content {
 			text-transform: uppercase;
 
 			.block-xlarge-white-grey();
 		}
 
-		.view-homepage-carousel .views-field-field-body {
+		.view-homep.views-field-field-body {
 			max-width: 465px;
 		}
 
-		.view-homepage-carousel .views-field-field-body .field-content {
+		.view-homep.views-field-field-body .field-content {
 			margin-bottom: 20px;
 
 			.p-text-white-m();
 		}
 
-		.view-homepage-carousel .views-field-field-call-to-action-url .field-content a {
+		.view-homep.views-field-field-call-to-action-url .field-content a {
 
 			.bold-color-button();
 			padding: 8px 10px;
@@ -85,8 +339,12 @@
 			}
 		}
 
-		.view-homepage-carousel .views-field-field-carousel-image {
-
+		div.views-field-field-carousel-image.pull-right {
+			@media only screen 
+			and (max-width : 991px) {
+				float: none !important;
+				padding-bottom: 45px;
+			}
 		}
 	}
 
@@ -207,8 +465,8 @@
 			margin: 0;
 		}
 		.home-carousel-wrapper {
-			padding-left: 30px;
-			padding-right: 30px;
+			// padding-left: 30px;
+			// padding-right: 30px;
 			.col-md-6 {
 				padding: 0;
 			}
@@ -217,6 +475,7 @@
 			}
 			.view-homepage-carousel  {
 				.views-field-title {
+					background: url("../images/HomePage/");
 					margin-top: 0;
 				}
 				.views-field-title .field-content,
@@ -273,7 +532,7 @@
 }
 
 @media(max-width: @screen-md-max) {
-	.front .home-carousel-wrapper .view-homepage-carousel .views-field-field-subtitle .field-content {
+	.front .home-carousel-wrapper .view-homep.views-field-field-subtitle .field-content {
 		padding: 0 4px;
 	}
 	.front {
@@ -287,7 +546,12 @@
 	.front .home-carousel-wrapper {
 
 		.flexslider .slides {
-			margin: 15px 0;
+			li {
+				// padding: 10px;
+				.views-field-title {
+					margin-top: 10px;
+				}
+			}
 			.col-md-6:first-child {
 				padding-left: 0;
 			}
@@ -299,9 +563,9 @@
 	.front {
 		.home-carousel-wrapper {
 			.home-carousel-inner {
-				background: #000 url("@{images}homepage-slider.png") right -10px no-repeat;
+				//background: #000 url("@{images}homepage-slider.png") right -10px no-repeat;
 				width: 100%;
-				padding: 22px 0 22px 0;
+				// padding: 22px 0 22px 0;
 				background-size: auto 100%;
 			}
 		}

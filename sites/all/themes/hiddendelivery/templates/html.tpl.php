@@ -58,10 +58,8 @@
   <![endif]-->
   <?php print $scripts; ?>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jfoemdhjganhhccomidjodmikemlkajo" />
 </head>
-  <div id="extension-notifier">
-    <p>Have you got the extension?</p>
-  </div>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
@@ -69,5 +67,32 @@
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>
+  <script>
+    (function($) {
+      $('.install-extension-button').on('click', function(e){
+        if(typeof(chrome) !== 'undefined') {
+            chrome.webstore.install(undefined, function(s) {
+console.log('success');
+console.log(s);
+console.log('--------------------');
+}, function(err) {
+console.warn('error');
+console.log(err);
+console.log('--------------------');
+});
+            e.preventDefault();
+            return false;
+          } else {
+            var chromeMessage = '<div class="install-chrome error"><h3 class="error">Google Chrome required</h3>';
+            chromeMessage += '<p class="error">The DeliveryCode extension requires you to be using Google Chrome for it to work. If you don\'t have it you can install Chrome free by downloading it from <a href="http://google.com/chrome">www.google.com/chrome</a></p>';
+            chromeMessage += '<div class="install-chrome-button"><a href="http://www.google.com/chrome">Install Google Chrome</a></div>';
+
+            chromeMessage += '</div>';
+            $('.add-browser-extension .col-sm-6:first').prepend(chromeMessage);
+            $('.install-extension-button').hide();
+          }
+        });
+      })(jQuery);
+  </script>
 </body>
 </html>

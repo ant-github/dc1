@@ -115,7 +115,7 @@
 
 <?php if($is_front): ?>
   <div class="home-carousel-wrapper">
-    <div class="home-carousel-inner container">
+    <div class="home-carousel-inner">
       <?php
         $carousel_block = block_load('views', 'homepage_carousel-block');
         $carousel_block = _block_get_renderable_array(_block_render_blocks(array($carousel_block)));

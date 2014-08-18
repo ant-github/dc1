@@ -38,7 +38,7 @@
   <?php endif; ?>
 <?php endforeach; ?>
 </div>
-<div class="col-md-6">
+<div class="col-md-6 brand-img">
   <?php print $fields['field_carousel_image']->wrapper_prefix; ?>
     <?php print $fields['field_carousel_image']->label_html; ?>
     <?php print $fields['field_carousel_image']->content; ?>
