@@ -31,7 +31,7 @@ stylesheets[all][] = css/style.css
 ;;;;;;;;;;;;;;;;;;;;;
 
 scripts[] = 'js/share.js'
-scripts[] = 'js/hiddendelivery.js'
+: scripts[] = 'js/hiddendelivery.js'
 
 ; For information on choosing the desired method, please read the Drupal
 ; Bootstrap sub-theme "how-to" documentation:
