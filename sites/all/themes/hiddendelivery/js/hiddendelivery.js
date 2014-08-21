@@ -54,7 +54,7 @@
   //Extension notifier
   $(window).on("load", function(){
     if (!$("div#extensionInstalled").length) {
-      $('<div id="extension-notifier"><p>Have you got the extension?<div class="install-extension-button"><a class="btn btn-primary form-submit install-extension-button" href="https://chrome.google.com/webstore/detail/delivery-code-wishlist/jfoemdhjganhhccomidjodmikemlkajo" id="edit-submit" name="op" value="submit">Add to browser</a></div></p></div>').prependTo($('body')).slideDown(1000);
+      $('<div id="extension-notifier"><p>Have you got the extension?</p><div class="install-extension-button"><a class="btn btn-primary form-submit install-extension-button" href="https://chrome.google.com/webstore/detail/delivery-code-wishlist/jfoemdhjganhhccomidjodmikemlkajo" id="edit-submit" name="op" value="submit">Add to browser</a></div></div>').prependTo($('body')).slideDown(1000);
     }
   })
 
