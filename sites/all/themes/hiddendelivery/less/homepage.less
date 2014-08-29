@@ -80,7 +80,7 @@
 						border-radius: 3px;
 						width: 175px;
 						display: block;
-						font-family: "Open Sans",Arial,Helvetica,sans-serif;
+						font-family: @font-family-hd;
 						font-size: 17px;
 						font-weight: 600;
 						padding: 8px 20px;
@@ -92,6 +92,9 @@
 			}
 			//slide 1 
 			li#slide-1 {
+				.col-md-6 {
+					text-align: center;
+				}
 				@media only screen and (max-width : 991px) {
 							height: 300px;
 						}

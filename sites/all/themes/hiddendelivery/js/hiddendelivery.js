@@ -54,7 +54,7 @@
   //Extension notifier
   $(window).on("load", function(){
     if (!$("div#extensionInstalled").length) {
-      $('<div id="extension-notifier"><p>Want to start shopping?</p><div class="install-extension"><p>Add the browser extension and you&#39re good to go!</p></div></div>').prependTo($('body')).slideDown(1000);
+      $('<div id="extension-notifier"><h1>Want to start shopping?</h1><div class="install-extension"><p>Add the browser extension and you&#39re good to go!</p></div></div>').prependTo($('body')).slideDown(1000);
     }
   })
 
