@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * Implements hook_menu();
+ */
+function hd_endpoint_menu() {
+  // Create a wishlist page.
+  $items['purchased-item/%'] = array(
+    'title' => 'Purchased Item',
+    'page callback' => 'hd_endpoint_purchased',
+    'access arguments' => array('access content')
+  );
+  return $items;
+}
+
+function hd_endpoint_purchased(){
+
+  $code = FALSE;
+  $wishlist_item = FALSE;
+
+  $code = arg(1);
+  // If we have a code then we load the wishlist item and delivery details.
+  if ($code && (($wishlist_item = hd_endpoint_get_wishlist_item_by_code($code)) !== FALSE)) {
+    // Wishlist Item.
+    $wishlist_item = hd_wishlist_item_load($wishlist_item->wishlist_item_id);
+    // Validate the wishlist item has not been purchased.
+    $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+    if ($wr->field_status->value() == 'purchased') {
+      drupal_json_output('The wishlist item has already been purchased.');
+    }
+    else {
+      $wishlist_item_view = hd_wishlist_item_view($wishlist_item, 'purchase');
+      //load product to get product store
+      $product = $wr->field_product->value();
+      $product = hd_product_load($product->product_id);
+      //load store to get the store owner
+      $sw = entity_metadata_wrapper('product', $product);
+      $store = $sw->field_store->value();
+      $so = entity_metadata_wrapper('store', $store);
+      $store_owner = $so->field_store_owner->value();
+      $store_owner_mail = $store_owner->mail;
+      //one time login link
+      $user_one_time_login = user_pass_reset_url($store_owner);
+      //set the wishlist item to purchase
+      $wr->field_status = 'purchased';
+      $wr->save();
+      drupal_json_output('The wishlist item has been set to purchased.');
+      //send email to store owner
+      rules_invoke_component('rules_send_email_to_shop_owner', $store_owner,$wishlist_item,$user_one_time_login);
+
+    }
+  }
+  // No item found with the code provided.
+  if ($code && empty($wishlist_item)) {
+    drupal_json_output('No wishlist item found with the provided code.');
+  }
+
+  drupal_exit();
+}
+
+//get item by code
+function hd_endpoint_get_wishlist_item_by_code($code) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'wishlist_item')
+    ->fieldCondition('field_item_code', 'value', $code, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+  $result = $query->execute();
+  if (isset($result['wishlist_item'])) {
+    return reset($result['wishlist_item']);
+  }
+  else {
+    return FALSE;
+  }
+}
+
+
+
