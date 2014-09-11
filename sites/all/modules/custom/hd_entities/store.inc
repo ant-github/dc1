@@ -82,7 +82,6 @@ function hd_store_form_submit($form, &$form_state) {
 }
 
 function hd_store_delete($form, &$form_state) {
-  dpm($form);
   $entity = $form['store']['#value'];
   hd_store_entity_delete($entity);
   $form_state['redirect'] = 'admin/structure/store/manage';
