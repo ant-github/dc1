@@ -56,7 +56,7 @@ function hd_store_form($form, &$form_state, $entity) {
       '#weight' => 200,
     );
   }
-  dpm($form);
+  //dpm($form);
   return $form;
 }
 
@@ -82,7 +82,7 @@ function hd_store_form_submit($form, &$form_state) {
 }
 
 function hd_store_delete($form, &$form_state) {
-  $entity = $form_state['values']['store'];
+  $entity = $form['store']['#value'];
   hd_store_entity_delete($entity);
   $form_state['redirect'] = 'admin/structure/store/manage';
 }
