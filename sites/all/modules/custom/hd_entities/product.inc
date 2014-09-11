@@ -80,10 +80,10 @@ function hd_product_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'product/' . $entity->product_id;
 }
 
-function hd_product_form_delete($form, $form_state) {
-  $entity = $form_state['values']['product'];
+function hd_product_form_delete($form,&$form_state) {
+  $entity = $form['product']['#value'];
   hd_product_entity_delete($entity);
-  $form_state['redirect'] = 'admin/structure/product/manage';
+  $form_state['redirect'] = 'admin/structure/hd-entities';
 }
 
 /**
@@ -97,7 +97,7 @@ function hd_product_entity_save(&$entity) {
  * Use the controller to delete the entity.
  */
 function hd_product_entity_delete($entity) {
-  entity_get_controller('product')->delete(array($entity->identifier()));
+  entity_delete('product', entity_id('product', $entity));
 }
 
 /**

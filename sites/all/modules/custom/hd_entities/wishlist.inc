@@ -92,8 +92,8 @@ function hd_wishlist_form_submit($form, &$form_state) {
   $form_state['redirect'] = 'wishlist/' . $entity->wishlist_id;
 }
 
-function hd_wishlist_form_delete($form, $form_state) {
-  $entity = $form_state['values']['wishlist'];
+function hd_wishlist_form_delete($form, &$form_state) {
+  $entity = $form['wishlist']['#value'];
   hd_wishlist_entity_delete($entity);
   $form_state['redirect'] = 'admin/structure/wishlist/manage';
 }
@@ -110,7 +110,7 @@ function hd_wishlist_entity_save(&$entity) {
  * Use the controller to delete the entity.
  */
 function hd_wishlist_entity_delete($entity) {
-  entity_get_controller('wishlist')->delete($entity);
+  entity_delete('wishlist', entity_id('wishlist', $entity));
 }
 
 /**
