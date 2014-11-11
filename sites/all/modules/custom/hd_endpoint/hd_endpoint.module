@@ -66,6 +66,69 @@ function hd_endpoint_services_resources() {
       ),
     ),
   );
+$resource['dc_user'] = array(
+  'update' => array(
+          'help' => 'Update a user',
+          'callback' => '_hd_user_update_resource',
+          'file' => array('type' => 'inc', 'module' => 'hd_endpoint', 'name' => 'resources/user'),
+          'access callback' => 'services_access_menu',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+          'args' => array(
+            array(
+              'name' => 'uid',
+              'type' => 'int',
+              'description' => 'Unique identifier for this user',
+              'source' => array('path' => 0),
+              'optional' => FALSE,
+            ),
+            array(
+              'name' => 'data',
+              'type' => 'array',
+              'description' => 'The user object with updated information',
+              'source' => 'data',
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+  'create' => array(
+          'help' => 'Create a user',
+          'callback' => '_hd_user_resource_create',
+          'file' => array('type' => 'inc', 'module' => 'hd_endpoint', 'name' => 'resources/user'),
+          'access callback' => 'services_access_menu',
+          'access arguments' => array('create'),
+          'access arguments append' => FALSE,
+          'args' => array(
+            array(
+              'name' => 'account',
+              'type' => 'array',
+              'description' => 'The user object',
+              'source' => 'data',
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+  );
+
+$resource['dc_address'] = array(
+  'retrieve' => array(
+          'help' => 'Retrieve required fields for each Country',
+          'callback' => '_hd_get_address_resource',
+          'file' => array('type' => 'inc', 'module' => 'hd_endpoint', 'name' => 'resources/address'),
+          'access callback' => 'services_access_menu',
+          //'access arguments' => array('update'),
+          //'access arguments append' => TRUE,
+          'args' => array(
+            array(
+              'name' => 'country',
+              'type' => 'string',
+              'description' => '2 char country string',
+              'source' => array('path' => 0),
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+  );
 
   return $resource;
 }

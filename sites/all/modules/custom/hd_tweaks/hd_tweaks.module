@@ -31,7 +31,7 @@ function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
         $form['submit']['#value'] = t('Sign up to our newsletter') . '<span class="bg-sprite bg-sprite-chevron"></span>';
       }
       break;
-       // Disable captcha when using services on the user regiter form
+    // Disable captcha when using services on the user regiter form
     case 'user_register_form' :
       if (arg(0) == 'api') {
         unset($form['captcha']);
