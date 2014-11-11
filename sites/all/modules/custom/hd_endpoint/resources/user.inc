@@ -89,6 +89,7 @@ function _hd_user_resource_create($account) {
       //save user account
       user_save(NULL, $account);
       print('Account created successfully');
+      $account = user_load_by_mail($mail);
   }
   return $account;
 }
