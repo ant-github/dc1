@@ -55,7 +55,8 @@ function _hd_user_update_resource($uid, $account) {
   $form_state['values']['#user_category'] = $category;
   $form_state['values']['#account'] = $account_loaded;
 
-  //Here we set the country of the loaded user object = the country of the received JSON object
+  //Set the country of the loaded user object = the country of the received JSON object
+  //for unknown reason the values would not update the country on the addressfield
   $account_loaded->field_delivery_address['und'][0]['country'] = $account['field_delivery_address']['und'][0]['country'];
 
   $ret = drupal_form_submit('user_profile_form', $form_state, $account_loaded, $category);
@@ -85,6 +86,7 @@ function _hd_user_resource_create($account) {
     }elseif($user_name_exists) {
       print('username '.$name. ' already taken');
     }else{
+      //save user account
       user_save(NULL, $account);
       print('Account created successfully');
   }

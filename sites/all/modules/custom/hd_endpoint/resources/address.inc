@@ -33,7 +33,7 @@ function _hd_get_address_resource($country) {
 
   $address = array_merge($street_block, $locality_block);
 
-    //clean adress values for better JSON output
+  //clean adress values for better JSON output
   foreach ($address as $key => $value) {
     unset($value[0]['#tag']);
     unset($value[0]['#title']);
