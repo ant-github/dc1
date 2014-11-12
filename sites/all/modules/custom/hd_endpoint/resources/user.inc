@@ -81,7 +81,7 @@ function _hd_user_resource_create($account) {
   $user_mail_exists = user_load_by_mail($mail);
   $user_name_exists = user_load_by_name($name);
 
-  if($user_exists){
+  if($user_mail_exists){
       print($mail.' already registered');
     }elseif($user_name_exists) {
       print('username '.$name. ' already taken');

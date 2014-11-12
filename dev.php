@@ -109,7 +109,13 @@ function create(){
   // }
   //   //return $user;
 }
-create();
+function user_fields(){
+  global $user;
+  $user_fields = user_load($user->uid);
+  $user_fields = drupal_json_output($user_fields);
+  return $user_fields;
+}
+user_fields();
 
 
 menu_execute_active_handler();
