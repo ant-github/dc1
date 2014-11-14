@@ -36,13 +36,11 @@ function _hd_get_address_resource($country) {
   //clean adress values for better JSON output
   foreach ($address as $key => $value) {
     unset($value[0]['#tag']);
-    unset($value[0]['#title']);
     unset($value[0]['#attributes']);
     unset($value[0]['#size']);
     unset($value[0]['#prefix']);
     unset($value[0]['#weight']);
     unset($value['#tag']);
-    unset($value['#title']);
     unset($value['#attributes']);
     unset($value['#size']);
     unset($value['#prefix']);
