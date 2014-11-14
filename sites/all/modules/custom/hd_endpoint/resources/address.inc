@@ -40,7 +40,9 @@ function _hd_get_address_resource($country) {
     unset($value[0]['#size']);
     unset($value[0]['#prefix']);
     unset($value[0]['#weight']);
+    unset($value[0]['#render_option_value']);
     unset($value['#tag']);
+    unset($value['#render_option_value']);
     unset($value['#attributes']);
     unset($value['#size']);
     unset($value['#prefix']);
