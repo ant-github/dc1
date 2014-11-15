@@ -88,7 +88,6 @@ function _hd_user_resource_create($account) {
     }else{
       //save user account
       user_save(NULL, $account);
-      $account['account_created'] = 'YES';
       $account = user_load_by_mail($mail);
   }
   return $account;
