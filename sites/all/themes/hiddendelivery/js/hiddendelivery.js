@@ -51,11 +51,4 @@
 		}
 	}
 
-  //Extension notifier
-  $(window).on("load", function(){
-    if (!$("div#extensionInstalled").length) {
-      $('<div id="extension-notifier"><h1>Want to start shopping?</h1><div class="install-extension"><p>Add the <a href="https://chrome.google.com/webstore/detail/delivery-code-wishlist/jfoemdhjganhhccomidjodmikemlkajo"><img src="/sites/all/themes/hiddendelivery/images/favicon.jpg"/></a> browser extension and you&#39re good to go!</p></div></div>').prependTo($('body')).slideDown(1000);
-    }
-  })
-
 })(jQuery);
