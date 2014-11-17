@@ -6,7 +6,7 @@ define('HD_IMPORTIO_API_KEY', 'jUxUIBoes8l0/680ilRpcyxcENApJ4rbU8yolegkGaBm1t78o
 
 require_once 'wishlist.inc';
 require_once 'wishlist_item.inc';
-require_once 'product.inc';
+//require_once 'product.inc';
 require_once 'store.inc';
 require_once 'purchase.inc';
 
@@ -96,47 +96,47 @@ function hd_entities_entity_info() {
     'entity cache' => module_exists('entitycache'),
     'metatags' => TRUE,
   );
-  $entities['product'] = array(
-    'label' => t('Product'),
-    'plural label' => t('Products'),
-    'description' => t('Products on users wishlists'),
-    'entity class' => 'Product',
-    'controller class' => 'HDProductController',
-    'base table' => 'product',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'product_id',
-    ),
-    'bundles' => array(
-      'product' => array(
-        'label' => 'Products',
-        // 'admin' key is used by the Field UI to provide field and
-        // display UI pages.
-        'admin' => array(
-          'path' => 'admin/structure/hd-entities/product',
-          'access arguments' => array('administer product entities'),
-        ),
-      ),
-    ),
-    // Use the default label() and uri() functions
-    'label callback' => 'entity_class_label',
-    'uri callback' => 'entity_class_uri',
-    'access callback' => 'hd_product_access',
-    'view modes' => array(
-      'full' => array(
-        'label' => t('Full'),
-        'custom settings' => FALSE,
-      ),
-      'wishlist' => array(
-        'label' => t('Wishlist'),
-        'custom settings' => FALSE,
-      ),
-    ),
-    'module' => 'hd_entities',
-    'metadata controller class' => 'HDProductMetadataController',
-    'entity cache' => module_exists('entitycache'),
-    'metatags' => TRUE,
-  );
+  // $entities['product'] = array(
+  //   'label' => t('Product'),
+  //   'plural label' => t('Products'),
+  //   'description' => t('Products on users wishlists'),
+  //   'entity class' => 'Product',
+  //   'controller class' => 'HDProductController',
+  //   'base table' => 'product',
+  //   'fieldable' => TRUE,
+  //   'entity keys' => array(
+  //     'id' => 'product_id',
+  //   ),
+  //   'bundles' => array(
+  //     'product' => array(
+  //       'label' => 'Products',
+  //       // 'admin' key is used by the Field UI to provide field and
+  //       // display UI pages.
+  //       'admin' => array(
+  //         'path' => 'admin/structure/hd-entities/product',
+  //         'access arguments' => array('administer product entities'),
+  //       ),
+  //     ),
+  //   ),
+  //   // Use the default label() and uri() functions
+  //   'label callback' => 'entity_class_label',
+  //   'uri callback' => 'entity_class_uri',
+  //   'access callback' => 'hd_product_access',
+  //   'view modes' => array(
+  //     'full' => array(
+  //       'label' => t('Full'),
+  //       'custom settings' => FALSE,
+  //     ),
+  //     'wishlist' => array(
+  //       'label' => t('Wishlist'),
+  //       'custom settings' => FALSE,
+  //     ),
+  //   ),
+  //   'module' => 'hd_entities',
+  //   'metadata controller class' => 'HDProductMetadataController',
+  //   'entity cache' => module_exists('entitycache'),
+  //   'metatags' => TRUE,
+  // );
   $entities['store'] = array(
     'label' => t('Store'),
     'plural label' => t('Stores'),
@@ -482,273 +482,273 @@ function hd_entities_permission() {
 /**
  * Attempts to add a product to a wishlist based on product_url.
  */
-function hd_entities_add_product_from_url($wishlist_id, $product_url) {
-  // Check for existing product, if not create a new product.
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'product')
-    ->fieldCondition('field_product_url', 'value', $product_url);
-  $result = $query->execute();
-  if (isset($result['product'])) {
-    $item = reset($result['product']);
-    $product = hd_product_load($item->product_id);
-  }
-  else {
-    $product = hd_entities_create_product_from_url($product_url);
-  }
+// function hd_entities_add_product_from_url($wishlist_id, $product_url) {
+//   // Check for existing product, if not create a new product.
+//   $query = new EntityFieldQuery();
+//   $query->entityCondition('entity_type', 'product')
+//     ->fieldCondition('field_product_url', 'value', $product_url);
+//   $result = $query->execute();
+//   if (isset($result['product'])) {
+//     $item = reset($result['product']);
+//     $product = hd_product_load($item->product_id);
+//   }
+//   else {
+//     $product = hd_entities_create_product_from_url($product_url);
+//   }
 
-  if ($product === FALSE) {
-    return FALSE;
-  }
+//   if ($product === FALSE) {
+//     return FALSE;
+//   }
 
-  // Add product to wishlist.
-  $wishlist = hd_wishlist_load($wishlist_id);
-  $ww = entity_metadata_wrapper('wishlist', $wishlist);
+//   // Add product to wishlist.
+//   $wishlist = hd_wishlist_load($wishlist_id);
+//   $ww = entity_metadata_wrapper('wishlist', $wishlist);
 
-  // Create the wishlist item.
-  $values['user'] = $wishlist->uid;
-  $wishlist_item = entity_get_controller('wishlist_item')->create($values);
-  $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
-  $wiw->field_product = $product->product_id;
-  $wiw->field_item_code = hd_wishlist_item_generate_item_code();
-  $wiw->field_status = 'available';
-  $wiw->save();
+//   // Create the wishlist item.
+//   $values['user'] = $wishlist->uid;
+//   $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+//   $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+//   $wiw->field_product = $product->product_id;
+//   $wiw->field_item_code = hd_wishlist_item_generate_item_code();
+//   $wiw->field_status = 'available';
+//   $wiw->save();
 
-  // Add our wishlist item reference to the existing references.
-  $current_items = $ww->field_wishlist_items->value();
-  if (!$current_items) {
-    $current_items = array();
-  }
-  $current_items[] = $wiw->value();
-  $ww->field_wishlist_items = $current_items;
-  $ww->save();
+//   // Add our wishlist item reference to the existing references.
+//   $current_items = $ww->field_wishlist_items->value();
+//   if (!$current_items) {
+//     $current_items = array();
+//   }
+//   $current_items[] = $wiw->value();
+//   $ww->field_wishlist_items = $current_items;
+//   $ww->save();
 
-  return TRUE;
-}
+//   return TRUE;
+// }
 
-/**
- * Attempts to create a product entity based on the product URL.
- */
-function hd_entities_create_product_from_url($product_url) {
-  // API call to fetch data for the product.
-  $product_values = hd_entities_get_product_from_url($product_url);
-  //dpm($product_values);
-  if ($product_values === FALSE) {
-    return FALSE;
-  }
-
-
-  // Create the product with the values returned.
-  $product = entity_create('product', array());
-  $pw = entity_metadata_wrapper('product', $product);
-  $pw->name = $product_values['name'];
-  $pw->field_info = $product_values['info'];
-  $pw->field_store = $product_values['store'];
-
-  // Save our product image.
-  //if (hd_entities_is_image($product_values['image'])) {
-  if ($product_values['image']) {  
-    $filename = drupal_html_class($product_values['name']) . '-' . time();
-    $image = file_get_contents($product_values['image']);
-    $file = file_save_data($image, 'public://images/product-images/' . $filename, FILE_EXISTS_RENAME);
-    $pw->field_product_image[0] = (array)$file;
-    //dpm($file, 'file');
-  }
-
-  // No entity api support.
-  $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_values['url'];
-  $pw->field_price->amount = $product_values['price']['amount'] * 100;
-  $pw->field_price->currency_code = $product_values['price']['currency_code'];
-  $pw->save();
-  return $pw->value();
-}
-
-/**
- * Determine if a URL is an image.
- * @see http://stackoverflow.com/questions/676949/best-way-to-determine-if-a-url-is-an-image-in-php
- */
-function hd_entities_is_image($url) {
-  $params = array('http' => array('method' => 'HEAD'));
-  $ctx = stream_context_create($params);
-  $fp = @fopen($url, 'rb', false, $ctx);
-
-  if (!$fp) {
-    return false;  // Problem with url
-  }
-
-  $meta = stream_get_meta_data($fp);
-
-  if ($meta === false) {
-    fclose($fp);
-    return false;  // Problem reading data from url
-  }
-
-  $wrapper_data = $meta["wrapper_data"];
-  if(is_array($wrapper_data)){
-    foreach(array_keys($wrapper_data) as $hh){
-      if (substr($wrapper_data[$hh], 0, 19) == "Content-Type: image") {
-        fclose($fp);
-        return true;
-      }
-    }
-  }
-
-  fclose($fp);
-  return false;
-}
-
-/**
- * Attempts to return a fully populated product array from the URL.
- */
-function hd_entities_get_product_from_url($product_url) {
-  // Find the store based on URL as we need the Import.io connector GUID for the store.
-  $store = hd_entities_get_store_from_url($product_url);
-
-  if ($store === FALSE) {
-    return FALSE;
-  }
-
-  $sw = entity_metadata_wrapper('store', $store);
-  $api_base = 'https://api.import.io/';
-
-  // Set post data.
-  $data = array(
-    'input' => array(
-      'webpage/url' => $product_url,
-    ),
-  );
-
-  // Build API url.
-  $url = $api_base . 'store/connector/' . $sw->field_import_io_connector_guid->value() . '/_query';
-  $url_options = array(
-    '_apikey' => HD_IMPORTIO_API_KEY,
-    '_user' => HD_IMPORTIO_GUID,
-  );
-  $url = url($url, array('query' => $url_options));
-
-  // Set API request options and make API call.
-  $options = array(
-    'headers' => array(
-      'Accept' => 'application/json',
-      'Content-Type' => 'application/json',
-    ),
-    'method' => 'POST',
-    'data' => json_encode($data, JSON_FORCE_OBJECT),
-  );
-  $response = drupal_http_request($url, $options);
-  $product_data = json_decode($response->data);
-   //dpm($product_data, 'api data');
-  if (!isset($product_data->results[0])) {
-    return FALSE;
-  }
-  $product_data = $product_data->results[0];
-
-  // Price fix if multiple prices are found.
-  if (is_array($product_data->price)) {
-    $product_data->price = $product_data->price[0];
-  }
-  // Price fix if multiple currencies are found.
-  if (is_array($product_data->{'price/_currency'})) {
-    $product_data->{'price/_currency'} = $product_data->{'price/_currency'}[0];
-  }
-  if (is_array($product_data->image)) {
-    $product_data->image = $product_data->image[0];
-  }
+// /**
+//  * Attempts to create a product entity based on the product URL.
+//  */
+// function hd_entities_create_product_from_url($product_url) {
+//   // API call to fetch data for the product.
+//   $product_values = hd_entities_get_product_from_url($product_url);
+//   //dpm($product_values);
+//   if ($product_values === FALSE) {
+//     return FALSE;
+//   }
 
 
-  // Ensure the currency code is one we recognise, if not default to GBP.
-  $currencies = commerce_currencies();
-  if (!isset($currencies[$product_data->{'price/_currency'}])) {
-    $product_data->{'price/_currency'} = 'GBP';
-  }
+//   // Create the product with the values returned.
+//   $product = entity_create('product', array());
+//   $pw = entity_metadata_wrapper('product', $product);
+//   $pw->name = $product_values['name'];
+//   $pw->field_info = $product_values['info'];
+//   $pw->field_store = $product_values['store'];
 
-  // Return formatted product data from API call.
-  return array(
-    'name' => $product_data->title,
-    'info' => '',
-    'store' => $store->store_id,
-    'image' => $product_data->image,
-    'url' => $product_url,
-    'price' => array('amount' => $product_data->price, 'currency_code' => $product_data->{'price/_currency'}),
-  );
-}
+//   // Save our product image.
+//   //if (hd_entities_is_image($product_values['image'])) {
+//   if ($product_values['image']) {
+//     $filename = drupal_html_class($product_values['name']) . '-' . time();
+//     $image = file_get_contents($product_values['image']);
+//     $file = file_save_data($image, 'public://images/product-images/' . $filename, FILE_EXISTS_RENAME);
+//     $pw->field_product_image[0] = (array)$file;
+//     //dpm($file, 'file');
+//   }
 
-/**
- * Retrieve a store based on a product URL.
- */
-function hd_entities_get_store_from_url($product_url) {
-  // Parse the url so we can grab the host information.
-  $product_url_data = parse_url($product_url);
+//   // No entity api support.
+//   //$product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_values['url'];
+//   $pw->field_price->amount = $product_values['price']['amount'] * 100;
+//   $pw->field_price->currency_code = $product_values['price']['currency_code'];
+//   $pw->save();
+//   return $pw->value();
+// }
 
-  // Query for a store with the matching host info.
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'store')
-    ->fieldCondition('field_import_io_base_urls', 'value', $product_url_data['host']);
-  $result = $query->execute();
+// /**
+//  * Determine if a URL is an image.
+//  * @see http://stackoverflow.com/questions/676949/best-way-to-determine-if-a-url-is-an-image-in-php
+//  */
+// function hd_entities_is_image($url) {
+//   $params = array('http' => array('method' => 'HEAD'));
+//   $ctx = stream_context_create($params);
+//   $fp = @fopen($url, 'rb', false, $ctx);
 
-  if (isset($result['store'])) {
-    $item = reset($result['store']);
-    $store = hd_store_load($item->store_id);
-    return $store;
-  }
-  else {
-    return FALSE;
-  }
-}
+//   if (!$fp) {
+//     return false;  // Problem with url
+//   }
 
-function hd_entities_add_product_from_url_form($form, &$form_state) {
-  $form['url'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Product URL'),
-  );
-  $form['wishlist_id'] = array(
-    '#type' => 'hidden',
-    '#default_value' => arg(1),
-  );
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add Product'),
-  );
-  return $form;
-}
+//   $meta = stream_get_meta_data($fp);
 
-function hd_entities_add_product_from_url_form_submit($form, &$form_state) {
-  $product_url = $form_state['values']['url'];
-  $wishlist_id = $form_state['values']['wishlist_id'];
-  $success = hd_entities_add_product_from_url($wishlist_id, $product_url);
+//   if ($meta === false) {
+//     fclose($fp);
+//     return false;  // Problem reading data from url
+//   }
 
-  if ($success) {
-    drupal_set_message(t('The product was added to your wishlist.'));
-  }
-  else {
-    drupal_set_message(t('There was an error added the product to your wishlist. Sorry.'));
-  }
-  $form_state['redirect'] = "wishlist/$wishlist_id";
-}
+//   $wrapper_data = $meta["wrapper_data"];
+//   if(is_array($wrapper_data)){
+//     foreach(array_keys($wrapper_data) as $hh){
+//       if (substr($wrapper_data[$hh], 0, 19) == "Content-Type: image") {
+//         fclose($fp);
+//         return true;
+//       }
+//     }
+//   }
 
-/**
- * Implements hook_block_info().
- */
-function hd_entities_block_info() {
-  $blocks['add_product_form'] = array(
-    'info' => t('Add Product To Wishlist form'),
-  );
-  return $blocks;
-}
+//   fclose($fp);
+//   return false;
+// }
+
+// /**
+//  * Attempts to return a fully populated product array from the URL.
+//  */
+// function hd_entities_get_product_from_url($product_url) {
+//   // Find the store based on URL as we need the Import.io connector GUID for the store.
+//   $store = hd_entities_get_store_from_url($product_url);
+
+//   if ($store === FALSE) {
+//     return FALSE;
+//   }
+
+//   $sw = entity_metadata_wrapper('store', $store);
+//   $api_base = 'https://api.import.io/';
+
+//   // Set post data.
+//   $data = array(
+//     'input' => array(
+//       'webpage/url' => $product_url,
+//     ),
+//   );
+
+//   // Build API url.
+//   $url = $api_base . 'store/connector/' . $sw->field_import_io_connector_guid->value() . '/_query';
+//   $url_options = array(
+//     '_apikey' => HD_IMPORTIO_API_KEY,
+//     '_user' => HD_IMPORTIO_GUID,
+//   );
+//   $url = url($url, array('query' => $url_options));
+
+//   // Set API request options and make API call.
+//   $options = array(
+//     'headers' => array(
+//       'Accept' => 'application/json',
+//       'Content-Type' => 'application/json',
+//     ),
+//     'method' => 'POST',
+//     'data' => json_encode($data, JSON_FORCE_OBJECT),
+//   );
+//   $response = drupal_http_request($url, $options);
+//   $product_data = json_decode($response->data);
+//    //dpm($product_data, 'api data');
+//   if (!isset($product_data->results[0])) {
+//     return FALSE;
+//   }
+//   $product_data = $product_data->results[0];
+
+//   // Price fix if multiple prices are found.
+//   if (is_array($product_data->price)) {
+//     $product_data->price = $product_data->price[0];
+//   }
+//   // Price fix if multiple currencies are found.
+//   if (is_array($product_data->{'price/_currency'})) {
+//     $product_data->{'price/_currency'} = $product_data->{'price/_currency'}[0];
+//   }
+//   if (is_array($product_data->image)) {
+//     $product_data->image = $product_data->image[0];
+//   }
 
 
-/**
- * Implements hook_block_view().
- */
-function hd_entities_block_view($delta = '') {
-  $block = array();
-  switch ($delta) {
-    case 'add_product_form':
-      $block['subject'] = NULL;
-      $block['content'] = drupal_get_form('hd_entities_add_product_from_url_form');
-      break;
-  }
-  return $block;
-}
+//   // Ensure the currency code is one we recognise, if not default to GBP.
+//   $currencies = commerce_currencies();
+//   if (!isset($currencies[$product_data->{'price/_currency'}])) {
+//     $product_data->{'price/_currency'} = 'GBP';
+//   }
+
+//   // Return formatted product data from API call.
+//   return array(
+//     'name' => $product_data->title,
+//     'info' => '',
+//     'store' => $store->store_id,
+//     'image' => $product_data->image,
+//     'url' => $product_url,
+//     'price' => array('amount' => $product_data->price, 'currency_code' => $product_data->{'price/_currency'}),
+//   );
+// }
+
+// /**
+//  * Retrieve a store based on a product URL.
+//  */
+// function hd_entities_get_store_from_url($product_url) {
+//   // Parse the url so we can grab the host information.
+//   $product_url_data = parse_url($product_url);
+
+//   // Query for a store with the matching host info.
+//   $query = new EntityFieldQuery();
+//   $query->entityCondition('entity_type', 'store')
+//     ->fieldCondition('field_import_io_base_urls', 'value', $product_url_data['host']);
+//   $result = $query->execute();
+
+//   if (isset($result['store'])) {
+//     $item = reset($result['store']);
+//     $store = hd_store_load($item->store_id);
+//     return $store;
+//   }
+//   else {
+//     return FALSE;
+//   }
+// }
+
+// function hd_entities_add_product_from_url_form($form, &$form_state) {
+//   $form['url'] = array(
+//     '#type' => 'textfield',
+//     '#title' => t('Product URL'),
+//   );
+//   $form['wishlist_id'] = array(
+//     '#type' => 'hidden',
+//     '#default_value' => arg(1),
+//   );
+//   $form['submit'] = array(
+//     '#type' => 'submit',
+//     '#value' => t('Add Product'),
+//   );
+//   return $form;
+// }
+
+// function hd_entities_add_product_from_url_form_submit($form, &$form_state) {
+//   $product_url = $form_state['values']['url'];
+//   $wishlist_id = $form_state['values']['wishlist_id'];
+//   $success = hd_entities_add_product_from_url($wishlist_id, $product_url);
+
+//   if ($success) {
+//     drupal_set_message(t('The product was added to your wishlist.'));
+//   }
+//   else {
+//     drupal_set_message(t('There was an error added the product to your wishlist. Sorry.'));
+//   }
+//   $form_state['redirect'] = "wishlist/$wishlist_id";
+// }
+
+// /**
+//  * Implements hook_block_info().
+//  */
+// function hd_entities_block_info() {
+//   $blocks['add_product_form'] = array(
+//     'info' => t('Add Product To Wishlist form'),
+//   );
+//   return $blocks;
+// }
+
+
+// /**
+//  * Implements hook_block_view().
+//  */
+// function hd_entities_block_view($delta = '') {
+//   $block = array();
+//   switch ($delta) {
+//     case 'add_product_form':
+//       $block['subject'] = NULL;
+//       $block['content'] = drupal_get_form('hd_entities_add_product_from_url_form');
+//       break;
+//   }
+//   return $block;
+// }
 
 /**
  * Page callback for the HD entities admin page (admin/structure/hd-entities).
@@ -772,10 +772,10 @@ function hd_entities_admin_page() {
         'title' => 'Stores',
         'href' => 'admin/structure/hd-entities/store',
       ),
-      array(
-        'title' => 'Products',
-        'href' => 'admin/structure/hd-entities/product',
-      ),
+      // array(
+      //   'title' => 'Products',
+      //   'href' => 'admin/structure/hd-entities/product',
+      // ),
     ),
     'attributes' => array(
       'class' => array('admin-list'),

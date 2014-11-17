@@ -101,40 +101,40 @@ class HDWishlistItemMetadataController extends EntityDefaultMetadataController {
   }
 }
 
-/**
- * Extend the defaults.
- */
-class HDProductMetadataController extends EntityDefaultMetadataController {
-  public function entityPropertyInfo() {
-    $info = parent::entityPropertyInfo();
-    $properties = &$info[$this->type]['properties'];
+// /**
+//  * Extend the defaults.
+//  */
+// class HDProductMetadataController extends EntityDefaultMetadataController {
+//   public function entityPropertyInfo() {
+//     $info = parent::entityPropertyInfo();
+//     $properties = &$info[$this->type]['properties'];
 
-    $properties['name'] = array(
-      'label' => t('Name'),
-      'description' => t('The wishlist name.'),
-      'setter callback' => 'entity_property_verbatim_set',
-      'setter permission' => 'administer profiles',
-      'schema field' => 'name',
-    );
+//     $properties['name'] = array(
+//       'label' => t('Name'),
+//       'description' => t('The wishlist name.'),
+//       'setter callback' => 'entity_property_verbatim_set',
+//       'setter permission' => 'administer profiles',
+//       'schema field' => 'name',
+//     );
 
-    $properties['created'] = array(
-      'label' => t('Date created'),
-      'type' => 'date',
-      'description' => t("The date the wishlist was created."),
-      'setter callback' => 'entity_property_verbatim_set',
-      'setter permission' => 'administer profiles',
-      'schema field' => 'created',
-    );
-    $properties['changed'] = array(
-      'label' => t('Date changed'),
-      'type' => 'date',
-      'schema field' => 'changed',
-      'description' => t("The date the wishlist was most recently updated."),
-    );
+//     $properties['created'] = array(
+//       'label' => t('Date created'),
+//       'type' => 'date',
+//       'description' => t("The date the wishlist was created."),
+//       'setter callback' => 'entity_property_verbatim_set',
+//       'setter permission' => 'administer profiles',
+//       'schema field' => 'created',
+//     );
+//     $properties['changed'] = array(
+//       'label' => t('Date changed'),
+//       'type' => 'date',
+//       'schema field' => 'changed',
+//       'description' => t("The date the wishlist was most recently updated."),
+//     );
 
-    return $info;
-  }
-}
+//     return $info;
+//   }
+// }
 
 /**
  * Extend the defaults.

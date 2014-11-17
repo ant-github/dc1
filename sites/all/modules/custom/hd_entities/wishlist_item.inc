@@ -398,6 +398,6 @@ class WishlistItem extends Entity {
   public function defaultLabel() {
     // Display the linked product name as the label for this wishlist item.
     $wrapper = entity_metadata_wrapper('wishlist_item', $this);
-    return $wrapper->field_product->name->value();
+    return $wrapper->field_commerce_produc_ref->title->value();
   }
 }

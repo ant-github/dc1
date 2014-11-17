@@ -59,8 +59,8 @@ function hiddendelivery_preprocess_entity(&$vars) {
     $wrapper = entity_metadata_wrapper('wishlist_item', $vars['wishlist_item']);
     if ($vars['view_mode'] == 'full') {
       // Add the store logo to the product template.
-      $product = $wrapper->field_product->value();
-      $vars['product_url'] = $product->field_product_url[LANGUAGE_NONE][0]['value'];
+      //$product = $wrapper->field_product->value();
+      //$vars['product_url'] = $product->field_product_url[LANGUAGE_NONE][0]['value'];
       $vars['reserve_button'] = FALSE;
         // Add the reserve item button.
         if (!user_is_anonymous()) {

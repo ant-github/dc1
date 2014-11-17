@@ -103,51 +103,51 @@ function hd_entities_schema() {
     'primary key' => array('wishlist_item_id'),
   );
 
-  $schema['product'] = array(
-    'description' => 'The base table for product entities.',
-    'fields' => array(
-      'product_id' => array(
-        'description' => 'Primary Key: Identifier for a product.',
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-      'language' => array(
-        'description' => 'The language of the product.',
-        'type' => 'varchar',
-        'length' => 32,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'name' => array(
-        'description' => 'The name of the product - a human-readable identifier.',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'created' => array(
-        'description' => 'The Unix timestamp when the product was created.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'changed' => array(
-        'description' => 'The Unix timestamp when the product was most recently saved.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'data' => array(
-        'type' => 'blob',
-        'not null' => FALSE,
-        'size' => 'big',
-        'serialize' => TRUE,
-        'description' => 'A serialized array of additional data.',
-      ),
-    ),
-    'primary key' => array('product_id'),
-  );
+  // $schema['product'] = array(
+  //   'description' => 'The base table for product entities.',
+  //   'fields' => array(
+  //     'product_id' => array(
+  //       'description' => 'Primary Key: Identifier for a product.',
+  //       'type' => 'serial',
+  //       'unsigned' => TRUE,
+  //       'not null' => TRUE,
+  //     ),
+  //     'language' => array(
+  //       'description' => 'The language of the product.',
+  //       'type' => 'varchar',
+  //       'length' => 32,
+  //       'not null' => TRUE,
+  //       'default' => '',
+  //     ),
+  //     'name' => array(
+  //       'description' => 'The name of the product - a human-readable identifier.',
+  //       'type' => 'varchar',
+  //       'length' => 255,
+  //       'not null' => TRUE,
+  //       'default' => '',
+  //     ),
+  //     'created' => array(
+  //       'description' => 'The Unix timestamp when the product was created.',
+  //       'type' => 'int',
+  //       'not null' => TRUE,
+  //       'default' => 0,
+  //     ),
+  //     'changed' => array(
+  //       'description' => 'The Unix timestamp when the product was most recently saved.',
+  //       'type' => 'int',
+  //       'not null' => TRUE,
+  //       'default' => 0,
+  //     ),
+  //     'data' => array(
+  //       'type' => 'blob',
+  //       'not null' => FALSE,
+  //       'size' => 'big',
+  //       'serialize' => TRUE,
+  //       'description' => 'A serialized array of additional data.',
+  //     ),
+  //   ),
+  //   'primary key' => array('product_id'),
+  // );
 
   $schema['store'] = array(
     'description' => 'The base table for store entities.',
@@ -253,7 +253,7 @@ function hd_entities_schema() {
 function hd_entities_uninstall() {
   field_attach_delete_bundle('wishlist', 'wishlist');
   field_attach_delete_bundle('wishlist_item', 'wishlist_item');
-  field_attach_delete_bundle('product', 'product');
+  //field_attach_delete_bundle('product', 'product');
   field_attach_delete_bundle('store', 'store');
   field_attach_delete_bundle('purchase', 'purchase');
 }
