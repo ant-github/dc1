@@ -59,6 +59,9 @@ function _hd_user_update_resource($uid, $account) {
   //for unknown reason the values would not update the country on the addressfield
   $account_loaded->field_delivery_address['und'][0]['country'] = $account['field_delivery_address']['und'][0]['country'];
 
+  //Gender
+  $account_loaded->field_gender['und'][0]['value'] = $account['field_gender'];
+
   $ret = drupal_form_submit('user_profile_form', $form_state, $account_loaded, $category);
 
   // Error if needed.
