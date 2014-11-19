@@ -96,47 +96,7 @@ function hd_entities_entity_info() {
     'entity cache' => module_exists('entitycache'),
     'metatags' => TRUE,
   );
-  // $entities['product'] = array(
-  //   'label' => t('Product'),
-  //   'plural label' => t('Products'),
-  //   'description' => t('Products on users wishlists'),
-  //   'entity class' => 'Product',
-  //   'controller class' => 'HDProductController',
-  //   'base table' => 'product',
-  //   'fieldable' => TRUE,
-  //   'entity keys' => array(
-  //     'id' => 'product_id',
-  //   ),
-  //   'bundles' => array(
-  //     'product' => array(
-  //       'label' => 'Products',
-  //       // 'admin' key is used by the Field UI to provide field and
-  //       // display UI pages.
-  //       'admin' => array(
-  //         'path' => 'admin/structure/hd-entities/product',
-  //         'access arguments' => array('administer product entities'),
-  //       ),
-  //     ),
-  //   ),
-  //   // Use the default label() and uri() functions
-  //   'label callback' => 'entity_class_label',
-  //   'uri callback' => 'entity_class_uri',
-  //   'access callback' => 'hd_product_access',
-  //   'view modes' => array(
-  //     'full' => array(
-  //       'label' => t('Full'),
-  //       'custom settings' => FALSE,
-  //     ),
-  //     'wishlist' => array(
-  //       'label' => t('Wishlist'),
-  //       'custom settings' => FALSE,
-  //     ),
-  //   ),
-  //   'module' => 'hd_entities',
-  //   'metadata controller class' => 'HDProductMetadataController',
-  //   'entity cache' => module_exists('entitycache'),
-  //   'metatags' => TRUE,
-  // );
+
   $entities['store'] = array(
     'label' => t('Store'),
     'plural label' => t('Stores'),
@@ -306,45 +266,6 @@ function hd_entities_menu() {
   );
 
   /**
-   * Product
-   */
-  // Add Product Item entities.
-  $items['admin/structure/hd-entities/product/add'] = array(
-    'title' => 'Create a Product',
-    'page callback' => 'hd_product_page_add',
-    'access arguments' => array('create product entities'),
-    'type' => MENU_LOCAL_ACTION,
-  );
-  // Add Product entities.
-  $items['product/add'] = array(
-    'title' => 'Create a Product',
-    'page callback' => 'hd_product_page_add',
-    'access arguments' => array('create product entities'),
-  );
-  // Product page callback.
-  $items['product/%hd_product'] = array(
-    'title callback' => 'hd_product_title',
-    'title arguments' => array(1),
-    'page callback' => 'hd_product_view',
-    'page arguments' => array(1),
-    'access arguments' => array('view any product item entity'),
-  );
-  // 'View' tab for an individual Product page.
-  $items['product/%hd_product/view'] = array(
-    'title' => 'View',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-  // 'Edit' tab for an individual Product page.
-  $items['product/%hd_product/edit'] = array(
-    'title' => 'Edit',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('hd_product_form', 1),
-    'access arguments' => array('edit any product entity'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  /**
    * Store
    */
   // Add Store Item entities.
@@ -464,15 +385,6 @@ function hd_entities_permission() {
     ),
     'view any wishlist item entity' => array(
       'title' => t('View any wishlist item entity'),
-    ),
-    'create product entities' => array(
-      'title' => t('Create product entities.'),
-    ),
-    'edit any product entity' => array(
-      'title' => t('Edit any product entity'),
-    ),
-    'view any product entity' => array(
-      'title' => t('View any product entity'),
     ),
   );
 }
@@ -772,10 +684,6 @@ function hd_entities_admin_page() {
         'title' => 'Stores',
         'href' => 'admin/structure/hd-entities/store',
       ),
-      // array(
-      //   'title' => 'Products',
-      //   'href' => 'admin/structure/hd-entities/product',
-      // ),
     ),
     'attributes' => array(
       'class' => array('admin-list'),

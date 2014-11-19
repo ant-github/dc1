@@ -27,9 +27,6 @@ function hiddendelivery_preprocess_entity(&$vars) {
   // Wishlist.
   if ($vars['entity_type'] == 'wishlist') {
     if ($vars['view_mode'] == 'full') {
-      // Add the bootstrap confirmation library.
-      // libraries_load('bootstrap_confirmation');
-      // drupal_add_js('jQuery(document).ready(function(){ jQuery(\'[data-toggle="confirmation"]\').confirmation({singleton:true}); });', 'inline');
       // Add a view of wishlist items to the wishlist template.
       $vars['wishlist_view'] = views_embed_view('wishlist_page', 'default', $vars['wishlist']->wishlist_id);
       $vars['account_pane'] = views_embed_view('account_pane', 'default', $vars['wishlist']->uid);
@@ -58,9 +55,6 @@ function hiddendelivery_preprocess_entity(&$vars) {
     // Add the entity wrapper for all view modes to use.
     $wrapper = entity_metadata_wrapper('wishlist_item', $vars['wishlist_item']);
     if ($vars['view_mode'] == 'full') {
-      // Add the store logo to the product template.
-      //$product = $wrapper->field_product->value();
-      //$vars['product_url'] = $product->field_product_url[LANGUAGE_NONE][0]['value'];
       $vars['reserve_button'] = FALSE;
         // Add the reserve item button.
         if (!user_is_anonymous()) {

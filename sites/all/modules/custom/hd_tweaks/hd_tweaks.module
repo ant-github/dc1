@@ -322,3 +322,8 @@ function hd_tweaks_form_views_exposed_form_alter(&$form, &$form_state) {
     $form['#action'] = '/' . current_path();
   }
 }
+
+//change text on the add to cart button
+function hd_tweaks_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state) {
+  $form['submit']['#value'] = t('Buy');
+}

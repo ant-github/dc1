@@ -41,5 +41,4 @@
   <?php print render($reserve_button); ?>
   <?php print render($content['field_item_code']); ?>
 
-  <a href="<?php print $product_url; ?>" data-itemcode="<?php print ($content['field_item_code']['#items'][0]['value']); ?>" class="btn btn-primary bg-sprite bg-sprite-boxes itemcode" target="_blank"><?php print t('Open Site'); ?></a>
 </div>

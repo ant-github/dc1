@@ -35,12 +35,7 @@
   <?php print render($title_suffix); ?>
   <?php if ($header): ?>
     <div class="view-header">
-      <?php print $header; ?>
-    </div>
-  <?php endif; ?>
-
-  <?php if ($exposed): ?>
-    <div class="row">
+      <div class="row">
       <div class="view-filters col-md-8">
         <?php print $exposed; ?>
       </div>
@@ -53,6 +48,10 @@
         <?php endif; ?>
       </div>
     </div>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($exposed): ?>
   <?php endif; ?>
 
   <?php if ($attachment_before): ?>
@@ -70,8 +69,6 @@
       <div class="alert alert-warning empty-wishlist">
         <?php if($is_owner): ?>
         <h3 class="empty-wishlist-header">There are no products in your wishlist</h3>
-        <p class="empty-wishlist-subtitle">Install the Delivery Code browser extension here to start adding products <a href="/add-browser-extension" class="install-extension-button"><span class="text-hide">Install DeliveryCode Chrome Browser extension</span></a></p>
-        <p class="sub-message">Please make sure you are using Google Chrome. Don't have it? <a href="http://www.google.com/chrome">Install it here</a></p>
       <?php else:?>
         <?php print $empty; ?>
       <?php endif;?>
@@ -82,11 +79,6 @@
   <?php if ($pager): ?>
     <?php print $pager; ?>
   <?php endif; ?>
-
-  <?php if ($is_owner && $rows): ?>
-    <?php print l('Shop Now &raquo;', 'shops', array('attributes' => array('class' => array('btn-primary', 'btn-lg', 'btn')), 'html' => TRUE)); ?>
-  <?php endif; ?>
-
 
   <?php if ($attachment_after): ?>
     <div class="attachment attachment-after">

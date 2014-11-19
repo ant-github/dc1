@@ -37,16 +37,17 @@
     <?php if ($status == 'purchased'): ?>
       <div class="purchased-message"><p><?php print t('Product Purchased'); ?></p></div>
     <?php endif; ?>
-
-    <?php print render($content['field_product']); ?>
+     <?php print render($content['product:field_product_image']); ?>
+     <?php print render($content['product:title']); ?>
+     <?php print render($content['product:field_info']); ?>
+     <?php print render($content['product:commerce_price']); ?>
   </div>
 
   <div class="actions col-md-3">
     <div class="actions col-md-10">
     <?php if (!$is_owner): ?>
-      <button class="btn btn-primary btn-lg wishlist-btn buy-btn" data-toggle="modal" data-target="#<?php print $wishlist_item_popup_id ;?>">
-        <?php print t('Buy'); ?>
-      </button>
+        <?php print render($content['field_commerce_produc_ref']); ?>
+
       <?php print render($wishlist_item_popup); ?>
     <?php endif; ?>
 
