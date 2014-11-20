@@ -10,10 +10,12 @@
 	}
 }
 .view-wishlist-page {
+	.commerce-product-title,
 	h4 {
 		.h2-subtitle();
 		line-height: 1.2;
 		font-size: @font-xmedium;
+		margin-bottom: 15px;
 	}
 
 	.row {
@@ -98,7 +100,6 @@
 		}
 	}
 	.view-content .views-row {
-		// margin-bottom: 15px;
 		padding: 15px 0;
 		position: relative;
 
@@ -157,7 +158,9 @@
 		.border-title-underline();
 	}
 
+	.field-name-field-product-image,
 	.product-image {
+		float: left;
 		margin-right: 30px;
 		padding: 5px;
 		.standard-border();
@@ -191,6 +194,7 @@
 		}
 	}
 
+	// TODO: Will this still be needed or is it cruft?
 	.store-logo {
 		display: inline-block;
 		margin-bottom: 20px;
@@ -198,9 +202,11 @@
 		.standard-border();
 	}
 
+	.field-type-commerce-price,
 	.product-price {
 		.h2-subtitle();
 		font-size: @font-xmedium;
+		margin-top: 15px;
 	}
 
 	.form-submit {
@@ -224,6 +230,23 @@
 		margin-top: 20px;
 		padding: 3px 0;
 		width: 270px;
+	}
+
+	.commerce-add-to-cart .form-submit {
+		.color-button-m();
+		font-size: @font-regular;
+		font-weight: @font-bold;
+
+		padding: 10px;
+		position: absolute;
+		width: 120px;
+		right: 20px;
+		top: 50%;
+		-webkit-transform: translateY(-50%);
+		   -moz-transform: translateY(-50%);
+		    -ms-transform: translateY(-50%);
+		     -o-transform: translateY(-50%);
+		        transform: translateY(-50%);
 	}
 
 	.share-wishlist-container  {
