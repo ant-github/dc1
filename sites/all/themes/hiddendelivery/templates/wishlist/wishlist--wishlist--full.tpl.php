@@ -32,7 +32,7 @@
   <div class="col-sm-3 account-pane">
     <?php print $account_pane; ?>
     <?php if ($is_owner): ?>
-      <button type="button" class="btn btn-default btn-block"><span class="pull-left glyphicon glyphicon-pencil"></span><?php print $account_edit_link; ?></button>
+      <?php print $account_edit_link; ?>
     <?php endif; ?>
   </div>
   <div class="col-sm-9">
