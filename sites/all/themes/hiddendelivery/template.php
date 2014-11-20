@@ -31,7 +31,13 @@ function hiddendelivery_preprocess_entity(&$vars) {
       $vars['wishlist_view'] = views_embed_view('wishlist_page', 'default', $vars['wishlist']->wishlist_id);
       $vars['account_pane'] = views_embed_view('account_pane', 'default', $vars['wishlist']->uid);
       if ($user->uid == $vars['wishlist']->uid || user_access('Administer users')) {
-        $vars['account_edit_link'] = l('Edit Profile', "user/{$user->uid}/edit");
+        $account_edit_link_markup = '<span class="pull-left glyphicon glyphicon-pencil"></span>';
+        $vars['account_edit_link'] = l($account_edit_link_markup . t('Edit Profile'), "user/{$user->uid}/edit", array(
+          'html' => TRUE,
+          'attributes' => array(
+            'class' => array('btn', 'btn-default')
+          )
+        ));
         $vars['is_owner'] = TRUE;
       }
       else {

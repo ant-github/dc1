@@ -452,15 +452,17 @@
 		}
 
 		.btn-default {
-			background-color: @grey;
-			border: 0 none;
-			color: @white;
-
 			.font-bold();
+			border: 0 none;
+			background-color: @grey;
+			color: @white;
+			display: block;
+			padding-left: 0;
+			font-size: @font-xmedium;
 
-			a {
-				color: @white;
-				font-size: @font-xmedium;
+			&:hover,
+			&:focus {
+				background-color: @grey-hover;
 			}
 
 			span {
