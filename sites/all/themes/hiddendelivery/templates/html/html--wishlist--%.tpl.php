@@ -49,11 +49,9 @@
 <head profile="<?php print $grddl_profile; ?>">
   <?php print $head; ?>
   <title><?php print $head_title; ?></title>
-  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jfoemdhjganhhccomidjodmikemlkajo" >
   <?php print $styles; ?>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <?php print $scripts; ?>
-  <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jfoemdhjganhhccomidjodmikemlkajo" />
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">
@@ -62,15 +60,6 @@
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>
-  <script>
-    (function($) {
-        if(typeof(chrome) !== 'undefined') {
-          $('.install-extension-button').on('click', function(e){
-            chrome.webstore.install();
-            e.preventDefault();
-          });
-        }
-      })(jQuery);
-  </script>
+
 </body>
 </html>
