@@ -62,6 +62,19 @@ function _hd_user_update_resource($uid, $account) {
   //Gender
   $account_loaded->field_gender['und'][0]['value'] = $account['field_gender'];
 
+  //editing/adding image to a profile
+  if ($account['picture_upload']){
+    $file = $account['picture_upload'];
+    $file = _file_resource_create($file);
+    $file = $file = file_load($file['fid']);
+    $file = file_copy($file, 'public://pictures');
+    //set the account_loaded->picture to our file image object to save it later in the submit user_profile_form
+    $account_loaded->picture = $file;
+    //unset the values in form state and account arrays so it does not interfere when saving the account_loaded object
+    unset($account['picture_upload']);
+    unset($form_state['values']['picture_upload']);
+  }
+
   $ret = drupal_form_submit('user_profile_form', $form_state, $account_loaded, $category);
 
   // Error if needed.
