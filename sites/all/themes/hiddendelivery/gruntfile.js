@@ -6,11 +6,11 @@ module.exports = function(grunt) {
         options: {
           compress: true,
           yuicompress: true,
-          optimization: 2
-          // sourceMap: true,
-          // sourceMapFilename: 'css/style.css.map',
-          // sourceMapURL: 'style.css.map',
-          // sourceMapRootpath: '../'
+          optimization: 2,
+          sourceMap: true,
+          sourceMapFilename: 'css/style.css.map',
+          sourceMapURL: 'style.css.map',
+          sourceMapRootpath: '../'
         },
         files: {
           // target.css file: source.less file
