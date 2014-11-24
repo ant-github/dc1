@@ -83,7 +83,8 @@ function _hd_user_update_resource($uid, $account) {
   }
   else {
     services_remove_user_data($account);
-    return $account_loaded;
+    $saved_account = user_load($uid);
+    return $saved_account;
   }
 }
 
