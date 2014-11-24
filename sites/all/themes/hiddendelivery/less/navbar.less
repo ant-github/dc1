@@ -112,11 +112,11 @@
 	.navbar {
 		.navbar-nav li a {
 			padding: 10px 0;
-		}
-		.secondary {
-			position: absolute;
-			right: 10px;
-			top: 0;
+		// }
+		// .secondary {
+		// 	position: absolute;
+		// 	right: 10px;
+		// 	top: 0;
 		}
 	}
 }
@@ -134,7 +134,7 @@
 		}
 
 		.secondary {
-			float: none;
+			// float: none;
 			.menu-delimiter {
 				display: none;
 			}
@@ -149,5 +149,28 @@
 			width: 100%
 		}
 	}
+	.front {
+		.appstore-block {
+			left: 40%;
+		}
+	}
 }
 
+@media(max-width: @screen-xs-max) {
+	#navbar {
+		.navbar-collapse .pull-right {
+			float: none!important;
+		}
+		.secondary {
+			float: none;
+		}
+	}
+
+	.appstore-block {
+		position: relative;
+
+		top: 0;
+		margin-bottom: 20px;
+
+	}
+}

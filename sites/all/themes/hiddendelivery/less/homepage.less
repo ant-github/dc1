@@ -107,7 +107,7 @@
 	}
 
 	.video {
-		padding-right: 50px;
+		padding-right: 95px;
 		overflow: hidden;
 		position: relative;
 		iframe {
@@ -120,7 +120,7 @@
 			bottom: 0;
 			top: 0;
 			left: 0;
-			right: 20px;
+			right: 95px;
 			img {
 				height: 100%;
 				display: block;
@@ -194,6 +194,33 @@
 	width: 55px;
 }
 
+
+@media(max-width: @screen-md-max) {
+	.front {
+		.home-column {
+			h2 {
+				font-size: @font-medium;
+			}
+		}
+
+		.video {
+			padding-right: 50px;
+			.video-overlay {
+				right: 50px;
+			}
+			iframe {
+				height: 320px;
+			}
+		}
+
+		.btn-create-wishlist {
+			width: 70%;
+		}
+	}
+}
+
+
+
 @media(max-width: @screen-xs-max) {
 	.front {
 		.content.row,
@@ -216,17 +243,24 @@
 		}
 	}
 }
-
-@media(max-width: @screen-md-max) {
+@media(max-width: 450px) {
 	.front {
-		.home-column {
-			h2 {
-				font-size: @font-medium;
+		.video {
+			padding-right: 30px;
+			padding-left: 40px;
+			.video-overlay {
+				right: 30px;
+				left: 40px;
+			}
+			iframe {
+				min-height: 250px;
+				height: auto;
 			}
 		}
-
-		.btn-create-wishlist {
-			width: 70%;
-		}
+	}
+}
+@media(max-width:680px) {
+	.node .content .payment-methods-img {
+		width: 100%;
 	}
 }
