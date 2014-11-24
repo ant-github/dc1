@@ -124,8 +124,9 @@
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
-    <div class="video col-sm-6">
-      <iframe width="640" height="390" src="//www.youtube.com/embed/or0L7UnaP6g" frameborder="0" allowfullscreen></iframe>
+    <div class="video col-sm-6">      
+      <div id="introVideo"></div>
+      <a class="video-overlay" href="http://www.youtube.com/watch?v=or0L7UnaP6g"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
     </div>
     <?php
       // $carousel_block = block_load('views', 'homepage_carousel-block');
