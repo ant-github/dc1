@@ -85,7 +85,7 @@ function _hd_user_update_resource($uid, $account) {
     services_remove_user_data($account);
     //return the fully saved user object and the image url
     $saved_account = user_load($uid);
-    $saved_account->picture->image_url = file_create_url($saved_account->picture->uri);
+    $saved_account->picture->url = file_create_url($saved_account->picture->uri);
     return $saved_account;
   }
 }
