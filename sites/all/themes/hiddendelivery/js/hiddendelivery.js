@@ -40,6 +40,13 @@
           console.log(arguments)
         }
 
+        // Loading button text - adding product url to wishlist.
+        $('#add-item-url').on('click', function () {
+          var $btn = $(this).button('loading')
+          // business logic...
+          // $btn.button('reset')
+        })
+
         $('.video-overlay').on('click', function(e) {
           if(Drupal.settings.introVideo) {
               e.preventDefault();
