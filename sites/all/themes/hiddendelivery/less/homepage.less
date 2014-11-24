@@ -8,367 +8,13 @@
 	.breadcrumb {
 		display: none;
 	}
+
 	.page-title-wrapper {
 		min-height: 0;
 	}
+
 	h1.page-header {
 		display: none;
-	}
-
-	.home-carousel-wrapper {
-		background-color: @black;
-		padding: 0;
-
-		.home-carousel-inner {
-			background: @black;
-			width: 100%;
-			// padding: 22px 0 22px 0;
-		}
-
-		h2.block-title {
-			display: none;
-		}
-
-		.view-homepage-carousel .flexslider {
-			background: 0 none;
-			border: 0 none;
-			border-radius: 0;
-			margin: 0;
-		}
-
-		ol.flex-control-nav.flex-control-paging {
-			width: 50%;
-			bottom: 5px;
-			@media only screen and (max-width : 991px) {
-				width: 100%;
-				bottom: 0px;
-			}
-			li {
-				margin: 0 4px;
-			}
-			a {
-				background: #fff;
-				box-shadow: none;
-				height: 9px;
-				width: 9px;
-			}
-			a.flex-active {
-				background: @teal;
-				box-shadow: none;
-			}
-		}
-		ul.flex-direction-nav {
-			display: none;
-		}
-
-		.flexslider .slides {
-			margin: 5px;
-			div.brand-img {
-				padding: 0;
-			}
-			li {
-				padding: 5px;
-				div.field-content {
-					// text-align: center;
-				}
-				.views-field-title {
-					margin-top: 30px;
-				}
-			.views-field-field-call-to-action-url {
-					a {
-						border: 0 none;
-						border-radius: 3px;
-						width: 180px;
-						display: block;
-						font-family: @font-family-hd;
-						font-size: 17px;
-						font-weight: 600;
-						padding: 8px 20px;
-						margin: 0 auto;
-						padding-left: 40px;
-						color: #fff;
-					}
-				}
-			}
-			//slide 1 
-			li#slide-1 {
-				.col-md-6 {
-					text-align: center;
-				}
-				@media only screen and (max-width : 991px) {
-							height: 300px;
-						}
-				//no border on this slide
-				.views-field-title {
-					// height: 150px;
-					padding: 10px;
-					@media only screen and (max-width : 1442px) {
-						padding: 0
-					}
-					@media only screen and (max-width : 460px) {
-						height: 90px;
-					}
-					@media only screen and (max-width : 460px) {
-						height: auto;
-						padding: 0 10px;
-					}
-					// background: url("../images/HomePage/dc-logo.png") no-repeat left center;
-					color: #000;
-					background-size: contain;
-					span {
-						background-color: rgb(51, 51, 51);
-						border-bottom-left-radius: 3px;
-						border-bottom-right-radius: 3px;
-						border-top-left-radius: 3px;
-						border-top-right-radius: 3px;
-						box-sizing: border-box;
-						color: rgb(255, 255, 255);
-						display: inline;
-						font-family: 'Open Sans', Arial, Helvetica, sans-serif;
-						font-size: 53px;
-						font-weight: bold;
-						height: auto;
-						letter-spacing: -3px;
-						line-height: 75.02857208251953px;
-							@media only screen and (max-width :1442px) {
-								font-size: 37px;
-							}
-							@media only screen and (max-width : 991px) {
-								font-size: 40px;
-							}
-							@media only screen and (max-width : 645px) {
-								font-size: 25px;
-							}
-						list-style-image: none;
-						list-style-position: outside;
-						list-style-type: none;
-						padding-bottom: 0px;
-						padding-left: 10px;
-						padding-right: 10px;
-						padding-top: 0px;
-						text-align: left;
-						text-transform: uppercase;
-						width: auto;
-						zoom: 1;
-					}
-				}
-				.views-field-field-subtitle {
-					padding: 10px;
-					@media only screen and (max-width : 991px) {
-						padding: 0 10px 20px;
-					}
-					.field-content {
-						text-transform: uppercase;
-						background-color: #666;
-						border-radius: 3px;
-						color: #fff;
-						display: inline;
-						font-family: "Open Sans",Arial,Helvetica,sans-serif;
-						font-size: 36.36px;
-							@media only screen and (max-width : 1442px) {
-								font-size: 27.36px;
-							}
-							@media only screen and (max-width : 991px) {
-								font-size: 29.36px;
-							}
-							@media only screen and (max-width : 645px) {
-								font-size: 24.36px;
-							}
-						font-weight: 700;
-						letter-spacing: -2px;
-						padding: 0 10px;
-					}
-				}
-				.views-field-field-body {
-					color: #fff;
-					margin: auto 19px;
-				}
-				.views-field-field-call-to-action-url {
-					margin: 20px;
-					a {
-						background-color: @teal;
-					}
-				}
-			}
-			//slide 2
-			li#slide-2 {
-				@media only screen and (max-width : 991px) {
-							height: 300px;
-						}
-				border: 1px solid #c86d83;
-				.views-field-title {
-					height: 150px;
-					background: url("../images/HomePage/ap-logo.jpg") no-repeat center center;
-					color: #000;
-					
-					@media only screen and (max-width : 460px) {
-						background-size: contain;
-					}
-					
-					span {
-						display: none;
-					}
-				}
-				.views-field-field-body {
-					color: #fff;
-					margin: auto 19px;
-				}
-				.views-field-field-call-to-action-url {
-					margin: 20px;
-					a {
-						background-color: #c86d83;
-					}
-				}
-			}
-			//slide 3
-			li#slide-3 {
-				@media only screen and (max-width : 991px) {
-							height: 300px;
-						}
-				border: 1px solid #5f6062;
-				.views-field-title {
-						height: 150px;
-						background: url("../images/HomePage/saks-logo.jpg") no-repeat center center;
-					color: #000;
-					
-					@media only screen and (max-width : 460px) {
-						background-size: contain;
-					}
-					
-					span {
-						display: none;
-					}
-				}
-				.views-field-field-body {
-					color: #fff;
-					margin: auto 19px;
-				}
-				.views-field-field-call-to-action-url {
-					margin: 20px;
-					a {
-						background-color: #5f6062;
-					}
-				}
-			}
-			//slide 4
-			li#slide-4 {
-				@media only screen and (max-width : 991px) {
-							height: 300px;
-						}
-				border: 1px solid #9a0b1a;
-				.views-field-title {
-					height: 150px;
-					background: url("../images/HomePage/selfridges-logo.jpg") no-repeat center center;
-					color: #000;
-					
-					@media only screen and (max-width : 460px) {
-						background-size: contain;
-					}
-					
-					span {
-						display: none;
-					}
-				}
-				.views-field-field-body {
-					color: #fff;
-					margin: auto 19px;
-				}
-				.views-field-field-call-to-action-url {
-					margin: 20px;
-					a {
-						background-color: #9a0b1a;
-					}
-				}
-			}
-			//slide 5
-			li#slide-5 {
-				@media only screen and (max-width : 991px) {
-							height: 300px;
-						}
-				border: 1px solid #ab8c7f;
-				.views-field-title {
-					height: 150px;
-					background: url("../images/HomePage/louis-logo.jpg") no-repeat center center;
-					color: #000;
-					
-					@media only screen and (max-width : 460px) {
-						background-size: contain;
-					}
-					
-					span {
-						display: none;
-					}
-				}
-				.views-field-field-body {
-					color: #fff;
-					margin: auto 19px;
-				}
-				.views-field-field-call-to-action-url {
-					margin: 20px;
-					a {
-						background-color: #ab8c7f;
-					}
-				}
-			}
-
-		}
-		.col-md-6.brand-img {
-			@media only screen and (max-width : 991px) {
-					display: none;
-			}
-		}
-		.flexslider .slides {
-			img {
-				height: auto;
-				width: 100%;
-			}
-			.flex-caption {
-				display: none;
-			}
-		}
-
-		.view-homep.views-field-title {
-			background: url("../images/HomePage/");
-			margin: 55px 0 8px 0;
-		}
-
-		.view-homep.views-field-title .field-content {
-			text-transform: uppercase;
-
-			.block-xxlarge-white-mgrey();
-		}
-
-		.view-homep.views-field-field-subtitle .field-content {
-			text-transform: uppercase;
-
-			.block-xlarge-white-grey();
-		}
-
-		.view-homep.views-field-field-body {
-			max-width: 465px;
-		}
-
-		.view-homep.views-field-field-body .field-content {
-			margin-bottom: 20px;
-
-			.p-text-white-m();
-		}
-
-		.view-homep.views-field-field-call-to-action-url .field-content a {
-
-			.bold-color-button();
-			padding: 8px 10px;
-			&:hover {
-				background-color: @teal-hover;
-			}
-		}
-
-		div.views-field-field-carousel-image.pull-right {
-			@media only screen and (max-width : 991px) {
-				float: none !important;
-				padding-bottom: 45px;
-			}
-		}
 	}
 
 	.home-row {
@@ -462,7 +108,71 @@
 			}
 		}
 	}
+}
 
+
+.hero-banner {
+	background: @black;
+	color: @white;
+	padding: 20px 0;
+
+	.hero-title {
+		background-color: @med-grey;
+		border-radius: 3px;
+		font-size: @font-xl;
+		display: inline-block;
+		// margin-bottom: 5px;
+		padding: 2px 10px;
+	}
+
+	.sub-title {
+		background-color: @grey;
+		border-radius: 3px;
+		color: @white;
+		display: inline-block;
+		font-size: @font-large;
+		margin: 0 0 15px;
+		padding: 2px 10px;
+	}
+
+	.learn-more {
+		.color-button-m();
+		border-radius: 3px;
+		margin-top: 20px;
+	}
+
+
+	.description {
+		padding: 0 30px;
+	}
+
+	.video {
+		padding-right: 30px;
+		iframe {
+			width: 100%;
+			height: 360px;
+		}
+	}
+}
+
+@media(max-width: @screen-sm-max) {
+	.hero-banner {
+		.hero-title {
+			font-size: @font-large;
+		}
+
+		.sub-title {
+			font-size: @font-xmedium;
+		}
+
+		p {
+			font-size: @font-small;
+		}
+
+		 .video iframe {
+			height: 260px;
+		}
+	}
 }
 
 /* Homepage block links (specific to the homepage as this is the only place they are used - so far...) */
@@ -486,36 +196,6 @@
 		.content.row,
 		.home-row.row {
 			margin: 0;
-		}
-		.home-carousel-wrapper {
-			// padding-left: 30px;
-			// padding-right: 30px;
-			.col-md-6 {
-				padding: 0;
-			}
-			.flexslider ul.slides {
-				margin: 5px 0;
-			}
-			.view-homepage-carousel  {
-				.views-field-title {
-					background: url("../images/HomePage/");
-					margin-top: 0;
-				}
-				.views-field-title .field-content,
-				.views-field-field-subtitle .field-content {
-					font-size: @font-large;
-					letter-spacing: -0.5px;
-					margin: 0;
-				}
-				.views-field-field-subtitle .field-content {
-					font-size: 18px;
-					letter-spacing: -0.5px;
-				}
-
-				.views-field-field-body .field-content {
-					font-size: @font-regular;
-				}
-			}
 		}
 
 		.home-column {
@@ -555,52 +235,10 @@
 }
 
 @media(max-width: @screen-md-max) {
-	.front .home-carousel-wrapper .view-homep.views-field-field-subtitle .field-content {
-		padding: 0 4px;
-	}
 	.front {
 		.home-column {
 			h2 {
 				font-size: @font-medium;
-			}
-		}
-	}
-
-	.front .home-carousel-wrapper {
-
-		.flexslider .slides {
-			li {
-				// padding: 10px;
-				.views-field-title {
-					margin-top: 10px;
-				}
-			}
-			.col-md-6:first-child {
-				padding-left: 0;
-			}
-		}
-	}
-
-}
-@media(min-width: @screen-md) {
-	.front {
-		.home-carousel-wrapper {
-			.home-carousel-inner {
-				//background: #000 url("@{images}homepage-slider.png") right -10px no-repeat;
-				width: 100%;
-				// padding: 22px 0 22px 0;
-				background-size: auto 100%;
-			}
-		}
-	}
-}
-
-@media(min-width: @screen-lg) {
-	.front {
-		.home-carousel-wrapper {
-			.home-carousel-inner {
-				background-position: right -30px;
-				background-size: auto 120%
 			}
 		}
 	}

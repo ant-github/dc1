@@ -114,15 +114,28 @@
 </header>
 
 <?php if($is_front): ?>
-  <div class="home-carousel-wrapper">
-    <div class="home-carousel-inner">
-      <?php
-        $carousel_block = block_load('views', 'homepage_carousel-block');
-        $carousel_block = _block_get_renderable_array(_block_render_blocks(array($carousel_block)));
-        $carousel_output = drupal_render($carousel_block);
-        print $carousel_output;
-      ?>
+  <div class="hero-banner row">
+    <div class="description col-sm-6">
+      <h1 class="hero-title">Wishlist Service</h1>
+      <h2 class="sub-title">DeliveryCode Address</h2>
+      <p>DeliveryCode is the only wish list service where your delivery address is securely hidden from the buyer</p>
+      <a href="/about-us" class="learn-more btn btn-primary">
+        Learn more 
+        <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
+      </a>
     </div>
+    <div class="video col-sm-6">
+      <iframe width="640" height="390" src="//www.youtube.com/embed/or0L7UnaP6g" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <?php
+      // $carousel_block = block_load('views', 'homepage_carousel-block');
+      // $carousel_block = _block_get_renderable_array(_block_render_blocks(array($carousel_block)));
+      // $carousel_output = drupal_render($carousel_block);
+      // print $carousel_output;
+    ?>
+    <?php // Start homepage video block ?>
+
+    <?php // END homepage video block ?>
   </div>
 <?php endif; ?>
 
