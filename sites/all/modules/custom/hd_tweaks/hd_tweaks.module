@@ -100,9 +100,9 @@ function hd_tweaks_add_a_product_url_form_validate($form, &$form_state) {
 
 function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
   module_load_include('inc', 'hd_endpoint', 'resources/wishlist');
-  $product_url = valid_url($form_state['values']['product_url']);
+  // $product_url = valid_url($form_state['values']['product_url']);
   // dpm($form_state);
-  if($product_url){
+  // if($product_url){
     global $user;
     $product_url = $form_state['values']['product_url'];
     $uid = $user->uid;
@@ -114,9 +114,9 @@ function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
       drupal_set_message(t('There\'s an error with this product - please try again!'), 'error', FALSE);
     }
 
-  } else {
-    drupal_set_message(t('There\'s an error with the product URL!'), 'error', FALSE);
-  }
+  // } else {
+  //   drupal_set_message(t('There\'s an error with the product URL!'), 'error', FALSE);
+  // }
 }
 
 function hd_tweaks_shop_purchase_form($form, &$form_state) {
