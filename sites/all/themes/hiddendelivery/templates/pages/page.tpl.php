@@ -118,15 +118,16 @@
     <div class="description col-sm-6">
       <h1 class="hero-title">Wishlist Service</h1>
       <h2 class="sub-title">Delivering to you. Wherever you are.</h2>
-      <p>DeliveryCode is the only wish list service where your delivery address is securely hidden from the buyer</p>
+      <p>DeliveryCode&#8482; is the only wish list service where your delivery address is securely hidden from the buyer</p>
       <a href="/how-it-works" class="learn-more btn btn-primary">
         Learn more 
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
     <div class="video col-sm-6">
-      <iframe width="640" height="390" src="//www.youtube.com/embed/or0L7UnaP6g" frameborder="0" allowfullscreen></iframe>
-      <a class="video-overlay" href="http://www.youtube.com/watch?v=or0L7UnaP6g"><img src="http://placekitten.com/640/390" alt="" /></a>
+      <!-- <iframe id="introVideo" width="640" height="390" src="//www.youtube.com/embed/or0L7UnaP6g" frameborder="0" allowfullscreen></iframe> -->
+      <div id="introVideo"></div>
+      <a class="video-overlay" href="http://www.youtube.com/watch?v=or0L7UnaP6g"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
     </div>
     <?php
       // $carousel_block = block_load('views', 'homepage_carousel-block');

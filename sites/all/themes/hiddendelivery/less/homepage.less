@@ -73,7 +73,7 @@
 	.hero-title {
 		background-color: @med-grey;
 		border-radius: 3px;
-		font-size: @font-xl;
+		font-size: 50px;
 		display: inline-block;
 		// margin-bottom: 5px;
 		padding: 2px 10px;
@@ -86,7 +86,7 @@
 		display: inline-block;
 		font-size: @font-large;
 		margin: 0 0 15px;
-		padding: 8px 10px;
+		padding: 8px 15px 8px 14px;
 		text-transform: none;
 	}
 
@@ -103,7 +103,7 @@
 
 
 	.description {
-		padding: 0 30px;
+		padding: 0 30px 0 45px;
 	}
 
 	.video {
@@ -131,22 +131,29 @@
 }
 
 .payment-methods {
+	text-align: center;
 	p {
-		text-align: center;
 		font-size: @font-medium;
 		font-weight: @font-semi;
 	}
 }
 
 .payment-list {
+	font-size: 0;
+	padding-left: 0;
+	text-align: center;
 	li {
-		float: left;
+		display: inline-block;
 		list-style: none;
 		padding: 0;
-		margin: 5px 10px;
+		// margin: 5px 10px;
 	}
 }
-
+.node .content .payment-methods-img {
+	border: 0;
+	width: auto;	
+	text-align: center;
+}
 @media(max-width: @screen-sm-max) {
 	.hero-banner {
 		.hero-title {

@@ -5,14 +5,43 @@
 */
 
 .footer {
-	background-color: @black;
+	border: 0;
 	color: @grey;
 	margin-top: 0;
 	margin-bottom: 20px;
-	padding: 10px 0;
+	padding-top: 0;
 	text-align: center;
 
 	p {
 		font-size: @font-small;
+	}
+
+	.menu {
+		background-color: @black;
+		padding: 10px 0;
+		margin-bottom: 10px;
+		text-align: center;
+		li {
+			color: @white;
+			display: inline-block;
+			padding: 0;
+			&::after {
+				content: '/';
+			}
+			&:last-child::after {
+				display: none;
+			}
+		}
+	}
+	.nav>li>a {
+		color: @white;
+		display: inline;
+		padding: 0 5px 0 0;
+
+		&:hover,
+		&:focus {
+			background-color: transparent;
+			text-decoration: underline;
+		}
 	}
 }
