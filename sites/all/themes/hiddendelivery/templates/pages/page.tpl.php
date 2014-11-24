@@ -116,11 +116,11 @@
 <?php if($is_front): ?>
   <div class="hero-banner row">
     <div class="description col-sm-6">
-      <h1 class="hero-title">Wishlist Service</h1>
-      <h2 class="sub-title">DeliveryCode Address</h2>
+      <h1 class="hero-title">Wishlist Service</h1></br>
+      <h2 class="sub-title">Delivering to you. Whenever you are.</h2>
       <p>DeliveryCode is the only wish list service where your delivery address is securely hidden from the buyer</p>
       <a href="/about-us" class="learn-more btn btn-primary">
-        Learn more 
+        Learn more
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
