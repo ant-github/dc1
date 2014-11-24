@@ -41,9 +41,11 @@
       </div>
       <div class="share-wishlist-container col-md-4">
         <?php if ($is_owner): ?>
-          <button class="white-button btn btn-primary btn-lg" data-toggle="modal" data-target="#<?php print $share_links_popup_id ;?>">
+          <button class="col-md-12 col-sm-12 white-button btn btn-primary btn-lg" data-toggle="modal" data-target="#<?php print $share_links_popup_id ;?>">
             <span class="bg-sprite bg-sprite-circle-star2 share-wishlist"></span><?php print t('Share Your Wishlist Online'); ?>
           </button>
+      <?php print $add_an_item_to_wishlist; ?>
+      <?php print $add_an_item_to_wishlist_popup; ?>
           <?php print render($share_links_popup); ?>
         <?php endif; ?>
       </div>

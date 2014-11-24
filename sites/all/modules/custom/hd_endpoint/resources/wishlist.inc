@@ -35,59 +35,97 @@ function _wishlist_resource_view($uid) {
  * @todo Validate access before?
  */
 function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
-  // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://www.currys.co.uk/gbuk/household-appliances/small-kitchen-appliances/toasters/russell-hobbs-heritage-18369-4-slice-toaster-cream-13118697-pdt.html#cat-0" -X POST --header "Content-type: application/json" --header "Accept: application/json"
+  // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://shop.ee.co.uk/mobile-phones/pay-monthly/iphone-6-16gb-space-grey/details?WT.mc_id=ON_MEC_S_google_G_shoppingcampaigns&WT.srch=1" -X POST --header "Content-type: application/json" --header "Accept: application/json"
 
+  // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://deals.ebay.com/5001687323_Lenovo_ThinkServer_TS140_Tower_Server_System_Intel_Xeon_E3_1225_v3?_trksid=p2050601.m1256&_trkparms=algo%3DDailyDeals%26clkid%3D2176305384474012609" -X POST --header "Content-type: application/json" --header "Accept: application/json"
   $token = 'ef3a18acadec1140bcca594c64361946';
   $api_endpoint = 'http://api.diffbot.com/v3/product';
   $geturl = $api_endpoint.'?token='.$token.'&url='.$product_url.'&fields=sku';
   $json = file_get_contents($geturl);
   $product_data = json_decode($json, TRUE);
-  $title_original = $product_data['objects'][0]['title'];
-  $title_stripped = str_replace(' ', '_', strtolower($title_original)); // Replace spaces with underscores
-  $title_stripped = preg_replace('/[^A-Za-z0-9\-]_/', '', $title_stripped); // Removes special chars (except underscores);
 
-  $sku = $product_data['objects'][0]['productId'].'_'.$title_stripped;
-  $sku_exists = commerce_product_load_by_sku($sku);
-  if(empty($sku_exists)){
-    $price_original = $product_data['objects'][0]['offerPrice'];
-    $price_stripped = preg_replace('/[^0-9\-.]/', '', $price_original); // Removes currency and * 100.
-    // Build the product
-    $product = commerce_product_new('product');
-    $product->sku = $sku;
-    $product->title = $product_data['objects'][0]['title'];
-    $product->language = LANGUAGE_NONE;
-    $product->uid = 1;
+  // Let's check to see if there is a price available - if not, this won't work, so bail out.
+  if(isset($product_data['objects'][0]['offerPrice'])){
+    // Strip and build the title..
+    $title_original = $product_data['objects'][0]['title'];
+    $title_stripped = str_replace(' ', '_', strtolower($title_original)); // Replace spaces with underscores
+    $title_stripped = preg_replace('/[^A-Za-z0-9\-_]/', '', $title_stripped); // Removes special chars (except underscores);
 
-    // system_retrieve_file($product_data['objects'][0]['images'][0]['url'],'public://diffbot-images/'.$product_data['objects'][0]['productId'].'_'.$title_stripped.'.jpg');
+    // Build the sku..
+    $sku = isset($product_data['objects'][0]['productId']) ? $product_data['objects'][0]['productId'].'_'.$title_stripped : $title_stripped;
+    $product = commerce_product_load_by_sku($sku);
 
-    // Save the image - maybe revise this at some point, as we're hardcoding .jpg
-    if(isset($product_data['objects'][0]['images'][0])){
-      $filename = $product_data['objects'][0]['productId'].'_'.$title_stripped.'.jpg'; // sku . jpg
-      $image = file_get_contents($product_data['objects'][0]['images'][0]['url']);
-      $file = file_save_data($image, 'public://' . $filename, FILE_EXISTS_RENAME);
-      $product->field_product_image[LANGUAGE_NONE][0] = array(
-        'fid' => $file->fid,
-        'filename' => $file->filename,
-        'filemime' => $file->filemime,
-        'uid' => 1,
-        'uri' => $file->uri,
-        'status' => 1,
-        'display' => 1
-      );
+    if(empty($product)){
+      $price_original = $product_data['objects'][0]['offerPrice'];
+      $price_stripped = preg_replace('/[^0-9\-.]/', '', $price_original); // Removes currency and * 100.
+      // Build the product
+      $product = commerce_product_new('product');
+      $product->sku = $sku;
+      $product->title = $product_data['objects'][0]['title'];
+      $product->language = LANGUAGE_NONE;
+      $product->uid = 1;
+
+      // image stuff - check to see if it does exists..
+      $i = 0;
+      if(isset($product_data['objects'][0]['images'][$i])){
+        // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
+        $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+        if(!$image_data){
+          // Check size of the array - looks like we need another image..
+          if(count($product_data['objects'][0]['images']) > 1){
+            // Break when we have a valid image
+            for ($i=1; $i <= count($product_data['objects'][0]['images']) ; $i++) {
+              $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+              if($image_data) break;
+            }
+          }
+        }
+
+        // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
+        if($image_data){
+          $img = file_get_contents($product_data['objects'][0]['images'][$i]['url']);
+          $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
+          $img_name = $sku.'.'.$img_type[1];
+          $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
+          $product->field_product_image[LANGUAGE_NONE][0] = array(
+            'fid' => $file->fid,
+            'filename' => $file->filename,
+            'filemime' => $file->filemime,
+            'uid' => 1,
+            'uri' => $file->uri,
+            'status' => 1,
+            'display' => 1
+          );
+        }
+      }
+
+      $price_original = $product_data['objects'][0]['offerPrice'];
+      $price_stripped = preg_replace('/[^0-9\-.]/', '', $price_original); // Removes currency and * 100.
+      $currency_unit = substr($price_original, 0, 1);
+      switch ($currency_unit) {
+        case '$':
+          $code = 'USD';
+        break;
+        case '£':
+          $code = 'GBP';
+        break;
+        default:
+          $code = 'EUR';
+        break;
+      }
+      // Check the price is numeric - if not skip this for now? :/
+      if(is_numeric($price_stripped)){
+        $product->commerce_price[LANGUAGE_NONE][0] = array(
+          'amount' => (int) $price_stripped * 100,
+          'currency_code' => $code,
+        );
+      } // else - default price?
+
+      $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
+      commerce_product_save($product);
     }
 
-    // Check the price is numeric - if not skip this for now? :/
-    if(is_numeric($price_stripped)){
-      $product->commerce_price[LANGUAGE_NONE][0] = array(
-        'amount' => (int) $price_stripped * 100,
-        'currency_code' => "GBP",
-      );
-    } // else - default price?
-
-    $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
-    commerce_product_save($product);
-
-    // ------ Now set up the users wishlists!
+    // Load the users wishlist
     $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
 
     // Create the wishlist item.
@@ -108,6 +146,9 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
     $current_items[] = $wiw->value();
     $wlw->field_wishlist_items = $current_items;
     $wlw->save();
+
+    return $product_data;
+  } else {
+    return FALSE;
   }
-  return $product_data;
 }

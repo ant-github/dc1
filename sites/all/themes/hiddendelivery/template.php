@@ -172,6 +172,20 @@ function hiddendelivery_preprocess_views_view(&$vars) {
       );
       $vars['share_links_popup'] = theme('bootstrap_modal', $modal_options);
       $vars['share_links_popup_id'] = $wishlist_share_id;
+
+      // NEW Add a product url button
+      $vars['add_an_item_to_wishlist'] = '<button class="col-md-12 col-sm-12 white-button btn btn-primary btn-lg" data-toggle="modal" data-target="#add-item-to-wishlist"><span class="glyphicon glyphicon-plus"></span> Add a Product </button>';
+
+      // Add the full display of a wishlist item to show in the buy popup.
+      $add_an_item_to_wishlist_markup_id = 'add-item-to-wishlist';
+      $add_an_item_to_wishlist_form = drupal_get_form('hd_tweaks_add_a_product_url_form');
+      $modal_options = array(
+        'attributes' => array('id' => $add_an_item_to_wishlist_markup_id, 'class' => array('wishlist-modal')),
+        'heading' => t('Add a product to your wishlist below:'),
+        'body' => drupal_render($add_an_item_to_wishlist_form),
+      );
+      $vars['add_an_item_to_wishlist_popup'] = theme('bootstrap_modal', $modal_options);
+      $vars['add_an_item_to_wishlist_popup_id'] = $add_an_item_to_wishlist_markup_id;
     }
   }
 }

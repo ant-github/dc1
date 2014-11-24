@@ -75,6 +75,50 @@ function hd_tweaks_wishlist_page_add() {
   }
 }
 
+// Add a custom product URL !
+function hd_tweaks_add_a_product_url_form($form, &$form_state) {
+  $form_state['wishlist_id'] = arg(1);
+  $form['product_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Product URL:'),
+    '#description' => t('Make sure you include the full path!'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('add item'),
+    '#attributes' => array(
+      'data-loading-text' => array('Loading...'),
+      'id' => array('add-item-url'),
+      'autocomplete' => array('off'),
+    ),
+  );
+  return $form;
+}
+function hd_tweaks_add_a_product_url_form_validate($form, &$form_state) {
+  // return $form;
+}
+
+function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
+  module_load_include('inc', 'hd_endpoint', 'resources/wishlist');
+  $product_url = valid_url($form_state['values']['product_url']);
+  // dpm($form_state);
+  if($product_url){
+    global $user;
+    $product_url = $form_state['values']['product_url'];
+    $uid = $user->uid;
+    $wishlist_id = $form_state['wishlist_id'];
+    $add_item = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
+    if($add_item){
+      drupal_set_message(t('Your product has been added!'), 'status', FALSE);
+    } else {
+      drupal_set_message(t('There\'s an error with this product - please try again!'), 'error', FALSE);
+    }
+
+  } else {
+    drupal_set_message(t('There\'s an error with the product URL!'), 'error', FALSE);
+  }
+}
+
 function hd_tweaks_shop_purchase_form($form, &$form_state) {
   $code = !empty($form_state['values']['code']) ? $form_state['values']['code'] : FALSE;
   $wishlist_item_markup = '';
