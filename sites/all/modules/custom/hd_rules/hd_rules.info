@@ -1,0 +1,4 @@
+name = DC custom rules
+description = Provides rules for Delivery Code.
+package = Delivery Code
+core = 7.x
