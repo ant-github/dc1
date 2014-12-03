@@ -147,6 +147,29 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
     $wlw->field_wishlist_items = $current_items;
     $wlw->save();
 
+    //create store entity and save its reference to the new $wishlist_item
+    $store = entity_create('store', array('type' =>'store'));
+    //add site url
+    $site_url=parse_url($product_url);
+    $country_code = explode('/',$site_url['path']);
+    $country_code = $country_code[1];
+    //check country_code lengh to see if has a country in it. e.g gb
+    if(strlen($country_code) == 2 ){
+        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => 'http://'.$site_url['host'].'/'.$country_code)));
+        }else{
+          $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => 'http://'.$site_url['host'])));
+    }
+    $store->name = $site_url['host'];
+    //load wishlist user object to get its country
+    $wishlist_user = user_load($uid);
+    $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+    $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+    //save store
+    $store->save();
+    //save store ref id into the wishlist item
+    $wiw->field_store_ref = $store->store_id;
+    $wiw->save();
+
     return $product_data;
   } else {
     return FALSE;

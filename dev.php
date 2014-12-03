@@ -96,14 +96,14 @@ function create_product_endpoint(){
 
     $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
     commerce_product_save($product);
-    dpm($product,'product');
+    //dpm($product,'product');
   }
 
-  dpm($product);
+  //dpm($product);
 
   // Now set up the users wishlists!
-  $user_id = 221;
-  $wishlist_id = 46;
+  $user_id = 1;
+  $wishlist_id = 44;
 
   // // Load the users wishlist
   $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
@@ -126,6 +126,34 @@ function create_product_endpoint(){
   $current_items[] = $wiw->value();
   $wlw->field_wishlist_items = $current_items;
   $wlw->save();
+
+  $product_url = "http://www.costores.com/gb/";
+  //create store entity and save its reference to the new $wishlist_item
+  $store = entity_create('store', array('type' =>'store'));
+  //add site url
+  $site_url=parse_url($product_url);
+  $country_code = explode('/',$site_url['path']);
+  $country_code = $country_code[1];
+  //check country_code lengh to see if has a country in it. e.g gb
+  if(strlen($country_code) == 2 ){
+      $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => 'http://'.$site_url['host'].'/'.$country_code)));
+      }else{
+        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => 'http://'.$site_url['host'])));
+  }
+  $store->name = $site_url['host'];
+  //load wishlist user object to get its country
+  $wishlist_user = user_load('1');
+  $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+  $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+  //save store
+  $store->save();
+  dpm($store->store_id);
+  //save store ref id into the wishlist item
+  $wiw->field_store_ref = $store->store_id;
+  $wiw->save();
+  //$test = entity_load_single('store', '13');
+  dpm($wiw->);
+
 }
 
 function address(){
@@ -237,7 +265,7 @@ function user_fields(){
 }
 // user_fields();
 //
-// create_product_endpoint();
+//create_product_endpoint();
 // fix_broken_entity();
 
 menu_execute_active_handler();
