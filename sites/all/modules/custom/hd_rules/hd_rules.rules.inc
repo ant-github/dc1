@@ -33,9 +33,14 @@ function hd_rules_check_wishlist_owner_address($commerce_order){
     //get wishlist_owner country
     $wish_list_owner_country =
       $wish_list_owner->field_delivery_address[LANGUAGE_NONE]['0']['country'];
-    //****todo check store country
-    if($wish_list_owner_country == 'GB'){
-      return;
+
+    //load store country
+    $store = entity_load_single('store',
+    $line_item->field_store_country_ref[LANGUAGE_NONE]['0']['target_id']);
+    $store_country = $store->field_store_country[LANGUAGE_NONE]['0']['value'];
+
+    if($wish_list_owner_country == $store_country){
+      return TRUE;;
     }
   }
 }

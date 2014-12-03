@@ -116,7 +116,7 @@ function create_product_endpoint(){
   $wiw->field_commerce_produc_ref = $product->product_id;
   $wiw->field_item_code = hd_wishlist_item_generate_item_code();
   $wiw->field_status = 'available';
-  $wiw->save();
+  //$wiw->save();
 
   // Add our wishlist item reference to the existing references.
   $current_items = $wlw->field_wishlist_items->value();
@@ -125,7 +125,7 @@ function create_product_endpoint(){
   }
   $current_items[] = $wiw->value();
   $wlw->field_wishlist_items = $current_items;
-  $wlw->save();
+  //$wlw->save();
 
   $product_url = "http://www.costores.com/gb/";
   //create store entity and save its reference to the new $wishlist_item
@@ -147,12 +147,12 @@ function create_product_endpoint(){
   $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
   //save store
   $store->save();
-  dpm($store->store_id);
+  //dpm($store->store_id);
   //save store ref id into the wishlist item
   $wiw->field_store_ref = $store->store_id;
-  $wiw->save();
+ // $wiw->save();
   //$test = entity_load_single('store', '13');
-  dpm($wiw->);
+  //dpm($wiw);
 
 }
 
@@ -263,6 +263,16 @@ function user_fields(){
   $user_fields = drupal_json_output($user_fields);
   return $user_fields;
 }
+function query(){
+  $store_name = "http://www.costores.com";
+  $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'store')
+    ->propertyCondition('name', $store_name, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+  $result = $query->execute();
+  dpm(key($result['store']), 'result');
+}
+query();
 // user_fields();
 //
 //create_product_endpoint();
