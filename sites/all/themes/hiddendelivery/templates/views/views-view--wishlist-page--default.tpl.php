@@ -36,10 +36,10 @@
   <?php if ($header): ?>
     <div class="view-header">
       <div class="row">
-      <div class="view-filters col-md-8">
+      <div class="view-filters col-md-7">
         <?php print $exposed; ?>
       </div>
-      <div class="share-wishlist-container col-md-4">
+      <div class="share-wishlist-container col-md-5">
         <?php if ($is_owner): ?>
           <button class="col-md-12 col-sm-12 white-button btn btn-primary btn-lg" data-toggle="modal" data-target="#<?php print $share_links_popup_id ;?>">
             <span class="bg-sprite bg-sprite-circle-star2 share-wishlist"></span><?php print t('Share Your Wishlist Online'); ?>
