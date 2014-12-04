@@ -134,7 +134,8 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
 
     $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
     $wiw->field_commerce_produc_ref = $product->product_id;
-    $wiw->field_item_code = hd_wishlist_item_generate_item_code();
+    //I will not delete this just yet but I think we don't need it
+    //$wiw->field_item_code = hd_wishlist_item_generate_item_code();
     $wiw->field_status = 'available';
     $wiw->save();
 
