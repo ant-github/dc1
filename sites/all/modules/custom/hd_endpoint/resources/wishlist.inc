@@ -38,7 +38,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
   // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://shop.ee.co.uk/mobile-phones/pay-monthly/iphone-6-16gb-space-grey/details?WT.mc_id=ON_MEC_S_google_G_shoppingcampaigns&WT.srch=1" -X POST --header "Content-type: application/json" --header "Accept: application/json"
 
   // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://www.lovell-rugby.co.uk/Rugby-Shirts/Under-Armour/Wales-2013-or-15-Home-Replica-Rugby-Shirt-Red-or-White/size_XXL?utm_source=googleshopping&utm_medium=organic&gclid=CjwKEAiAy8ujBRCY6c-hveijhFASJAAcyGicbHWRz1PEnxcWqYnbkL-rxP58mVlXqvPIpODLAcQvQhoCTBTw_wcB" -X POST --header "Content-type: application/json" --header "Accept: application/json"
-  $token = 'ef3a18acadec1140bcca594c64361946';
+  $token = 'bfaed44b98a02fab95b1dcdfc0219013';
   $api_endpoint = 'http://api.diffbot.com/v3/product';
   $geturl = $api_endpoint.'?token='.$token.'&url='.$product_url.'&fields=sku';
   $json = file_get_contents($geturl);
