@@ -88,6 +88,7 @@ function hd_rules_create_purchase($commerce_order){
     $wishlist_item = hd_wishlist_item_load(
       $line_item->field_wishlist_item_id_ref['und'][0]['target_id']);
     $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+    $wr->field_reserving_user = $commerce_order->uid;
     $wr->field_status = 'purchased';
     $wr->save();
 
