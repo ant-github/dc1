@@ -269,6 +269,6 @@ class Purchase extends Entity {
   public function defaultLabel() {
     // Display the linked wishlist item code as the label for this purchase entity.
     $wrapper = entity_metadata_wrapper('purchase', $this);
-    return $wrapper->field_wishlist_item->field_item_code->value();
+    //return $wrapper->field_wishlist_item->field_item_code->value();
   }
 }

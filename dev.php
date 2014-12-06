@@ -114,7 +114,7 @@ function create_product_endpoint(){
 
   $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
   $wiw->field_commerce_produc_ref = $product->product_id;
-  $wiw->field_item_code = hd_wishlist_item_generate_item_code();
+  //$wiw->field_item_code = hd_wishlist_item_generate_item_code();
   $wiw->field_status = 'available';
   //$wiw->save();
 

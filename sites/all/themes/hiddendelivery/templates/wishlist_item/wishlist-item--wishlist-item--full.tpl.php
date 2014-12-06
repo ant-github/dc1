@@ -39,6 +39,5 @@
   </ul>
 
   <?php print render($reserve_button); ?>
-  <?php print render($content['field_item_code']); ?>
 
 </div>

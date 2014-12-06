@@ -293,19 +293,19 @@ function hd_tweaks_shop_purhcase_form_code_ajax_callback($form, $form_state) {
   );
 }
 
-function hd_tweaks_get_wishlist_item_by_code($code) {
-  $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'wishlist_item')
-    ->fieldCondition('field_item_code', 'value', $code, '=')
-    ->addMetaData('account', user_load(1)); // Run the query as user 1.
-  $result = $query->execute();
-  if (isset($result['wishlist_item'])) {
-    return reset($result['wishlist_item']);
-  }
-  else {
-    return FALSE;
-  }
-}
+// function hd_tweaks_get_wishlist_item_by_code($code) {
+//   $query = new EntityFieldQuery();
+//   $query->entityCondition('entity_type', 'wishlist_item')
+//     ->fieldCondition('field_item_code', 'value', $code, '=')
+//     ->addMetaData('account', user_load(1)); // Run the query as user 1.
+//   $result = $query->execute();
+//   if (isset($result['wishlist_item'])) {
+//     return reset($result['wishlist_item']);
+//   }
+//   else {
+//     return FALSE;
+//   }
+// }
 
 function hd_tweaks_form_user_login_alter(&$form, &$form_state) {
   // Move the hybridauth to the end of the form.
