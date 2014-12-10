@@ -41,6 +41,7 @@
      <?php print render($content['product:title']); ?>
      <?php print render($content['product:field_info']); ?>
      <?php print render($content['product:commerce_price']); ?>
+     <?php print render($content['field_note']); ?>
   </div>
 
   <div class="actions col-md-3">
