@@ -111,7 +111,6 @@ function hd_tweaks_add_a_product_url_form_validate($form, &$form_state) {
 function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
   module_load_include('inc', 'hd_endpoint', 'resources/wishlist');
   // $product_url = valid_url($form_state['values']['product_url']);
-  // dpm($form_state);
   // if($product_url){
     global $user;
     $product_url = $form_state['values']['product_url'];

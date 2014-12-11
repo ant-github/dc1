@@ -27,17 +27,15 @@
  * @see template_preprocess_entity()
  * @see template_process()
  */
+dpm($content);
 ?>
 <div class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+     <?php print render($content['product:title']['#markup']); ?>
+     <?php print render($content['product:field_info']); ?>
+     <?php print render($content['product:commerce_price']); ?>
+     <?php print render($content['field_note']); ?>
+     <?php print render($content['field_store_ref']); ?>
 
-  <?php print render($content['field_product']); ?>
-
-  <ul class="item-code-steps">
-    <li class="step step-1"><?php print t('Copy the item code below'); ?></li>
-    <li class="step step-2"><?php print t("Click on the 'Open Site' button below and follow the link to the products site"); ?></li>
-    <li class="step step-3"><?php print t('Enter the item code at checkout'); ?></li>
-  </ul>
-
-  <?php print render($reserve_button); ?>
+    <?php print render($reserve_button); ?>
 
 </div>

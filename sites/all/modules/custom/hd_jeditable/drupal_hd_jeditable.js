@@ -6,7 +6,7 @@
         tooltip   : 'Click to edit...',
         cancel    : 'Cancel',
         submit    : 'Save',
-        style     : 'display: inline; min-width: 100px;'
+        style     : 'display: block; min-width: 100px;'
       });
       $('.hd-jeditable-textarea', context).editable('/hd_jeditable/ajax/save', {
         type      : 'textarea',

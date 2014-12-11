@@ -73,9 +73,11 @@ function hiddendelivery_preprocess_entity(&$vars) {
     }
 
     if ($vars['view_mode'] == 'wishlist') {
+      //Render note field with a plain text format
+      $vars['note'] = field_view_field('wishlist_item', $vars['wishlist_item'],
+        'field_note', array('type' => 'text_default', ));
       $vars['purchase_info'] = FALSE;
       $vars['is_owner'] = $user->uid == $vars['wishlist_item']->uid ? TRUE : FALSE;
-
       // Calculate the status.
       switch ($wrapper->field_status->raw()) {
         case 'available':
@@ -94,6 +96,10 @@ function hiddendelivery_preprocess_entity(&$vars) {
 
       // Add the remove button.
       if ($vars['is_owner']) {
+        //Render note field with a jeditable format
+        $vars['note'] = field_view_field('wishlist_item', $vars['wishlist_item'],
+          'field_note', array('type' => 'hd_jeditable_textfield', ));
+
         $vars['remove_button'] = drupal_get_form('hd_wishlist_item_remove_form_' . $vars['wishlist_item']->wishlist_item_id, $vars['wishlist_item']->wishlist_item_id, arg(1));
         // Get the absolute URL to this wishlist item.
         $full_url = url('wishlist/item/' . $vars['wishlist_item']->wishlist_item_id, array('absolute' => TRUE));
