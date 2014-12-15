@@ -17,7 +17,6 @@ function hd_theme_alterations_form_alter(&$form, &$form_state, $form_id){
 }
 
 function hd_theme_alterations_preprocess_page(&$vars) {
-
 // Front page does not need text under title
   if (($vars['is_front']) != 'TRUE') {
 // Theming for the news pages
@@ -63,4 +62,51 @@ function hd_theme_alterations_preprocess_node(&$vars) {
     $vars['webform'] = theme_webform_view($node->content);
   }
 
+}
+
+function hd_theme_alterations_block_view_alter(&$data, $block) {
+  if ($block->bid == '158') {
+    $data['content'] = _cards_block_content();
+  }
+
+}
+
+//html content for the cards block
+function _cards_block_content(){
+  global $user;
+  //load the user to get their wishlist
+  $current_user = user_load($user->uid);
+  $wishlist_url = $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
+
+  if($user->uid != 0){
+    $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my Wishlist</span></a></p>';
+  }else{
+    $wishlist_link = '<p><a class="btn-create-wishlist" href="/user"><span class="bg-sprite bg-sprite-ico-star">Create a Wishlist</span></a></p>';
+  }
+  $output = $wishlist_link;
+  $output.='<div class="payment-methods">
+  <p>We accept all of the following payment methods:</p>
+  <img alt="" class="payment-methods-img" src="/sites/all/themes/hiddendelivery/images/HomePage/payment-methods.jpg" />
+  <ul class="visually-hidden payment-list">
+    <li class="visa">
+      Visa</li>
+    <li class="amex">
+      American Express</li>
+    <li class="diners-club">
+      Diners Club</li>
+    <li class="mastercard">
+      Mastercard</li>
+    <li class="jcb">
+      JCB</li>
+    <li>
+      ???</li>
+    <li class="giropay">
+      GiroPay</li>
+    <li class="paypal">
+      Paypal</li>
+    <li class="bitcoin">
+      Bitcoin</li>
+  </ul>
+</div>';
+  return $output;
 }
