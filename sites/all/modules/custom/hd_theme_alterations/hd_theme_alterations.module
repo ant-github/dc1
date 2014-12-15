@@ -76,7 +76,6 @@ function _cards_block_content(){
   global $user;
   //load the user to get their wishlist
   $current_user = user_load($user->uid);
-  $wishlist_url = $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
 
   if($user->uid != 0){
     $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my Wishlist</span></a></p>';
