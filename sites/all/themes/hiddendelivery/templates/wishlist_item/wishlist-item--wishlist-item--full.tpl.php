@@ -27,7 +27,6 @@
  * @see template_preprocess_entity()
  * @see template_process()
  */
-dpm($content);
 ?>
 <div class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
      <?php print render($content['product:title']['#markup']); ?>

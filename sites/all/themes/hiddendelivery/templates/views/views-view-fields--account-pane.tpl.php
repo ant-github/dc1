@@ -64,10 +64,10 @@
 			print $fields['field_bra_size']->label_html;
 			print $fields['field_bra_size']->content;
 			print $fields['field_bra_size']->wrapper_suffix;
-			print $fields['field_shirt_size']->wrapper_prefix;
-			print $fields['field_shirt_size']->label_html;
-			print $fields['field_shirt_size']->content;
-			print $fields['field_shirt_size']->wrapper_suffix;
+			print $fields['field_shoe_size']->wrapper_prefix;
+			print $fields['field_shoe_size']->label_html;
+			print $fields['field_shoe_size']->content;
+			print $fields['field_shoe_size']->wrapper_suffix;
 		}
 		?>
 	</div>
