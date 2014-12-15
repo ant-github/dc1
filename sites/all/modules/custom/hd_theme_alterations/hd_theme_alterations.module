@@ -17,7 +17,7 @@ function hd_theme_alterations_form_alter(&$form, &$form_state, $form_id){
 }
 
 function hd_theme_alterations_preprocess_page(&$vars) {
-  //dpm($vars);
+
 // Front page does not need text under title
   if (($vars['is_front']) != 'TRUE') {
 // Theming for the news pages
@@ -46,6 +46,12 @@ function hd_theme_alterations_preprocess_page(&$vars) {
   //hide hybridauth
   if(isset($vars['page']['content']['system_main']['hybridauth_identities'])){
     unset($vars['page']['content']['system_main']['hybridauth_identities']);
+  }
+  //hide login forms on registration page
+  if(drupal_match_path(current_path(),"create-a-wishlist")||
+    isset($vars['page']['content']['user_login'])){
+      unset($vars['page']['content']['user_login']);
+      unset($vars['page']['content']['system_main']['#prefix']);
   }
 }
 
