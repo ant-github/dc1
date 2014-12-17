@@ -17,6 +17,7 @@ function hd_theme_alterations_form_alter(&$form, &$form_state, $form_id){
 }
 
 function hd_theme_alterations_preprocess_page(&$vars) {
+  dpm($vars);
 // Front page does not need text under title
   if (($vars['is_front']) != 'TRUE') {
 // Theming for the news pages
@@ -52,6 +53,10 @@ function hd_theme_alterations_preprocess_page(&$vars) {
       unset($vars['page']['content']['user_login']);
       unset($vars['page']['content']['system_main']['#prefix']);
   }
+  //hide shiiping info as we do need it
+  if (isset($vars['page']['content']['system_main']['commerce_customer_shipping'])){
+    unset($vars['page']['content']['system_main']['commerce_customer_shipping']);
+  }
 }
 
 function hd_theme_alterations_preprocess_node(&$vars) {
@@ -78,9 +83,10 @@ function _cards_block_content(){
   $current_user = user_load($user->uid);
   if($current_user->uid != 0){
   $wishlist_url = $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
-
+  //print view my wishlist link
   $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my Wishlist</span></a></p>';
   }else{
+    // print create my wishlist link
     $wishlist_link = '<p><a class="btn-create-wishlist" href="/user"><span class="bg-sprite bg-sprite-ico-star">Create a Wishlist</span></a></p>';
   }
   $output = $wishlist_link;
