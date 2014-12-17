@@ -6,7 +6,7 @@
         tooltip   : 'Click to edit...',
         cancel    : 'Cancel',
         submit    : 'Save',
-        style     : 'display: block; min-width: 100px;'
+        style     : 'display: inherit; min-width: 100px;'
       });
       $('.hd-jeditable-textarea', context).editable('/hd_jeditable/ajax/save', {
         type      : 'textarea',
@@ -19,7 +19,7 @@
         loadurl  : '/hd_jeditable/ajax/load',
         type     : 'select',
         submit   : 'OK',
-        style    : 'display: inline'
+        style    : 'display: inherit'
       });
     }
   };

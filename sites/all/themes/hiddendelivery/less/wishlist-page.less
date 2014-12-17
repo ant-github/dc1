@@ -215,6 +215,31 @@
 		margin-top: 15px;
 	}
 
+	// jEditable styles
+	.hd-jeditable-textfield {
+		display: inline-block;
+		min-width: 250px;
+		input {
+			margin-bottom: 5px;
+			margin-right: 10px;
+			min-height: 22px;
+			padding: 3px 2px;
+		}
+
+		button[type='submit'] {
+			.color-button-m();
+			margin-right: 5px;
+			padding: 2px 6px;
+			font-size: @font-small;
+		}
+
+		button[type='cancel'] {
+			.grey-button-m();
+			font-size: @font-small;
+			padding: 2px 4px;
+		}
+	}
+
 	.form-submit {
 
 		.grey-button-s();
@@ -662,6 +687,16 @@
 		}
 	}
 }
+@media(max-width: @screen-md-max) {
+	.view-wishlist-page .view-content {
+		.hd-jeditable-textfield {
+			max-width: 350px;
+			input {
+				max-width: 230px;
+			}
+		}
+	}
+}
 @media(max-width: @screen-md) {
 	.view-wishlist-page .view-content {
 		.views-row .actions {
@@ -679,6 +714,14 @@
 					margin: 0 20px 15px 0;
 					padding-top: 3px;
 				}
+		}
+
+		.hd-jeditable-textfield {
+			max-width: 340px;
+
+			input {
+				display: block;
+			}
 		}
 	}
 }
