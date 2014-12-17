@@ -38,12 +38,7 @@ function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
         unset($form['captcha']);
       }
       break;
-    //add the country list for the store entity
-    case 'hd_store_form' :
-      //include locale for the country list
-      include_once DRUPAL_ROOT . '/includes/locale.inc';
-      $form['field_store_country'][LANGUAGE_NONE]['#options'] = country_get_list();
-      break;
+    //change shipping to delivery
     case 'commerce_checkout_form_checkout':
       $form['commerce_shipping']['#title'] = 'Delivery service';
     break;
@@ -415,4 +410,22 @@ function hd_tweaks_add_to_cart_form_submit(&$form, &$form_state){
    //go to checkout
    drupal_goto('checkout');
   }
+}
+/**
+ * Implements hook_field_widget_form_alter()
+ *
+ **/
+function hd_tweaks_field_widget_form_alter(&$element, &$form_state, &$context) {
+
+//alter store country field option list
+  if($context['field']['field_name'] == 'field_store_country'){
+    //get country list form locale module
+    include_once DRUPAL_ROOT . '/includes/locale.inc';
+    $element['#options'] = country_get_list();
+    //set country default when field has a value
+    if($context['items']){
+      $element['#default_value'] = $context['items'][0]['value'];
+    }
+  }
+
 }
