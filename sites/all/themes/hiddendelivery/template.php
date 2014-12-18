@@ -195,10 +195,3 @@ function hiddendelivery_preprocess_views_view(&$vars) {
     }
   }
 }
-
-// Hide breadcrumb on checkout
-function hiddendelivery_breadcrumb($variables) {
-  if ($variables['breadcrumb'][1] == 'chekout') {
-    unset($variables['breadcrumb']);
-  }
-}

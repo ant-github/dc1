@@ -124,7 +124,7 @@
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
-    <div class="video col-sm-6">      
+    <div class="video col-sm-6">
       <div id="introVideo"></div>
       <a class="video-overlay" href="http://www.youtube.com/watch?v=or0L7UnaP6g"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
     </div>
