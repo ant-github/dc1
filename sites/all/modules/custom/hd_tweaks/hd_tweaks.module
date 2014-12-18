@@ -115,7 +115,7 @@ function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
     if($add_item){
       drupal_set_message(t('Your product has been added!'), 'status', FALSE);
     } else {
-      drupal_set_message(t('There\'s an error with this product - please try again!'), 'error', FALSE);
+      drupal_set_message(t('This site is not currently compatible with the DeliveryCode system. The item could not be added.'), 'error', FALSE);
     }
 
   // } else {

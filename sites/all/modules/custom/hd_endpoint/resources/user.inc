@@ -66,7 +66,7 @@ function _hd_user_update_resource($uid, $account) {
   if ($account['picture_upload']){
     $file = $account['picture_upload'];
     $file = _file_resource_create($file);
-    $file = $file = file_load($file['fid']);
+    $file = file_load($file['fid']);
     $file = file_copy($file, 'public://pictures');
     //set the account_loaded->picture to our file image object to save it later in the submit user_profile_form
     $account_loaded->picture = $file;
