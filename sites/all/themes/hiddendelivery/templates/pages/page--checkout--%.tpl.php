@@ -112,34 +112,6 @@
     <?php endif; ?>
   </div>
 </header>
-
-<?php if($is_front): ?>
-  <div class="hero-banner row">
-    <div class="description col-sm-6">
-      <h1 class="hero-title">Wishlist Service</h1></br>
-      <h2 class="sub-title">Delivering to you. Wherever you are.</h2>
-      <p>DeliveryCode&#8482; is the only universal wishlist service where your delivery address is securely hidden from the buyer.</p>
-      <a href="/about-us" class="learn-more btn btn-primary">
-        Learn more
-        <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
-      </a>
-    </div>
-    <div class="video col-sm-6">
-      <div id="introVideo"></div>
-      <a class="video-overlay" href="http://www.youtube.com/watch?v=or0L7UnaP6g"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
-    </div>
-    <?php
-      // $carousel_block = block_load('views', 'homepage_carousel-block');
-      // $carousel_block = _block_get_renderable_array(_block_render_blocks(array($carousel_block)));
-      // $carousel_output = drupal_render($carousel_block);
-      // print $carousel_output;
-    ?>
-    <?php // Start homepage video block ?>
-
-    <?php // END homepage video block ?>
-  </div>
-<?php endif; ?>
-
 <div class="page-title-wrapper">
   <?php print render($title_prefix); ?>
   <?php if (!empty($title)): ?>
@@ -162,7 +134,6 @@
     <?php print render($page['header']); ?>
   </header> <!-- /#page-header -->
 
-
   <div class="row">
 
     <?php if (!empty($page['highlighted'])): ?>
@@ -170,10 +141,10 @@
     <?php endif; ?>
 
     <div class="row">
-      <div class="breadcrumb-wrapper col-md-8 col-sm-6">
-        <?php if (!empty($breadcrumb)): print $breadcrumb; endif;?>
+      <div class="breadcrumb-wrapper col-md-9 col-sm-4">
+        <?php if (!empty($checkout_progress_block)): print $checkout_progress_block; endif;?>
       </div>
-      <div class="user-info-panel col-md-4 col-sm-6">
+      <div class="user-info-panel col-md-3 col-sm-4">
         <?php if ($user_info_panel): print $user_info_panel; endif; ?>
       </div>
     </div>

@@ -17,7 +17,7 @@ function hd_theme_alterations_form_alter(&$form, &$form_state, $form_id){
 }
 
 function hd_theme_alterations_preprocess_page(&$vars) {
-  //dpm($vars);
+//dpm($vars);
 // Front page does not need text under title
   if (($vars['is_front']) != 'TRUE') {
 // Theming for the news pages
@@ -57,6 +57,12 @@ function hd_theme_alterations_preprocess_page(&$vars) {
   if (isset($vars['page']['content']['system_main']['commerce_customer_shipping'])){
     unset($vars['page']['content']['system_main']['commerce_customer_shipping']);
   }
+  // print checkout progress
+  if(arg(0) == 'checkout'){
+    $checkout_progress_block = block_load('commerce_checkout_progress', 'indication');
+    $checkout_progress_block = _block_get_renderable_array(_block_render_blocks(array($checkout_progress_block)));
+    $vars['checkout_progress_block'] = drupal_render($checkout_progress_block);
+  }
 }
 
 function hd_theme_alterations_preprocess_node(&$vars) {
@@ -70,7 +76,7 @@ function hd_theme_alterations_preprocess_node(&$vars) {
 }
 
 function hd_theme_alterations_block_view_alter(&$data, $block) {
-  if ($block->bid == '158') {
+  if (isset($block->bid)&&$block->bid == '158') {
     $data['content'] = _cards_block_content();
   }
 
