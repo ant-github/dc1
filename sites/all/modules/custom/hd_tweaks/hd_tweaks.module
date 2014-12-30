@@ -1,7 +1,6 @@
 <?php
 
 function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
-  //dpm($form_id);
   switch($form_id) {
     //contact us form
     case 'webform_client_form_7':
@@ -41,6 +40,25 @@ function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
     //change shipping to delivery
     case 'commerce_checkout_form_checkout':
       $form['commerce_shipping']['#title'] = 'Delivery service';
+    break;
+    case 'commerce_order_ui_order_form':
+      $form['commerce_customer_billing']['#weight'] = 40;
+    //render a benefiary block in the edit order form
+      $purchased_block = block_load('views', 'commerce_orders-block_1');
+      $purchased_block = _block_get_renderable_array(_block_render_blocks(array($purchased_block)));
+      $purchased_block = drupal_render($purchased_block);
+      $form['purchased_for']['#title'] = 'Purchased For';
+      $form['purchased_for']['#weight'] = -7;
+      $form['purchased_for']['#type'] = 'fieldset';
+      $form['purchased_for']['content']['#markup'] = $purchased_block;
+    //render the purchased item block with a link to the store in the edit order form
+      $purchased_from_block = block_load('views', 'commerce_orders-block_2');
+      $purchased_from_block = _block_get_renderable_array(_block_render_blocks(array($purchased_from_block)));
+      $purchased_from_block = drupal_render($purchased_from_block);
+      $form['purchased_from']['#title'] = 'Purchased From';
+      $form['purchased_from']['#weight'] = -6;
+      $form['purchased_from']['#type'] = 'fieldset';
+      $form['purchased_from']['content']['#markup'] = $purchased_from_block;
     break;
   }
 }
