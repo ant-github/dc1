@@ -357,6 +357,11 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
   $form['#groups']['group_size_guide']->format_settings['instance_settings']['classes'] .= ' col-md-6';
   $form['#groups']['group_profile_information']->format_settings['instance_settings']['classes'] .= ' col-md-6';
   $form['actions']['#attributes'] = array('class' => array('col-md-6'));
+  $form['picture']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save Image'),
+    '#submit'=>  array('user_profile_form_submit'),
+  );
 }
 
 /**
