@@ -17,9 +17,8 @@
 	}
 
 	.menu {
-		background-color: @black;
-		padding: 10px 0;
-		margin-bottom: 10px;
+		// background-color: @black;
+		padding: 5px 0;
 		text-align: center;
 		li {
 			color: @white;
@@ -27,6 +26,7 @@
 			padding: 0;
 			&::after {
 				content: '/';
+				color: @grey;
 			}
 			&:last-child::after {
 				display: none;
@@ -34,7 +34,7 @@
 		}
 	}
 	.nav>li>a {
-		color: @white;
+		color: @grey;
 		display: inline;
 		padding: 0 5px 0 0;
 
@@ -42,6 +42,27 @@
 		&:focus {
 			background-color: transparent;
 			text-decoration: underline;
+		}
+	}
+
+	.social-icons {
+		background: @black;
+		padding: 10px 0;
+		text-align: center;
+		vertical-align: top;
+
+		.bg-sprite {
+			.text-hide();
+			display: inline-block;
+			margin: 0 6px;
+			vertical-align: top;
+		}
+
+		.intro {
+			color: @white;
+			line-height: 32px;
+			margin-right: 25px;
+			vertical-align: middle;
 		}
 	}
 }
