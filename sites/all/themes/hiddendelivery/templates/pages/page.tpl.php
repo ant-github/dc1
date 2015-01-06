@@ -120,7 +120,7 @@
       <h2 class="sub-title">Delivering to you. Wherever you are.</h2>
       <p>DeliveryCode&#8482; is the only universal wishlist service where your delivery address is securely hidden from the buyer.</p>
       <a href="/about-us" class="learn-more btn btn-primary">
-        Learn more
+        How it works
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
