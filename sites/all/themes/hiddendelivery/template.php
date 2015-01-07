@@ -113,7 +113,7 @@ function hiddendelivery_preprocess_entity(&$vars) {
           'query' => array(
             'url' => $full_url,
             'count' => 'horizontal',
-            'via' => 'HiddenDelivery',
+            'via' => 'delivery_code',
             'text' => $vars['title'] . ' is on my wishlist!',
             'counturl' => $full_url,
           ),
