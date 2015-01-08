@@ -23,17 +23,12 @@
       }
 
       function setupVideo() {
-          var iOS = /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
-          if(iOS) {
-            $('.video-overlay').hide();
-          } else {
              var tag = document.createElement('script');
 
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             Drupal.settings.introVideo = false;
-          }
         }
 
         window.onYouTubeIframeAPIReady = function() {
@@ -49,6 +44,10 @@
         };
 
         function onPlayerReady() {
+          var iOS = /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
+          if(iOS) {
+            $('.video-overlay').hide();
+          }
           console.log(arguments);
         }
 
