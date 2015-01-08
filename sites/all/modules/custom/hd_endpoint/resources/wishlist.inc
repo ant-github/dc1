@@ -39,9 +39,9 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
 
   // curl "http://www.dc.local/api/rest/wishlist/add_product?uid=221&wishlist_id=46&product_url=http://www.lovell-rugby.co.uk/Rugby-Shirts/Under-Armour/Wales-2013-or-15-Home-Replica-Rugby-Shirt-Red-or-White/size_XXL?utm_source=googleshopping&utm_medium=organic&gclid=CjwKEAiAy8ujBRCY6c-hveijhFASJAAcyGicbHWRz1PEnxcWqYnbkL-rxP58mVlXqvPIpODLAcQvQhoCTBTw_wcB" -X POST --header "Content-type: application/json" --header "Accept: application/json"
   $token = '3680574cf5ef2770f93937f4ad4350d8';
-  $api_endpoint = 'http://api.diffbot.com/v3/analyze';
-  $geturl = $api_endpoint.'?token='.$token.'&url='.$product_url;
-  dpm($geturl);
+  $api_endpoint = 'http://api.diffbot.com/v3/product';
+  $encoded_url = rawurlencode($product_url);
+  $geturl = $api_endpoint.'?token='.$token.'&url='.$encoded_url;
   $opts = array(
   'http'=>array(
     'method'=>"GET",
@@ -130,7 +130,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
       } // else - default price?
 
       $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
-      //commerce_product_save($product);
+      commerce_product_save($product);
     }
 
     // Load the users wishlist
@@ -187,12 +187,12 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
       $store->save();
       //save store ref id into the wishlist item
       $wiw->field_store_ref = $store->store_id;
-      //$wiw->save();
+      $wiw->save();
     }else{
       //set store id to existing store
       $store_id = key($result['store']);
       $wiw->field_store_ref = $store_id;
-      //$wiw->save();
+      $wiw->save();
     }
   return $product_data;
   } else {
