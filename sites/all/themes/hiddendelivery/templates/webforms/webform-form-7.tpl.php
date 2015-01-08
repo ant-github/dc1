@@ -23,6 +23,6 @@
 <div class="row">
 	<div class="col-md-12">
 		<?php print drupal_render($form['submitted']['message']); ?>
-		<?php print drupal_render($form['actions']['submit']); ?>
+		<?php print drupal_render_children($form); ?>
 	</div>
 </div>
