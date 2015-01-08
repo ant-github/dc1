@@ -36,6 +36,9 @@
             height: '390',
             width: '640',
             videoId: 'niEKZ-CQ1tY',
+            playerVars: {
+              rel: 0
+            },
             events: {
               'onReady': onPlayerReady,
               'onStateChange': onPlayerStateChange
