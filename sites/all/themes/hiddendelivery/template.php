@@ -24,6 +24,7 @@ function hiddendelivery_preprocess_page(&$vars) {
 
 function hiddendelivery_preprocess_entity(&$vars) {
   global $user;
+  $wid = arg(1);
   // Wishlist.
   if ($vars['entity_type'] == 'wishlist') {
     if ($vars['view_mode'] == 'full') {
@@ -93,7 +94,6 @@ function hiddendelivery_preprocess_entity(&$vars) {
           $vars['status_class'] = 'item-purchased';
           break;
       }
-
       // Add the remove button.
       if ($vars['is_owner']) {
         //Render note field with a jeditable format
@@ -102,8 +102,8 @@ function hiddendelivery_preprocess_entity(&$vars) {
 
         $vars['remove_button'] = drupal_get_form('hd_wishlist_item_remove_form_' . $vars['wishlist_item']->wishlist_item_id, $vars['wishlist_item']->wishlist_item_id, arg(1));
         // Get the absolute URL to this wishlist item.
-        $full_url = url('wishlist/item/' . $vars['wishlist_item']->wishlist_item_id, array('absolute' => TRUE));
-
+        //$full_url = url('wishlist/item/' . $vars['wishlist_item']->wishlist_item_id, array('absolute' => TRUE));
+        $full_url = url('wishlist/' . $wid, array('absolute' => TRUE));
         // Facebook share link.
         $vars['share_links']['facebook'] = '<a href="https://www.facebook.com/sharer/sharer.php?u=' . $full_url . '" class="bg-sprite-circle-facebook bg-sprite block-sprite-fixed pull-left" target="_blank">Share on Facebook</a>';
 

@@ -35,6 +35,4 @@
      <?php print render($content['field_note']); ?>
      <?php print render($content['field_store_ref']); ?>
 
-    <?php print render($reserve_button); ?>
-
 </div>
