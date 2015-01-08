@@ -103,7 +103,7 @@ function _cards_block_content(){
   $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my Wishlist</span></a></p>';
   }else{
     // print create my wishlist link
-    $wishlist_link = '<p><a class="btn-create-wishlist" href="/user"><span class="bg-sprite bg-sprite-ico-star">Create a Wishlist</span></a></p>';
+    $wishlist_link = '<p><a class="btn-create-wishlist" href="/create-a-wishlist"><span class="bg-sprite bg-sprite-ico-star">Create a Wishlist</span></a></p>';
   }
   $output = $wishlist_link;
   $output.='<div class="payment-methods">
