@@ -10,6 +10,17 @@
       if($('#introVideo').length) {
         setupVideo();
       }
+      if($('#wishlist-share').length) {
+        fixTwitterShareLink();
+      }
+
+      function fixTwitterShareLink() {
+        var link = $('#wishlist-share a.twitter-share-button'),
+          href = link.attr('href');
+
+        href = href.replace('%26%23039%3B', '\'');
+        link.attr('href', href);
+      }
 
       function setupVideo() {
            var tag = document.createElement('script');
@@ -30,7 +41,7 @@
               'onStateChange': onPlayerStateChange
             }
           });
-        }
+        };
 
         function onPlayerReady() {
           console.log(arguments);
@@ -42,10 +53,10 @@
 
         // Loading button text - adding product url to wishlist.
         $('#add-item-url').on('click', function () {
-          var $btn = $(this).button('loading')
+          var $btn = $(this).button('loading');
           // business logic...
           // $btn.button('reset')
-        })
+        });
 
         $('.video-overlay').on('click', function(e) {
           if(Drupal.settings.introVideo) {
@@ -54,9 +65,9 @@
               Drupal.settings.introVideo.playVideo();
             });
           }
-        })
+        });
+
 
 		}
-	}
-
+	};
 })(jQuery);

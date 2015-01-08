@@ -1,0 +1,37 @@
+// checkout-specific styling
+ol.inline.commerce-checkout-progress {
+  border-bottom: 1px solid @dark-border-color;
+  padding-left: 25px;
+  padding-top: 15px;
+  margin: 0 30px;
+  padding-bottom: 15px;
+  li {
+    font-weight: bold;
+    width: 20%;
+    margin-right: 30px;
+    padding: 0;
+    color: @grey;
+
+    &.active {
+      color: @teal;
+    }
+
+    &.last {
+      margin-right: 0;
+      width: 21%;
+    }
+  }
+}
+
+@media(max-width: 480px) {
+  ol.inline.commerce-checkout-progress {
+    padding-left: 15px;
+    li,
+    li.last {
+      font-size: 12px;
+      margin-right: 0;
+      margin-bottom: 5px;
+      width: 50%;
+    }
+  }
+}

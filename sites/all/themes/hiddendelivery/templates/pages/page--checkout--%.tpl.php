@@ -141,7 +141,7 @@
     <?php endif; ?>
 
     <div class="row">
-      <div class="breadcrumb-wrapper col-md-9 col-sm-4">
+      <div class="breadcrumb-wrapper">
         <?php if (!empty($checkout_progress_block)): print $checkout_progress_block; endif;?>
       </div>
       <div class="user-info-panel col-md-3 col-sm-4">
