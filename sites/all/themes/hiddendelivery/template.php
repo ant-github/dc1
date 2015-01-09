@@ -10,6 +10,10 @@ function hiddendelivery_preprocess(&$vars, $hook) {
 }
 
 function hiddendelivery_preprocess_page(&$vars) {
+  //upon client request hide breadcrumb
+if(isset($vars['breadcrumb'])){
+  $vars['breadcrumb'] = "";
+}
   if (!user_is_anonymous()) {
     $user = $vars['user'];
     $account_link = l(t('You are logged in as @username', array('@username' => $user->name)), 'user');
