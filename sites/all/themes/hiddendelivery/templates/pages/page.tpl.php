@@ -125,7 +125,7 @@
       </a>
     </div>
     <div class="video col-sm-6">
-      <div id="introVideo"></div>
+      <div class="youtubeVideo" data-videoid="niEKZ-CQ1tY"></div>
       <a class="video-overlay" href="https://www.youtube.com/watch?v=niEKZ-CQ1tY"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
     </div>
     <?php

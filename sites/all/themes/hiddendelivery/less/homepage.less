@@ -106,26 +106,27 @@
 		padding: 0 30px 0 45px;
 	}
 
-	.video {
-		padding-right: 95px;
-		overflow: hidden;
-		position: relative;
-		iframe {
-			width: 100%;
-			height: 360px;
-		}
+}
 
-		.video-overlay {
-			position: absolute;
-			bottom: 0;
-			top: 0;
-			left: 0;
-			right: 95px;
-			img {
-				height: 100%;
-				display: block;
-				width: 100%;
-			}
+.video {
+	overflow: hidden;
+	position: relative;
+	padding-right: 95px;
+	iframe {
+		width: 100%;
+		height: 360px;
+	}
+
+	.video-overlay {
+		position: absolute;
+		bottom: 0;
+		top: 0;
+		left: 0;
+		right: 95px;
+		img {
+			height: 100%;
+			display: block;
+			width: 100%;
 		}
 	}
 }
@@ -151,7 +152,7 @@
 }
 .node .content .payment-methods-img {
 	border: 0;
-	width: auto;	
+	width: auto;
 	text-align: center;
 }
 @media(max-width: @screen-sm-max) {
@@ -203,18 +204,18 @@
 			}
 		}
 
-		.video {
-			padding-right: 50px;
-			.video-overlay {
-				right: 50px;
-			}
-			iframe {
-				height: 320px;
-			}
-		}
-
 		.btn-create-wishlist {
 			width: 70%;
+		}
+	}
+
+	.video {
+		padding-right: 50px;
+		.video-overlay {
+			right: 50px;
+		}
+		iframe {
+			height: 320px;
 		}
 	}
 }
@@ -244,7 +245,7 @@
 	}
 }
 @media(max-width: 450px) {
-	.front {
+	// .front {
 		.video {
 			padding-right: 30px;
 			padding-left: 40px;
@@ -257,7 +258,7 @@
 				height: auto;
 			}
 		}
-	}
+	// }
 }
 @media(max-width:680px) {
 	.node .content .payment-methods-img {

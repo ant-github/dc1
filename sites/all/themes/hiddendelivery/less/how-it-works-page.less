@@ -56,6 +56,15 @@
 	.video-column {
 		margin-bottom: 15px;
 	}
+	.video {
+		padding: 0;
+		iframe {
+			height: 480px;
+		}
+		.video-overlay {
+			width: 100%;
+		}
+	}
 }
 
 .page-node-2 {
@@ -69,6 +78,9 @@
 		.column {
 			// padding: 0 5px;
 		}
+		.video iframe {
+			height: 400px;
+		}
 	}
 }
 
@@ -76,6 +88,23 @@
 	.how-it-works {
 		.column {
 			padding: 0;
+		}
+		.video iframe {
+			height: 475px;
+		}
+	}
+}
+
+@media(max-width: @screen-xs-max) {
+	.how-it-works {
+		.video {
+			.video-overlay {
+				display: none;
+			}
+
+			iframe {
+				height: 200px;
+			}
 		}
 	}
 }
