@@ -77,16 +77,16 @@ function hd_theme_alterations_preprocess_node(&$vars) {
 
 function hd_theme_alterations_block_view_alter(&$data, $block) {
   global $user;
-  global $base_url;
   //set cards block content
   if (isset($block->bid)&&$block->bid == '158') {
     $data['content'] = _cards_block_content();
   }
+  //redirect link for the wishlist
   if (isset($block->bid)&&$block->bid == '110') {
     $current_user = user_load($user->uid);
-    $wishlist_url = str_replace("http://www.deliverycode.com", "",
-      $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']);
-    $data['content']['#content'][864]['#href'] = $base_url.$wishlist_url;
+    $wishlist_url =
+      $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
+    $data['content']['#content'][864]['#href'] = $wishlist_url;
   }
 
 }

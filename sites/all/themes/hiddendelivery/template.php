@@ -107,7 +107,8 @@ function hiddendelivery_preprocess_entity(&$vars) {
         $vars['remove_button'] = drupal_get_form('hd_wishlist_item_remove_form_' . $vars['wishlist_item']->wishlist_item_id, $vars['wishlist_item']->wishlist_item_id, arg(1));
         // Get the absolute URL to this wishlist item.
         //$full_url = url('wishlist/item/' . $vars['wishlist_item']->wishlist_item_id, array('absolute' => TRUE));
-        $full_url = url('wishlist/' . $wid, array('absolute' => TRUE));
+        $current_user = user_load($user->uid);
+        $full_url =$current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
         // Facebook share link.
         $vars['share_links']['facebook'] = '<a href="https://www.facebook.com/sharer/sharer.php?u=' . $full_url . '" class="bg-sprite-circle-facebook bg-sprite block-sprite-fixed pull-left" target="_blank">Share on Facebook</a>';
 
@@ -154,7 +155,7 @@ function hiddendelivery_preprocess_entity(&$vars) {
  * Implements hook_preprocess_views_view().
  */
 function hiddendelivery_preprocess_views_view(&$vars) {
-  // Wishlist page.
+// Wishlist page.
   if ($vars['view']->name == 'wishlist_page') {
     global $user;
     // Get the wishlist id.
@@ -165,8 +166,11 @@ function hiddendelivery_preprocess_views_view(&$vars) {
     // If the user is the wishlist owner add the share links.
     if ($wishlist->uid == $user->uid) {
       $vars['is_owner'] = TRUE;
-      // Email share link.
-      $wishlish_url = url('wishlist/' . $wishlist_id, array('absolute' => TRUE));
+      $current_user = user_load($user->uid);
+      //print_r($current_user);
+      // Email share link.$current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
+      //$wishlish_url = url('wishlist/' . $wishlist_id, array('absolute' => TRUE));
+      $wishlish_url = $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'];
       $share_link_email = '<a href="mailto:?subject=Take a look at my wishlist!&amp;body=' . $wishlish_url .'" class="share-links-email" title="Share by Email" target="_blank"><span class="element-invisible">Email Widget</span></a>';
 
       // Add the share links modal.

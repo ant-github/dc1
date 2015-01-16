@@ -362,7 +362,10 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
     '#submit'=>  array('user_profile_form_submit'),
   );
   //check if wishlist url field has a full domain in it
+  //live
   $url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://www.deliverycode.com/');
+  //local
+  //$url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://dc.dev');
   //build and render shurly_create_form from the shurly module
   if($url!== FALSE){
     $form['wishlist_url'] = array(
@@ -383,7 +386,7 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
     if(isset($form['wishlist_url']['short_url_create']['result'])){
       //print twitter share link
       $form['wishlist_url']['short_url_create']['result']['#field_suffix'] =
-        '<div class="social"><a href="http://twitter.com?status= Check out my wishlist @ ' .
+        '<div class="social"><a href="http://twitter.com?status= Take a look at my wishlist! @ ' .
           urlencode($form['wishlist_url']['short_url_create']['result']['#value']) . ' via @delivery_code ">' .
             t('Share this with twitter') . '</a></div>';
       $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']=
