@@ -7,7 +7,7 @@
 				e.preventDefault();
 			});
 
-      if($('#introVideo').length) {
+      if($('.youtubeVideo').length) {
         setupVideo();
       }
       if($('#wishlist-share').length) {
@@ -32,17 +32,32 @@
         }
 
         window.onYouTubeIframeAPIReady = function() {
-          Drupal.settings.introVideo = new YT.Player('introVideo', {
-            height: '390',
-            width: '640',
-            videoId: 'niEKZ-CQ1tY',
-            playerVars: {
-              rel: 0
-            },
-            events: {
-              'onReady': onPlayerReady,
-              'onStateChange': onPlayerStateChange
-            }
+          var videos = $('.youtubeVideo');
+          Drupal.settings.videos = Drupal.settings.videos || [];
+          videos.each(function() {
+            var videoID = $(this).data('videoid'),
+              wrapperID = 'video' + videoID,
+              overlay;
+
+            this.id = wrapperID;
+            overlay = $(this).next('.video-overlay');
+            overlay.attr('rel', videoID);
+
+            var videoAPI = new YT.Player(wrapperID, {
+              height: '390',
+              width: '640',
+              videoId: videoID,
+              playerVars: {
+                rel: 0
+              },
+              events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+              }
+            });
+
+            Drupal.settings.videos[videoID] = videoAPI;
+
           });
         };
 
@@ -66,10 +81,13 @@
         });
 
         $('.video-overlay').on('click', function(e) {
-          if(Drupal.settings.introVideo) {
+          var vidid = this.getAttribute('rel'),
+            video = Drupal.settings.videos[vidid];
+
+          if(video) {
               e.preventDefault();
             $(this).fadeOut(200, function() {
-              Drupal.settings.introVideo.playVideo();
+              video.playVideo();
             });
           }
         });

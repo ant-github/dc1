@@ -119,13 +119,13 @@
       <h1 class="hero-title">Wishlist Service</h1></br>
       <h2 class="sub-title">Delivering to you. Wherever you are.</h2>
       <p>DeliveryCode&#8482; is the only universal wishlist service where your delivery address is securely hidden from the buyer.</p>
-      <a href="/about-us" class="learn-more btn btn-primary">
+      <a href="/how-it-works" class="learn-more btn btn-primary">
         How it works
         <span class="bg-sprite bg-sprite-ico-double-chevron block-sprite"></span>
       </a>
     </div>
     <div class="video col-sm-6">
-      <div id="introVideo"></div>
+      <div class="youtubeVideo" data-videoid="niEKZ-CQ1tY"></div>
       <a class="video-overlay" href="https://www.youtube.com/watch?v=niEKZ-CQ1tY"><img src="/sites/all/themes/hiddendelivery/images/HomePage/video-overlay.jpg" alt="" /></a>
     </div>
     <?php
