@@ -384,7 +384,7 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
       //print twitter share link
       $form['wishlist_url']['short_url_create']['result']['#field_suffix'] =
         '<div class="social"><a href="http://twitter.com?status= Check out my wishlist @ ' .
-          urlencode($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']) . ' via @delivery_code ">' .
+          urlencode($form['wishlist_url']['short_url_create']['result']['#value']) . ' via @delivery_code ">' .
             t('Share this with twitter') . '</a></div>';
       $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']=
         $form['wishlist_url']['short_url_create']['result']['#value'];
