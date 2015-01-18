@@ -72,14 +72,14 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
       $product->title = $product_data['objects'][0]['title'];
       $product->language = LANGUAGE_NONE;
       $product->uid = 1;
+
       // image stuff - check to see if it does exists..
       $i = 0;
-      //check if image cointains http://
-      $prod_url = strpos($product_data['objects'][0]['images'][$i]['url'],'http');
 
-      if(isset($product_data['objects'][0]['images'][$i]) && !empty($prod_url)){
+      if(isset($product_data['objects'][0]['images'][$i])){
         // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
-        $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+
+        $image_data = file_get_contents($product_data['objects'][0]['images'][$i]['url']);
 
         if(!empty($image_data)){
           // Check size of the array - looks like we need another image..
