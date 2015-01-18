@@ -72,8 +72,8 @@ function hd_wishlist_item_form_submit($form, &$form_state) {
   field_attach_submit('wishlist_item', $entity, $form, $form_state);
   // Set a unique item code for new wishlist items.
   if (isset($entity->is_new)) {
-    $item_code = hd_wishlist_item_generate_item_code();
-    $entity->field_item_code[LANGUAGE_NONE][0]['value'] = $item_code;
+    //$item_code = hd_wishlist_item_generate_item_code();
+    //$entity->field_item_code[LANGUAGE_NONE][0]['value'] = $item_code;
   }
   hd_wishlist_item_entity_save($entity);
 
