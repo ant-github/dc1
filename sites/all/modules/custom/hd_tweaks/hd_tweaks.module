@@ -366,6 +366,7 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
   $url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://www.deliverycode.com/');
   //local
   //$url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://dc.dev');
+
   //build and render shurly_create_form from the shurly module
   if($url!== FALSE){
     $form['wishlist_url'] = array(
@@ -375,13 +376,13 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
         '#collapsed' => FALSE,
       );
     $form['wishlist_url']['short_url_create']= drupal_get_form('shurly_create_form');
-    $form['wishlist_url']['short_url_create']['#submit']= 'user_profile_form_submit';
     $form['wishlist_url']['short_url_create']['long_url']['#title']= 'Current URL';
     $form['wishlist_url']['short_url_create']['long_url']['#value'] =
       $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'];
     $form['wishlist_url']['short_url_create']['long_url']['#attributes']= array(
       'readonly'=>'readonly',
       );
+    dpm($form['wishlist_url']['short_url_create']);
     //check for the submitted result
     if(isset($form['wishlist_url']['short_url_create']['result'])){
       //print twitter share link
