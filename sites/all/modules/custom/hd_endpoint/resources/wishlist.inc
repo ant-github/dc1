@@ -95,8 +95,12 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
         // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
         if($image_data){
           $img = file_get_contents($product_data['objects'][0]['images'][$i]['url']);
-          $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
-          $img_name = $sku.'.'.$img_type[1];
+          if(isset($image_data['mime'])){
+            $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
+            $img_name = $sku.'.'.$img_type[1];
+          }else{
+            $img_name = $sku.'jpg';
+          }
           $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
           $product->field_product_image[LANGUAGE_NONE][0] = array(
             'fid' => $file->fid,
