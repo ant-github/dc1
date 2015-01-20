@@ -143,15 +143,15 @@ function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
   $path['alias'] = $form_state['values']['alias'];
   //check if path alias exists
   $item_exists = _pathauto_alias_exists($path['alias'],$path['source']);
-
   if($item_exists==TRUE){
     //set message saved
     drupal_set_message(t('Sorry the url '.$path['alias'].' is already taken.'), 'error');
-  }elseif ($user->uid!=1 || !in_array('shop admin', $user->roles)){
+  }elseif ($user->uid==1 || in_array('shop admin', $user->roles)){
+    //if admins
     //save url alias
     _pathauto_set_alias($path);
     //save wishlist url in the text wishlist url for mobile calls
-    $current_user = user_load($user->uid);
+    $current_user = user_load(arg(1));
     $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
      $base_url.'/'.$path['alias'];
     user_save($current_user);
@@ -160,7 +160,7 @@ function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
       //save url alias
       _pathauto_set_alias($path);
       //save wishlist url in the text wishlist url for mobile calls
-      $current_user = user_load(arg(1));
+      $current_user = user_load($user->uid);
       $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
        $base_url.'/'.$path['alias'];
       user_save($current_user);
