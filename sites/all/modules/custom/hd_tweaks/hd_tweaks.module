@@ -133,8 +133,10 @@ global $base_url;
 
 
 function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
+  dpm($form);
   global $user;
   global $base_url;
+  dpm($user);
   //include pathauto in file
   module_load_include('inc', 'pathauto', 'pathauto');
   //create path url
@@ -147,7 +149,7 @@ function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
   if($item_exists==TRUE){
     //set message saved
     drupal_set_message(t('Sorry the url '.$path['alias'].' is already taken.'), 'error');
-  }else{
+  }elseif ($user->uid!=1 || !in_array('shop admin', $user->roles)){
     //save url alias
     _pathauto_set_alias($path);
     //save wishlist url in the text wishlist url for mobile calls
@@ -156,7 +158,16 @@ function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
      $base_url.'/'.$path['alias'];
     user_save($current_user);
     drupal_set_message(t('The changes have been saved.'));
-  }
+   }else{
+      //save url alias
+      _pathauto_set_alias($path);
+      //save wishlist url in the text wishlist url for mobile calls
+      $current_user = user_load(arg(1));
+      $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
+       $base_url.'/'.$path['alias'];
+      user_save($current_user);
+      drupal_set_message(t('The changes have been saved.'));
+   }
 }
 /**
  * Page callback from create a wishlist page.
