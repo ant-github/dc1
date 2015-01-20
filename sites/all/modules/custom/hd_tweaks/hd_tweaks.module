@@ -133,10 +133,8 @@ global $base_url;
 
 
 function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
-  dpm($form);
   global $user;
   global $base_url;
-  dpm($user);
   //include pathauto in file
   module_load_include('inc', 'pathauto', 'pathauto');
   //create path url
