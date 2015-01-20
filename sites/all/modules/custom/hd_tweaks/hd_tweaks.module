@@ -1,6 +1,8 @@
 <?php
 
 function hd_tweaks_form_alter(&$form, &$form_state, $form_id) {
+  //dpm($form);
+  //dpm($form_state,'state');
   switch($form_id) {
     //contact us form
     case 'webform_client_form_7':
@@ -81,9 +83,81 @@ function hd_tweaks_menu() {
     'access arguments' => array('create purchase entities'),
     'type' => MENU_LOCAL_ACTION,
   );
+  $items['create-wishlist-url'] = array(
+  'title' => 'Create a custom url for your wishlist',
+  'page callback' => 'hd_tweaks_create_wishlist_url_page_callback',
+  );
   return $items;
 }
+/**
+ * Page callback for create_wishlisl_url_callback form.
+ */
+function hd_tweaks_create_wishlist_url_page_callback(){
+  return drupal_get_form('hd_tweaks_form_create_wishlist_url');
+}
 
+//Create wishlist URL form
+function hd_tweaks_form_create_wishlist_url($form, &$form_state) {
+global $base_url;
+
+  $form['source'] = array(
+          '#type' => 'textfield',
+          '#title' => 'Existing wishlist URL',
+          '#default_value' => '',
+          '#maxlength'=> 255,
+          '#size'=>45,
+          '#description'=> 'This is your existing wishlist url',
+          '#attributes' => array(
+          'readonly'=>'readonly',
+          ),
+          '#field_prefix'=>$base_url.'/',
+        );
+  $form['alias'] = array(
+          '#type' => 'textfield',
+          '#title' => 'New wishlist URL',
+          '#default_value' => '',
+          '#description'=> 'Please create your custom wishlist url',
+          '#maxlength'=> 255,
+          '#size'=> 45,
+          '#required'=> TRUE,
+          '#field_prefix'=>$base_url.'/',
+        );
+
+  $form['actions']['submit'] = array(
+          '#type' => 'submit',
+          '#value' => t('Create URL'),
+        );
+  return $form;
+
+}
+
+
+function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
+  global $user;
+  global $base_url;
+  //include pathauto in file
+  module_load_include('inc', 'pathauto', 'pathauto');
+  //create path url
+  $path = array();
+  $path['source'] = $form_state['values']['source'];
+  $path['alias'] = $form_state['values']['alias'];
+  //check if path alias exists
+  $item_exists = _pathauto_alias_exists($path['alias'],$path['source']);
+
+  if($item_exists==TRUE){
+    //set message saved
+    drupal_set_message(t('Sorry the url '.$path['alias'].' is already taken.'), 'error');
+  }else{
+    //save url alias
+    _pathauto_set_alias($path);
+    //save wishlist url in the text wishlist url for mobile calls
+    $current_user = user_load($user->uid);
+    $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
+     $base_url.'/'.$path['alias'];
+    user_save($current_user);
+    drupal_set_message(t('The changes have been saved.'));
+  }
+}
 /**
  * Page callback from create a wishlist page.
  */
@@ -328,6 +402,7 @@ function hd_tweaks_form_user_login_alter(&$form, &$form_state) {
 
 }
 
+
 function hd_tweaks_form_user_register_form_alter(&$form, &$form_state) {
   $form['#attributes']['class'][] = 'row';
 
@@ -343,13 +418,13 @@ function hd_tweaks_form_user_register_form_alter(&$form, &$form_state) {
   $form['actions']['#suffix'] = render($form['hybridauth']).'</div>';
 }
 
-
 /**
  * Implements hook_form_alter().
  *
  * Add the bootstrap classes to field groups
  */
 function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
+  global $base_url;
   $form['#attributes'] = array('class' => 'row');
   $form['#groups']['group_personal_information']->format_settings['instance_settings']['classes'] .= ' col-md-6';
   $form['#groups']['group_size_guide']->format_settings['instance_settings']['classes'] .= ' col-md-6';
@@ -361,48 +436,39 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
     '#value' => t('Save Image'),
     '#submit'=>  array('user_profile_form_submit'),
   );
-  // //check if wishlist url field has a full domain in it
-  // //live
-  // $url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://www.deliverycode.com/');
-  // //local
-  // //$url = strpos($form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],'http://dc.dev');
+  //check current url to see if it has an alias
+  $alias = explode('/',$form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']);
+  //render custom hd_tweaks_form_create_wishlist_url form
+  if(count($alias)>4){
+    $form['wishlist_url'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Customise your wishlist URL',
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+    $form['wishlist_url']['create_url_alias'] = drupal_get_form('hd_tweaks_form_create_wishlist_url');
+    $form['wishlist_url']['create_url_alias']['source']['#value'] = 'wishlist/'.$alias[4];
 
-  // //build and render shurly_create_form from the shurly module
-  // if($url!== FALSE){
-  //   $form['wishlist_url'] = array(
-  //       '#type' => 'fieldset',
-  //       '#title' => 'Customise your short wishlist URL',
-  //       '#collapsible' => FALSE,
-  //       '#collapsed' => FALSE,
-  //     );
-  //   $form['wishlist_url']['short_url_create']= drupal_get_form('shurly_create_form');
-  //   $form['wishlist_url']['short_url_create']['long_url']['#title']= 'Current URL';
-  //   $form['wishlist_url']['short_url_create']['long_url']['#value'] =
-  //     $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'];
-  //   $form['wishlist_url']['short_url_create']['long_url']['#attributes']= array(
-  //     'readonly'=>'readonly',
-  //     );
-  //   dpm($form['wishlist_url']['short_url_create']);
-  //   //check for the submitted result
-  //   if(isset($form['wishlist_url']['short_url_create']['result'])){
-  //     //print twitter share link
-  //     $form['wishlist_url']['short_url_create']['result']['#field_suffix'] =
-  //       '<div class="social"><a href="http://twitter.com?status= Take a look at my wishlist! @ ' .
-  //         urlencode($form['wishlist_url']['short_url_create']['result']['#value']) . ' via @delivery_code ">' .
-  //           t('Share this with twitter') . '</a></div>';
-  //     $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']=
-  //       $form['wishlist_url']['short_url_create']['result']['#value'];
-  //       $user = user_load($form['#user']->uid);
-  //       $user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
-  //         $form['wishlist_url']['short_url_create']['result']['#value'];
-  //       user_save($user);
-  //     //uset things that we do not need to show on the results form
-  //     $form['wishlist_url']['#title']='Share your new short wishlist URL!';
-  //     unset($form['wishlist_url']['short_url_create']['submit']);
-  //     unset($form['wishlist_url']['short_url_create']['long_url']);
-  //     unset($form['wishlist_url']['short_url_create']['short_url']);
-  //   }
-  // }
+    unset($form['field_profile_wishlist_url']);
+  }else{
+    //show url alias
+    $form['wishlist_url'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Wishlist URL',
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+    $form['wishlist_url']['url_alias']= array(
+      '#type' => 'textfield',
+      '#default_value' => $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],
+      '#attributes'=> array(
+        'readonly'=>'readonly',
+      ),
+    );
+    if($form['#user']->uid != 1){
+    unset($form['field_profile_wishlist_url']);
+    }
+  }
 }
 
 /**
