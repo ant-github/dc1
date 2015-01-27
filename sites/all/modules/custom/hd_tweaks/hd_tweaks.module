@@ -96,77 +96,6 @@ function hd_tweaks_create_wishlist_url_page_callback(){
   return drupal_get_form('hd_tweaks_form_create_wishlist_url');
 }
 
-//Create wishlist URL form
-function hd_tweaks_form_create_wishlist_url($form, &$form_state) {
-global $base_url;
-
-  $form['source'] = array(
-          '#type' => 'textfield',
-          '#title' => 'Existing wishlist URL',
-          '#default_value' => '',
-          '#maxlength'=> 255,
-          '#size'=>45,
-          '#description'=> 'This is your existing wishlist url',
-          '#attributes' => array(
-          'readonly'=>'readonly',
-          ),
-          '#field_prefix'=>$base_url.'/',
-        );
-  $form['alias'] = array(
-          '#type' => 'textfield',
-          '#title' => 'New wishlist URL',
-          '#default_value' => '',
-          '#description'=> 'Please create your custom wishlist url',
-          '#maxlength'=> 255,
-          '#size'=> 45,
-          '#required'=> TRUE,
-          '#field_prefix'=>$base_url.'/',
-        );
-
-  $form['actions']['submit'] = array(
-          '#type' => 'submit',
-          '#value' => t('Create URL'),
-        );
-  return $form;
-
-}
-
-
-function hd_tweaks_form_create_wishlist_url_submit(&$form, &$form_state){
-  global $user;
-  global $base_url;
-  //include pathauto in file
-  module_load_include('inc', 'pathauto', 'pathauto');
-  //create path url
-  $path = array();
-  $path['source'] = $form_state['values']['source'];
-  $path['alias'] = $form_state['values']['alias'];
-  //check if path alias exists
-  $item_exists = _pathauto_alias_exists($path['alias'],$path['source']);
-  if($item_exists==TRUE){
-    //set message saved
-    drupal_set_message(t('Sorry the url '.$path['alias'].' is already taken.'), 'error');
-  }elseif ($user->uid==1 || in_array('shop admin', $user->roles)){
-    //if admins
-    //save url alias
-    _pathauto_set_alias($path);
-    //save wishlist url in the text wishlist url for mobile calls
-    $current_user = user_load(arg(1));
-    $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
-     $base_url.'/'.$path['alias'];
-    user_save($current_user);
-    drupal_set_message(t('The changes have been saved.'));
-   }else{
-      //save url alias
-      _pathauto_set_alias($path);
-      //save wishlist url in the text wishlist url for mobile calls
-      $current_user = user_load($user->uid);
-      $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']=
-       $base_url.'/'.$path['alias'];
-      user_save($current_user);
-      drupal_set_message(t('The changes have been saved.'));
-   }
-}
 /**
  * Page callback from create a wishlist page.
  */
@@ -445,39 +374,6 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
     '#value' => t('Save Image'),
     '#submit'=>  array('user_profile_form_submit'),
   );
-  //check current url to see if it has an alias
-  $alias = explode('/',$form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value']);
-  //render custom hd_tweaks_form_create_wishlist_url form
-  if(count($alias)>4){
-    $form['wishlist_url'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Customise your wishlist URL',
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-    );
-    $form['wishlist_url']['create_url_alias'] = drupal_get_form('hd_tweaks_form_create_wishlist_url');
-    $form['wishlist_url']['create_url_alias']['source']['#value'] = 'wishlist/'.$alias[4];
-
-    unset($form['field_profile_wishlist_url']);
-  }else{
-    //show url alias
-    $form['wishlist_url'] = array(
-      '#type' => 'fieldset',
-      '#title' => 'Wishlist URL',
-      '#collapsible' => FALSE,
-      '#collapsed' => FALSE,
-    );
-    $form['wishlist_url']['url_alias']= array(
-      '#type' => 'textfield',
-      '#default_value' => $form['field_profile_wishlist_url'][LANGUAGE_NONE][0]['value']['#default_value'],
-      '#attributes'=> array(
-        'readonly'=>'readonly',
-      ),
-    );
-    if($form['#user']->uid != 1){
-    unset($form['field_profile_wishlist_url']);
-    }
-  }
 }
 
 /**
