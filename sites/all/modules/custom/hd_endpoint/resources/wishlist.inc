@@ -64,8 +64,6 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
     $product = commerce_product_load_by_sku($sku);
 
     if(empty($product)){
-      $price_original = $product_data['objects'][0]['offerPrice'];
-      $price_stripped = preg_replace('/[^0-9\-.]/', '', $price_original); // Removes currency and * 100.
       // Build the product
       $product = commerce_product_new('product');
       $product->sku = $sku;
@@ -78,9 +76,14 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
 
       if(isset($product_data['objects'][0]['images'][$i])){
         // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
-
-        $image_data = file_get_contents($product_data['objects'][0]['images'][$i]['url']);
-
+        $product_url = $product_data['objects'][0]['images'][$i]['url'];
+        $http_exists = strpos($product_url,'http:');
+        //review this!!!
+        if($http_exists===0){
+          $image_data = file_get_contents($product_url);
+        }else{
+          $image_data = '';
+        }
         if(!empty($image_data)){
           // Check size of the array - looks like we need another image..
           if(count($product_data['objects'][0]['images']) > 1){
@@ -91,10 +94,9 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
             }
           }
         }
-
         // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
         if($image_data){
-          $img = file_get_contents($product_data['objects'][0]['images'][$i]['url']);
+          $img = file_get_contents($product_url);
           if(isset($image_data['mime'])){
             $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
             $img_name = $sku.'.'.$img_type[1];
@@ -113,10 +115,13 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
           );
         }
       }
-
-      $price_original = $product_data['objects'][0]['offerPrice'];
-      $price_stripped = preg_replace('/[^0-9\-.]/', '', $price_original); // Removes currency and * 100.
-      $currency_unit =  mb_substr($price_original, 0, 1, "utf-8");
+      $price = $product_data['objects'][0]['offerPrice'];
+      //strip currency code from string
+      $price_stripped = _get_amount($price);
+      //multiple the unit price
+      $final_price = $price_stripped*100;
+      //check wich currency and set its code
+      $currency_unit =  mb_substr($price, 0, 1, "utf-8");
       switch ($currency_unit) {
         case '$':
           $code = 'USD';
@@ -124,18 +129,20 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
         case '£':
           $code = 'GBP';
         break;
+        case is_numeric($currency_unit);
+          $code = 'EUR';
+        break;
         default:
           $code = 'EUR';
         break;
       }
       // Check the price is numeric - if not skip this for now? :/
-      if(is_numeric($price_stripped)){
+      if(is_numeric($final_price)){
         $product->commerce_price[LANGUAGE_NONE][0] = array(
-          'amount' => (int) $price_stripped * 100,
+          'amount' => $final_price,
           'currency_code' => $code,
         );
       } // else - default price?
-
       $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
       commerce_product_save($product);
     }
@@ -149,8 +156,6 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
 
     $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
     $wiw->field_commerce_produc_ref = $product->product_id;
-    //I will not delete this just yet but I think we don't need it
-    //$wiw->field_item_code = hd_wishlist_item_generate_item_code();
     $wiw->field_status = 'available';
     $wiw->save();
 
@@ -205,4 +210,16 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
   } else {
     return FALSE;
   }
+}
+//clean the product price removing curruncy symbols and separators
+function _get_amount($price){
+    $cleanString = preg_replace('/([^0-9\.,])/i', '', $price);
+    $onlyNumbersString = preg_replace('/([^0-9])/i', '', $price);
+
+    $separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
+
+    $stringWithCommaOrDot = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
+    $removedThousendSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
+
+    return (float) str_replace(',', '.', $removedThousendSeparator);
 }
