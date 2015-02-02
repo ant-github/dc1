@@ -67,7 +67,7 @@
                           <tbody>
                             <tr>
                               <td class="center" style="padding: 30px 0 0 30px">
-                                <a href="#"><img alt="DeliveryCode available on the App Store" src="https://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/adde9ea1-f675-4a49-b4fb-517ccae6f418.jpg" /></a></td>
+                                <a href="https://itunes.apple.com/gb/app/deliverycode-delivering-to/id943510420?mt=8&amp;uo=4"><img alt="DeliveryCode available on the App Store" src="https://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/adde9ea1-f675-4a49-b4fb-517ccae6f418.jpg" /></a></td>
                             </tr>
                           </tbody>
                         </table>
@@ -97,7 +97,7 @@
                                       <td align="center" style="border-collapse: collapse;max-width: 487px;width: 100%;background:#000000;" valign="top">
                                         <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br />
                                           <br />
-                                          <span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">YOU HAVE BEEN SPECIALLY SELECTED</span><br />
+                                          <span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">AN INVITATION</span><br />
                                           <br />
                                           &nbsp;</p>
                                       </td>
