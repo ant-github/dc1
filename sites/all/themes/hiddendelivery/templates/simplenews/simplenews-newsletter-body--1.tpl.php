@@ -40,7 +40,7 @@
           <tbody>
             <tr>
               <td align="center" bgcolor="#000000" style="border-collapse: collapse;" valign="top">
-                <span style="color: #ffffff; font-family: Arial; font-size: 11px; text-align: center;">To ensure you receive our emails, please add email@domain.com to your address book or safe list </span></td>
+                <span style="color: #ffffff; font-family: Arial; font-size: 11px; text-align: center;">To ensure you receive our emails, please add support@deliverycode.com to your address book or safe list </span></td>
             </tr>
             <tr>
               <td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top">
