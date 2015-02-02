@@ -112,11 +112,6 @@
 	.navbar {
 		.navbar-nav li a {
 			padding: 10px 0;
-		// }
-		// .secondary {
-		// 	position: absolute;
-		// 	right: 10px;
-		// 	top: 0;
 		}
 	}
 }
@@ -182,6 +177,12 @@
 		.secondary {
 			float: none;
 		}
+		.logo {
+			margin-right: 0;
+		}
+		.navbar-btn {
+			padding: 0;
+		}
 	}
 
 	.appstore-block {
@@ -192,6 +193,16 @@
 	}
 }
 
+@media(max-width: 415px) {
+	.navbar {
+		.logo {
+			img {
+				height: auto;
+				width: 160px;
+			}
+		}
+	}
+}
 
 @media(min-width: @screen-sm) {
 	.navbar .logo img {
