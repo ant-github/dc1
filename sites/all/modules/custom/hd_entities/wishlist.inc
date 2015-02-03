@@ -32,7 +32,7 @@ function hd_wishlist_page_add() {
  */
 function hd_wishlist_form($form, &$form_state, $entity) {
   $form_message_html = '<div class="alert alert-warning">';
-  $form_message_html .= '<h3>Create a new wishlist</h3>';
+  $form_message_html .= '<h3>Rename your wishlist</h3>';
   $form_message_html .= '<p>Give your wishlist a name and click "Save"</p>';
   $form_message_html .= '</div>';
 

@@ -28,10 +28,10 @@
  */
 ?>
 <div>
-	<?php print $fields['field_name']->wrapper_prefix; ?>
-	<?php print $fields['field_name']->label_html; ?>
-	<?php print $fields['field_name']->content; ?>
-	<?php print $fields['field_name']->wrapper_suffix; ?>
+	<?php print $fields['name']->wrapper_prefix; ?>
+	<?php print $fields['name']->label_html; ?>
+	<?php print $fields['name']->content; ?>
+	<?php print $fields['name']->wrapper_suffix; ?>
 	<?php print $fields['picture']->wrapper_prefix; ?>
 	<?php print $fields['picture']->label_html; ?>
 	<?php print $fields['picture']->content; ?>

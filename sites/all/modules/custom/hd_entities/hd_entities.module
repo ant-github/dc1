@@ -223,6 +223,7 @@ function hd_entities_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('hd_wishlist_form', 1),
     'access arguments' => array('edit any wishlist entity'),
+    'access callback' => 'hd_entities_access_callback',
     'type' => MENU_LOCAL_TASK,
   );
 
@@ -389,7 +390,18 @@ function hd_entities_permission() {
   );
 }
 
+//access call back for editing wish list
 
+function hd_entities_access_callback($op){
+  global $user;
+  //check admin
+  $admin = in_array('admin', $user->roles);
+  //return access true if enity owner or admin
+  if($op == 'edit any wishlist entity'){
+    $wiw = hd_wishlist_load(arg(1));
+    return $admin || $user->uid == $wiw->uid;
+  }
+}
 
 /**
  * Attempts to add a product to a wishlist based on product_url.
