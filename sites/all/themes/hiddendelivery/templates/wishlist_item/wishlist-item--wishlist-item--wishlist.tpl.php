@@ -41,9 +41,15 @@
      <?php print render($content['product:title']); ?>
      <?php print render($content['product:field_info']); ?>
      <?php print render($content['product:commerce_price']); ?>
+     <?php if (isset($disclaimer)): ?>
+      <?php print render($disclaimer); ?>
+     <?php endif; ?>
      <?php if (isset($note)): ?>
       <?php print render($note); ?>
      <?php endif; ?>
+
+
+     
   </div>
 
   <div class="actions col-md-3">

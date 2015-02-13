@@ -147,6 +147,15 @@ function hiddendelivery_preprocess_entity(&$vars) {
         $vars['wishlist_item_popup'] = theme('bootstrap_modal', $modal_options);
         $vars['wishlist_item_popup_id'] = $wishlist_item_popup_id;
       }
+      
+      //Check to see if the disclaimer box is ticked
+      $show_disclaimer = db_query('SELECT field_store_disclaimer_value FROM field_data_field_store_disclaimer WHERE entity_id = :tid AND field_store_disclaimer_value = :value', array(':tid' => $vars['wishlist_item']->field_store_ref['und'][0]['target_id'], ':value' => '1'))
+      ->rowCount();
+      if ($show_disclaimer == '1') {
+        //Why is this price in US Dollars? /terms#pricing
+        $vars['disclaimer'] = '<p><a href="/terms#pricing" target="_blank">Why is this price in US Dollars?</a></p>';
+      }
+      
     }
   }
 }
