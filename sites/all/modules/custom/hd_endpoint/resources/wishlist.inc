@@ -45,7 +45,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
   $opts = array(
   'http'=>array(
     'method'=>"GET",
-    'header'=>"Accept-language: en\r\n"
+    'header'=>"X-Forward-Accept-language: en-gb\r\n"
     )
   );
   $context = stream_context_create($opts);
@@ -116,12 +116,21 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
         }
       }
       $price = $product_data['objects'][0]['offerPrice'];
+      //price with currency codes in the end
+      //ISO currency codes have 3 letters so we check for the last 3 characters
+      $price_ending_currency_code = substr($price, -3);
       //strip currency code from string
       $price_stripped = _get_amount($price);
       //multiple the unit price
       $final_price = $price_stripped*100;
-      //check wich currency and set its code
-      $currency_unit =  mb_substr($price, 0, 1, "utf-8");
+      //check wich currency and set its code by symbol
+      if(!is_string($price_ending_currency_code)){
+        $currency_unit =  mb_substr($price, 0, 1, "utf-8");
+      }elseif($price_ending_currency_code == '€'){
+        $currency_unit = 'EUR';
+      }else{
+        $currency_unit = $price_ending_currency_code;
+      }
       switch ($currency_unit) {
         case '$':
           $code = 'USD';
@@ -133,7 +142,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
           $code = 'EUR';
         break;
         default:
-          $code = 'EUR';
+          $code = $currency_unit;
         break;
       }
       // Check the price is numeric - if not skip this for now? :/
