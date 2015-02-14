@@ -133,7 +133,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
         $currency_unit = '£';
       }elseif (mb_substr($price, 0, 1, "utf-8")=='$'||mb_substr($price, 0, 3, "utf-8")=='USD') {
         $currency_unit = '$';
-      }elseif($price_ending_currency_code == '€'||mb_substr($price, 0, 3, "utf-8")=='EUR'){
+      }elseif($price_ending_currency_code == '€'||mb_substr($price, 0, 3, "utf-8")=='EUR'||mb_substr($price, 0, 1, "utf-8")=='€'){
         $currency_unit = 'EUR';
       }else{
         $currency_unit = $price_ending_currency_code;
