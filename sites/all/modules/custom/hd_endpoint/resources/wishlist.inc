@@ -123,9 +123,15 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
       $price_stripped = _get_amount($price);
       //multiple the unit price
       $final_price = $price_stripped*100;
+
       //check wich currency and set its code by symbol
+      //todo refactor this code!!!!
       if(!is_string($price_ending_currency_code)){
         $currency_unit =  mb_substr($price, 0, 1, "utf-8");
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='£') {
+        $currency_unit = '£';
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='$') {
+        $currency_unit = '$';
       }elseif($price_ending_currency_code == '€'){
         $currency_unit = 'EUR';
       }else{
