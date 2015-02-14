@@ -52,6 +52,7 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
   // Open the file using the HTTP headers set above
   $json = file_get_contents($geturl, false, $context);
   $product_data = json_decode($json, TRUE);
+
   // Let's check to see if there is a price available - if not, this won't work, so bail out.
   if(isset($product_data['objects'][0]['offerPrice'])){
     // Strip and build the title..
@@ -128,11 +129,11 @@ function _wishlist_resource_add_product($uid,$wishlist_id,$product_url) {
       //todo refactor this code!!!!
       if(!is_string($price_ending_currency_code)){
         $currency_unit =  mb_substr($price, 0, 1, "utf-8");
-      }elseif (mb_substr($price, 0, 1, "utf-8")=='£') {
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='£'||mb_substr($price, 0, 3, "utf-8")=='GBP') {
         $currency_unit = '£';
-      }elseif (mb_substr($price, 0, 1, "utf-8")=='$') {
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='$'||mb_substr($price, 0, 3, "utf-8")=='USD') {
         $currency_unit = '$';
-      }elseif($price_ending_currency_code == '€'){
+      }elseif($price_ending_currency_code == '€'||mb_substr($price, 0, 3, "utf-8")=='EUR'){
         $currency_unit = 'EUR';
       }else{
         $currency_unit = $price_ending_currency_code;
