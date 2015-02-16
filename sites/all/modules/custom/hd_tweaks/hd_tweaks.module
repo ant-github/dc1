@@ -374,6 +374,7 @@ function hd_tweaks_form_user_profile_form_alter(&$form, &$form_state) {
     '#value' => t('Save Image'),
     '#submit'=>  array('user_profile_form_submit'),
   );
+  $form['field_name']['#attributes']['#title'] = 'Real name for delivery purposes only and will not be shown.';
 }
 
 /**

@@ -40,7 +40,7 @@ function hd_rules_check_wishlist_owner_address($commerce_order){
     $store_country = $store->field_store_country[LANGUAGE_NONE]['0']['value'];
 
     if($wish_list_owner_country == $store_country){
-      return TRUE;;
+      return TRUE;
     }
   }
 }
