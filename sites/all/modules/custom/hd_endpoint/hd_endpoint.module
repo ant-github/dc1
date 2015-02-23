@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Services hook for the definition of custom services.
