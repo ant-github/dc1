@@ -1,5 +1,4 @@
 <?php
-die('hiiii');
 /**
  * @file
  * Services hook for the definition of custom services.
