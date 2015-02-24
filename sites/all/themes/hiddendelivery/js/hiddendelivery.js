@@ -13,7 +13,11 @@
       if($('#wishlist-share').length) {
         fixTwitterShareLink();
       }
-
+      $(".commerce-paypal-icons img").each(function () {
+        if ($(this).attr("title") == "Mastercard") {
+            $(this).remove();
+        }
+      }); 
       function fixTwitterShareLink() {
         var link = $('#wishlist-share a.twitter-share-button'),
           href = link.attr('href');
