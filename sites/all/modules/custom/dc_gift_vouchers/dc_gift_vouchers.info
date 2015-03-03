@@ -1,0 +1,4 @@
+name = DC Gift Vouchers
+description = Provides custom gift vouchers to users.
+package = Delivery Code
+core = 7.x

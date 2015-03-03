@@ -2,6 +2,32 @@
 	Drupal.behaviors.globalScript = {
     attach: function (context, settings) {
 
+// remove master card logo on checkout review page
+      $(".commerce-paypal-icons img").each(function () {
+        if ($(this).attr("title") == "Mastercard") {
+            $(this).remove();
+        }
+      }); 
+ // user profile page change currency for logged in user
+ 
+ $("#userProfileCurrency").change(function() {
+    //get the selected value
+    var selectedValue = this.value;
+   	var url      = window.location.href; 
+	var name = url.split("/users/");
+
+	name = name[1];
+	 //make the ajax call
+    $.ajax({
+        url: '../sites/all/modules/custom/dc_gift_vouchers/dc_gift_vouchers.php',
+        type: 'POST',
+        data: {option : selectedValue, name : name},
+        success: function(result) {
+            $('.gift-balance-user p').html(result);
+        }
+    });
+});     
+
 			//remove click on menu delimiter
 			$(".navbar a.menu-delimiter", context).click(function(e){
 				e.preventDefault();
@@ -13,11 +39,7 @@
       if($('#wishlist-share').length) {
         fixTwitterShareLink();
       }
-      $(".commerce-paypal-icons img").each(function () {
-        if ($(this).attr("title") == "Mastercard") {
-            $(this).remove();
-        }
-      }); 
+
       function fixTwitterShareLink() {
         var link = $('#wishlist-share a.twitter-share-button'),
           href = link.attr('href');

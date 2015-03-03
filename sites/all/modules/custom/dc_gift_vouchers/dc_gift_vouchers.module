@@ -1,0 +1,78 @@
+<?php
+drupal_session_start();  
+global $user;
+
+function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
+    
+   if($form_id == 'dc_gift_vouchers_node_form' && $form['nid']['#value'] == ''){  
+       //print "<pre>"; print_r($form); die();
+       $userWishlistId = arg(1);
+       $form['select_currency_gift_voucher']['#weight'] = -1;
+       $form['select_amount_gift_voucher']['#weight'] = 0;
+       $form['title']['#weight'] = 1;
+       $form['your_message_gift_voucher']['#weight'] = 2;
+
+       $form['select_amount_gift_voucher']['und']['#default_value'] = 10;
+       $form['select_currency_gift_voucher']['und']['#default_value'] ="USD";
+      
+        hide($form['receiver_user_id_gift_voucher']);
+        hide($form['wishlist_id_gift_voucher']); 
+        hide($form['status_gift_voucher']);
+        
+       $form['wishlist_id_gift_voucher']['und'][0]['value']['#default_value'] = $userWishlistId;
+       $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$userWishlistId."'");
+       foreach($getUserId AS $wishlistUser){
+           $userId = $wishlistUser->uid;
+       }
+       $form['receiver_user_id_gift_voucher']['und'][0]['value']['#default_value'] = $userId;
+       $form['actions']['submit']['#value'] = 'Send';
+       unset($form['actions']['preview']);
+       
+   }
+}
+function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
+    if($node->type == 'dc_gift_vouchers'){
+        $_SESSION['gift_voucher_value'] = $node->select_amount_gift_voucher['und'][0]['value'];
+        $_SESSION['gift_voucher_currency'] = $node->select_currency_gift_voucher['und'][0]['value'];
+        $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];     
+        node_save($node);
+        $product = commerce_product_load_by_sku('gift_voucher');
+        commerce_cart_product_add_by_id($product->product_id);
+        drupal_goto('cart');
+    }  
+}
+
+function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
+    
+    if ($line_item->line_item_label == 'gift_voucher') {
+        $gift_voucher_value = $_SESSION['gift_voucher_value'];
+        $gift_voucher_currency = $_SESSION['gift_voucher_currency'];
+        $price = 100 * $gift_voucher_value; //1 dollar
+        $fee = ($gift_voucher_value * 4.9) / 100;
+        $deliveryCodeFee = $fee * 100;
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['currency_code']=$gift_voucher_currency;
+        //alter the base_price component
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['amount']=$price;
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['currency_code']=$gift_voucher_currency;        
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$deliveryCodeFee;
+        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['currency_code']=$gift_voucher_currency;
+        
+        //unset($_SESSION['gift_voucher_value']);
+    }
+}
+function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
+    $order_id = arg(1);
+    $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order_id."'");
+       foreach($getProductType AS $resProductType){
+           $productType = $resProductType->line_item_label;
+       }
+       if($productType == 'gift_voucher'){
+       	//print "<pre>"; print_r($checkout_pane); 
+            unset($checkout_pane['customer_profile_billing']);
+            unset($checkout_pane['commerce_shipping']);
+			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
+       }
+}
+
+?>

@@ -209,6 +209,12 @@ function hiddendelivery_preprocess_views_view(&$vars) {
       );
       $vars['add_an_item_to_wishlist_popup'] = theme('bootstrap_modal', $modal_options);
       $vars['add_an_item_to_wishlist_popup_id'] = $add_an_item_to_wishlist_markup_id;
+    }else{
+        module_load_include('inc', 'node', 'node.pages');
+        $form = node_add('dc_gift_vouchers');
+         
+$vars['send_a_gift_voucher']='<div class="gift-card-area"><button class="send-Gift-card-button col-md-12 col-sm-12 btn btn-primary btn-lg" data-toggle="collapse" data-target="#sendGiftVoucher" aria-expanded="false" aria-controls="sendGiftVoucher"><span class="send-gift-card-first">Send a </span><span class="send-gift-card-second">Gift Voucher</span></button><div id="sendGiftVoucher" class="collapse">'.drupal_render($form).'</div></div>';
+       
     }
   }
 }
