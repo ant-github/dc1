@@ -40,14 +40,15 @@
         <?php print $exposed; ?>
       </div>
       <div class="share-wishlist-container col-md-5">
-        <?php if ($is_owner): ?>
+        <?php if ($is_owner){ ?>
           <button class="col-md-12 col-sm-12 white-button btn btn-primary btn-lg" data-toggle="modal" data-target="#<?php print $share_links_popup_id ;?>">
             <span class="bg-sprite bg-sprite-circle-star2 share-wishlist"></span><?php print t('Share Your Wishlist Online'); ?>
           </button>
       <?php print $add_an_item_to_wishlist; ?>
       <?php print $add_an_item_to_wishlist_popup; ?>
           <?php print render($share_links_popup); ?>
-        <?php endif; ?>
+        <?php }else{ print $send_a_gift_voucher;  } ?>  
+          
       </div>
     </div>
     </div>
