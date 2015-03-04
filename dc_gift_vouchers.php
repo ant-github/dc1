@@ -1,7 +1,6 @@
 <?php
-$currdir=getcwd();
-//chdir('/opt/lampp/htdocs/delivery_code');
-define('DRUPAL_ROOT', $currdir);
+
+define('DRUPAL_ROOT', getcwd());
 require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
 require_once DRUPAL_ROOT . '/includes/common.inc';
 require_once DRUPAL_ROOT . '/includes/module.inc';
@@ -29,7 +28,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 		
 		}else if($currenyIn == 'gbp'){
 			
-			$usd_vs_gbp = db_query('SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id =19');
+			$usd_vs_gbp = db_query('SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id =58');
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
@@ -38,7 +37,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 			
 		}else if($currenyIn == 'eur'){
 
-			$usd_vs_eur = db_query('SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id =19');
+			$usd_vs_eur = db_query('SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id =58');
 			foreach($usd_vs_eur AS $res_usd_vs_eur){
 				$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 			}	

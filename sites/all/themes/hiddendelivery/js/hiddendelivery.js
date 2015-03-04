@@ -19,7 +19,7 @@
 	name = name[1];
 	 //make the ajax call
     $.ajax({
-        url: '../sites/all/modules/custom/dc_gift_vouchers/dc_gift_vouchers.php',
+        url: '../dc_gift_vouchers.php',
         type: 'POST',
         data: {option : selectedValue, name : name},
         success: function(result) {
