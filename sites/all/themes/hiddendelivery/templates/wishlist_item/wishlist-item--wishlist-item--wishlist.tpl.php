@@ -67,6 +67,9 @@
         <?php print $share_links['email']; ?>
       </div>
       <?php print render($remove_button); ?>
+      <div class="buy-button-with-remove">
+      <?php print render($content['field_commerce_produc_ref']);?>
+      </div>
     <?php endif; ?>
     </div>
     <div class="purchase-info">

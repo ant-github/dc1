@@ -216,7 +216,7 @@ function hd_wishlist_item_remove_form($form, &$form_state, $wishlist_item_id, $w
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Remove') . '<span class="hd-glyphicon-double-chevron"></span>',
+    '#value' => t('X'),
     '#attributes' => array(
       'data-toggle' => 'confirmation',
       'data-placement' => 'left',

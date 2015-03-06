@@ -13,15 +13,12 @@
  $("#userProfileCurrency").change(function() {
     //get the selected value
     var selectedValue = this.value;
-   	var url      = window.location.href; 
-	var name = url.split("/users/");
 
-	name = name[1];
 	 //make the ajax call
     $.ajax({
         url: '../dc_gift_vouchers.php',
         type: 'POST',
-        data: {option : selectedValue, name : name},
+        data: {option : selectedValue},
         success: function(result) {
             $('.gift-balance-user p').html(result);
         }

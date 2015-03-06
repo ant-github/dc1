@@ -9,22 +9,17 @@ require_once DRUPAL_ROOT . '/includes/file.inc';
 drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
 drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-
+global $user;
 	if(isset($_POST['option']) && $_POST['option'] != ''){
-		$username = $_POST['name'];
 		$currenyIn = $_POST['option'];
-		$select_user_id = db_query("SELECT uid FROM users WHERE name ='".$username."'");
-		foreach($select_user_id AS $res_id){
-			$user_id = $res_id->uid;
-		}
-				
+		$user_id = $user->uid;	
 		$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
 		if($currenyIn == 'usd'){
 			
-			echo "$".$usd_balance;
+			echo "$".number_format($usd_balance, 2);
 		
 		}else if($currenyIn == 'gbp'){
 			
@@ -32,7 +27,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			$gbp = $usd_balance * $gbp_rate;
+			$gbp = number_format(($usd_balance * $gbp_rate), 2);
 			echo "£".$gbp;
 			
 		}else if($currenyIn == 'eur'){
@@ -41,7 +36,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 			foreach($usd_vs_eur AS $res_usd_vs_eur){
 				$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 			}	
-			$eur = $usd_balance * $eur_rate;
+			$eur = number_format(($usd_balance * $eur_rate), 2);
 			echo $eur."€";
 			
 		}

@@ -34,7 +34,8 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
     if($node->type == 'dc_gift_vouchers'){
         $_SESSION['gift_voucher_value'] = $node->select_amount_gift_voucher['und'][0]['value'];
         $_SESSION['gift_voucher_currency'] = $node->select_currency_gift_voucher['und'][0]['value'];
-        $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];     
+        $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];
+		$_SESSION['gift_voucher_userid']  =   $giftUserId;
         node_save($node);
         $product = commerce_product_load_by_sku('gift_voucher');
         commerce_cart_product_add_by_id($product->product_id);
@@ -43,12 +44,17 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
 }
 
 function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
-    
+   // print "<pre>"; print_r($line_item); 
     if ($line_item->line_item_label == 'gift_voucher') {
         $gift_voucher_value = $_SESSION['gift_voucher_value'];
         $gift_voucher_currency = $_SESSION['gift_voucher_currency'];
         $price = 100 * $gift_voucher_value; //1 dollar
-        $fee = ($gift_voucher_value * 4.9) / 100;
+    	$giftVoucherRate = db_query("SELECT rate  FROM commerce_tax_rate WHERE  name='deliverycode_fee'");
+	       foreach($giftVoucherRate AS $resGiftVoucherRate){
+	           $giftRate = $resGiftVoucherRate->rate;
+	       }
+		$rate = $giftRate * 100;        
+        $fee = ($gift_voucher_value * $rate) / 100;
         $deliveryCodeFee = $fee * 100;
         $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
         $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['currency_code']=$gift_voucher_currency;
@@ -60,8 +66,13 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
         
         //unset($_SESSION['gift_voucher_value']);
     }
+
 }
+
+
+
 function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
+	
     $order_id = arg(1);
     $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order_id."'");
        foreach($getProductType AS $resProductType){
@@ -72,7 +83,202 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
             unset($checkout_pane['customer_profile_billing']);
             unset($checkout_pane['commerce_shipping']);
 			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
+
        }
+
+}
+
+function commerce_giftwrap_pane_checkout_form_submit($form, &$form_state, $checkout_pane, $order) {
+
+  $default_currency_code = commerce_default_currency();
+  if ($balance = commerce_payment_order_balance($order)) {
+    $default_currency_code = $balance['currency_code'];
+  }
+
+  // Create the new line item.
+  $line_item = commerce_line_item_new('giftwrap', $order->order_id);
+
+  $line_item->line_item_label = 'Gift Wrapping';
+  $line_item->quantity = 1;
+  $line_item->commerce_unit_price['amount'] = variable_get('commerce_giftwrap_price', '2.00');
+  $line_item->commerce_unit_price['currency_code'] = $default_currency_code;
+
+  commerce_line_item_save($line_item);  
+}
+
+function dc_gift_vouchers_commerce_order_presave($order) {
+	global $user;
+	//print "<pre>"; print_r($order); die();
+	//$page = arg(2);
+	if($order->status != 'cart'){
+		//print "<pre>"; print_r($order); die();
+		//$order->commerce_order_total['und'][0]['amount'] = 0;
+		
+		   $getProductType = db_query("SELECT data  FROM commerce_order WHERE  order_id='".$order->order_id."'");
+	       foreach($getProductType AS $resProductType){
+	          $productType = unserialize($resProductType->data);
+	       }
+
+		   $select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user->uid);
+		   foreach($select_user_balace AS $res_balance){
+			  $usd_balance = $res_balance->field_gift_balance_usd_value;
+		   }
+		   
+		   if($productType != 'gift_voucher' && $usd_balance != '' && $usd_balance > 0){
+		   	
+		   		$cart_total_amount = $order->commerce_order_total['und'][0]['amount'] / 100; 
+			 	$currency = $order->commerce_order_total['und'][0]['currency_code'];
+				
+				if($currency == 'GBP'){
+						$usd_vs_gbp = db_query('SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id =19');
+						foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+							$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+						}	
+						$gbp_gift_bal = number_format(($usd_balance * $gbp_rate), 2);
+						
+						if($gbp_gift_bal > $cart_total_amount){
+							
+								  $userBalance = number_format(($gbp_gift_bal - $cart_total_amount), 2);
+								  $user_balance = number_format(($userBalance / $gbp_rate), 2);
+								  $_SESSION['user_balance_update'] = $user_balance;
+								  $cart_total = 0; 
+								  
+						}else if($gbp_gift_bal < $cart_total_amount){
+							
+							      $cart_total = number_format(($cart_total_amount - $gbp_gift_bal), 2);
+							      $user_balance = 0;
+								  $_SESSION['user_balance_update'] = $user_balance;
+						}else{					
+							$cart_total = 0;
+							$user_balance = 0;
+							$_SESSION['user_balance_update'] = $user_balance;
+						}
+						$order->commerce_order_total['und'][0]['amount'] = $cart_total*100;
+						//$order->original->commerce_order_total['und'][0]['amount'] = $cart_total*100;
+				}else if($currency == 'EUR'){
+					
+						$usd_vs_eur = db_query('SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id =19');
+						foreach($usd_vs_eur AS $res_usd_vs_eur){
+							$eur_rate = $res_usd_vs_eur->field__1_eur_value;
+						}	
+						$eur_gift_bal = number_format(($usd_balance * $eur_rate), 2);
+						
+						if($eur_gift_bal > $cart_total_amount){
+							
+								  $userBalance = number_format(($eur_gift_bal - $cart_total_amount), 2);
+								  $user_balance = number_format(($userBalance / $eur_rate), 2);
+								  $_SESSION['user_balance_update'] = $user_balance;
+								  $cart_total = 0; 
+								  
+						}else if($eur_gift_bal < $cart_total_amount){
+							
+							      $cart_total = number_format(($cart_total_amount - $eur_gift_bal), 2);
+							      $user_balance = 0;
+								  $_SESSION['user_balance_update'] = $user_balance;
+						}else{					
+							$cart_total = 0;
+							$user_balance = 0;
+							$_SESSION['user_balance_update'] = $user_balance;
+						}
+						$order->commerce_order_total['und'][0]['amount'] = $cart_total*100;					
+									
+				}else if($currency == 'USD'){
+						
+						if($usd_balance > $cart_total_amount){
+							
+								  $user_balance = number_format(($usd_balance - $cart_total_amount), 2);
+								  $_SESSION['user_balance_update'] = $user_balance;
+								  $cart_total = 0; 
+								  
+						}else if($usd_balance < $cart_total_amount){
+							
+							      $cart_total = number_format(($cart_total_amount - $usd_balance), 2);
+							      $user_balance = 0;
+								  $_SESSION['user_balance_update'] = $user_balance;
+						}else{					
+							$cart_total = 0;
+							$user_balance = 0;
+							$_SESSION['user_balance_update'] = $user_balance;
+						}
+						$order->commerce_order_total['und'][0]['amount'] = $cart_total*100;								
+				}
+			
+		   }		
+	}
+
+}
+
+
+
+function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
+			//print "<pre>"; print_r($order); die();
+	if($transaction->status == 'success'){
+		$order = commerce_order_load($transaction->order_id);
+
+		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
+		foreach($select_order_type AS $res_order_type){
+			$order_type = $res_order_type->line_item_label;
+		}
+				
+		if($order_type == 'gift_voucher'){
+
+			$user_id = $_SESSION['gift_voucher_userid'];
+			$amount = $_SESSION['gift_voucher_value'];
+			$currency = $_SESSION['gift_voucher_currency'];
+			
+			$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
+			foreach($select_user_balace AS $res_balance){
+				$usd_balance = $res_balance->field_gift_balance_usd_value;
+			}
+			
+			if($currency == 'USD'){
+				
+				$user_balance = number_format(($usd_balance + $amount), 2);			
+				
+			}else if($currency == 'GBP'){
+				
+				$usd_vs_gbp = db_query('SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id =19');
+				foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+					$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+				}
+								
+				$amount_usd = number_format(($amount / $gbp_rate), 2);
+				$user_balance = $usd_balance + $amount_usd;
+				
+			}else if($currency == 'EUR'){
+				
+				$usd_vs_eur = db_query('SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id =19');
+				foreach($usd_vs_eur AS $res_usd_vs_eur){
+					$eur_rate = $res_usd_vs_eur->field__1_eur_value;
+				}
+				
+				$amount_eur = number_format(($amount / $eur_rate), 2);
+				$user_balance = $usd_balance + $amount_eur;
+				
+			}
+			
+			db_update('field_data_field_gift_balance_usd')
+			->fields(array('field_gift_balance_usd_value' => $user_balance))
+		    ->condition('entity_id', $user_id)
+		    ->execute();
+			field_cache_clear(TRUE);			
+					
+			unset($_SESSION['gift_voucher_userid']);
+			unset($_SESSION['gift_voucher_value']);
+			unset($_SESSION['gift_voucher_currency']);			
+		}
+
+		if(isset($_SESSION['user_balance_update']) && $_SESSION['user_balance_update'] != ''){
+			$user_balance = $_SESSION['user_balance_update'];
+			db_update('field_data_field_gift_balance_usd')
+			->fields(array('field_gift_balance_usd_value' => $user_balance))
+		    ->condition('entity_id', $user_id)
+		    ->execute();
+			field_cache_clear(TRUE);
+			unset($_SESSION['user_balance_update']);
+		}
+		
+	}
 }
 
 ?>
