@@ -1,0 +1,4 @@
+name = DC Voting
+description = A vote module for users to vote models.
+package = Delivery Code
+core = 7.x

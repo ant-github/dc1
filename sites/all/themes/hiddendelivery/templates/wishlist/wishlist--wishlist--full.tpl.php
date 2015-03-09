@@ -29,11 +29,52 @@
  */
 ?>
 <div class="<?php print $classes; ?> clearfix row"<?php print $attributes; ?>>
-  <div class="col-sm-3 account-pane">
+  <div class="col-sm-3">
+  	<div class="account-pane">
     <?php print $account_pane; ?>
     <?php if ($is_owner): ?>
       <?php print $account_edit_link; ?>
     <?php endif; ?>
+    </div>
+    <div class="dc-vote-section">
+    	<?php 
+    	$user_ip = ip_address(); 
+		$wishlist_id = arg(1);
+    	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$wishlist_id."'");
+		foreach($vote_status AS $res_vote_status){
+			$vote_done = $res_vote_status->nid;
+		}
+		if($vote_done != ''){
+			$model_votes = db_query("SELECT count(entity_id) AS votes FROM field_data_wishlist_id_vote WHERE wishlist_id_vote_value='".$wishlist_id."'");
+			foreach($model_votes AS $res_model_votes){
+				 $total_votes = $res_model_votes->votes; 
+			}
+			if($total_votes == 1){
+		?>
+			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+			<div class="total-vote">I have <span class="vote-me-text"><?php print $total_votes;?></span> vote.</div>
+		<?php		
+			}else{
+		?>
+			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+			<div class="total-vote">I have <span class="vote-me-text"><?php print $total_votes;?></span> votes.</div>
+		<?php		
+			}
+		?>
+		<?php
+		}else{
+		?>
+			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+	    <?php 
+	    	module_load_include('inc', 'node', 'node.pages');
+			$dc_vote_form = node_add('dc_vote');
+			print drupal_render($dc_vote_form);
+		?>
+		<?php	
+		}			    
+    	?>
+
+    </div>
   </div>
   <div class="col-sm-9">
     <div class="wishlist-view">

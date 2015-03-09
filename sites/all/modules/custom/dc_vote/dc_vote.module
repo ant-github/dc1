@@ -1,0 +1,58 @@
+<?php
+
+global $user;
+
+function dc_vote_form_alter(&$form, &$form_state, $form_id) {
+   $user_ip = ip_address();
+   if($form_id == 'dc_vote_node_form' && $form['nid']['#value'] == ''){  
+      // print "<pre>"; print_r($form); die();
+       $userWishlistId = arg(1);
+      // $form['title']['#weight'] = 1;
+      	hide($form['title']);
+        hide($form['receiver_user_id_vote']);
+        hide($form['wishlist_id_vote']); 
+        hide($form['user_ip_vote']);
+       $form['title']['#default_value'] = 'Vote to '.$userWishlistId; 
+       $form['wishlist_id_vote']['und'][0]['value']['#default_value'] = $userWishlistId;
+	   $form['user_ip_vote']['und'][0]['value']['#default_value'] = $user_ip;
+       $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$userWishlistId."'");
+       foreach($getUserId AS $wishlistUser){
+           $userId = $wishlistUser->uid;
+       }
+       $form['receiver_user_id_vote']['und'][0]['value']['#default_value'] = $userId;
+       $form['actions']['submit']['#value'] = 'Click here to <span class="vote-me-text">Vote</span> for me';
+       unset($form['actions']['preview']);
+       
+   }
+}
+function dc_vote_node_submit($node, $form, &$form_state) {
+    if($node->type == 'dc_vote' && $node->nid == ''){
+    	
+        $VoteModelId = $node->wishlist_id_vote['und'][0]['value'];
+		$user_id = $node->receiver_user_id_vote['und'][0]['value'];
+		
+        
+		
+		$vote_price = db_query('SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id =58');
+		foreach($vote_price AS $res_vote_price){
+			$votePrice = $res_vote_price->field_dc_voting_price_value;
+		}
+		
+		$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
+		foreach($select_user_balace AS $res_balance){
+			$usd_balance = $res_balance->field_gift_balance_usd_value;
+		}
+		$total_user_balance = $usd_balance + $votePrice;
+		
+			db_update('field_data_field_gift_balance_usd')
+			->fields(array('field_gift_balance_usd_value' => $total_user_balance))
+		    ->condition('entity_id', $user_id)
+		    ->execute();
+			field_cache_clear(TRUE);	
+				
+		node_save($node);
+		
+        drupal_goto('wishlist/'.$VoteModelId);
+    }  
+}
+?>
