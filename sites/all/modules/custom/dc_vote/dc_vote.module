@@ -33,7 +33,7 @@ function dc_vote_node_submit($node, $form, &$form_state) {
 		
         
 		
-		$vote_price = db_query('SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id =58');
+		$vote_price = db_query('SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id =19');
 		foreach($vote_price AS $res_vote_price){
 			$votePrice = $res_vote_price->field_dc_voting_price_value;
 		}
