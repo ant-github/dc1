@@ -36,6 +36,8 @@
       <?php print $account_edit_link; ?>
     <?php endif; ?>
     </div>
+    <?php if (module_exists('dc_vote')) {
+    ?>	
     <div class="dc-vote-section">
     	<?php 
     	$user_ip = ip_address(); 
@@ -75,6 +77,9 @@
     	?>
 
     </div>
+    <?php 
+    }
+    ?>
   </div>
   <div class="col-sm-9">
     <div class="wishlist-view">

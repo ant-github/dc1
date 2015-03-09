@@ -170,8 +170,7 @@ function hiddendelivery_preprocess_views_view(&$vars) {
     // Get the wishlist id.
     $wishlist_id = $vars['view']->args[0];
     $wishlist = hd_wishlist_load($wishlist_id);
-    $vars['is_owner'] = FALSE;
-
+    $vars['is_owner'] = FALSE; 
     // If the user is the wishlist owner add the share links.
     if ($wishlist->uid == $user->uid) {
       $vars['is_owner'] = TRUE;
@@ -212,9 +211,10 @@ function hiddendelivery_preprocess_views_view(&$vars) {
     }else{
         module_load_include('inc', 'node', 'node.pages');
         $form = node_add('dc_gift_vouchers');
+		$dc_vote_form = node_add('dc_vote');
          
-$vars['send_a_gift_voucher']='<div class="gift-card-area"><button class="send-Gift-card-button col-md-12 col-sm-12 btn btn-primary btn-lg" data-toggle="collapse" data-target="#sendGiftVoucher" aria-expanded="false" aria-controls="sendGiftVoucher"><span class="send-gift-card-first">Send a </span><span class="send-gift-card-second">Gift Voucher</span></button><div id="sendGiftVoucher" class="collapse">'.drupal_render($form).'</div></div>';
-       
+		$vars['send_a_gift_voucher']='<div class="gift-card-area"><button class="send-Gift-card-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#sendGiftVoucher" aria-expanded="false" aria-controls="sendGiftVoucher"><span class="send-gift-card-first">Send a </span><span class="send-gift-card-second">Gift Voucher</span></button><div id="sendGiftVoucher" class="collapse">'.drupal_render($form).'</div></div>';
+      
     }
   }
 }
