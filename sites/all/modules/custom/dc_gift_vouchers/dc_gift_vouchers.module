@@ -36,6 +36,11 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
         $_SESSION['gift_voucher_currency'] = $node->select_currency_gift_voucher['und'][0]['value'];
         $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];
 		$_SESSION['gift_voucher_userid']  =   $giftUserId;
+		$mailto = "soni.kamal@antechindia.com";    
+    $mailfrom = 'support@deliverycode.com';
+    $subject = "Test HTML email";
+    $message = "<h2>Hello Soni</h2>";    
+    drupal_mail('dc_gift_vouchers', 'reply', $mailto, language_default(), array('body' => $message, 'subject' => $subject), $mailfrom, TRUE);
         node_save($node);
         $product = commerce_product_load_by_sku('dc_gift_voucher');
         commerce_cart_product_add_by_id($product->product_id);
@@ -209,7 +214,7 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 		}
 				
 				
-		if($order_type == 'gift_voucher'){
+		if($order_type == 'dc_gift_voucher'){
 
 			$user_id = $_SESSION['gift_voucher_userid'];
 			$amount = $_SESSION['gift_voucher_value'];
