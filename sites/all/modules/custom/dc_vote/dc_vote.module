@@ -45,14 +45,14 @@ function dc_vote_node_submit($node, $form, &$form_state) {
 		}
 		if($usd_balance == ''){
 			
-			$total_user_balance = $votePrice;
+			$total_user_balance = number_format($votePrice, 2);
 			db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$total_user_balance."', 'NULL')");
 			field_cache_clear(TRUE);
 			
 			node_save($node);
 			drupal_goto('wishlist/'.$VoteModelId);
 		}else{
-			$total_user_balance = $usd_balance + $votePrice;
+			$total_user_balance = number_format(($usd_balance + $votePrice), 2);
 			
 				db_update('field_data_field_gift_balance_usd')
 				->fields(array('field_gift_balance_usd_value' => $total_user_balance))
