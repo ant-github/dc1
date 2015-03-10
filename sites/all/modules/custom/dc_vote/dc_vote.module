@@ -5,9 +5,7 @@ global $user;
 function dc_vote_form_alter(&$form, &$form_state, $form_id) {
    $user_ip = ip_address();
    if($form_id == 'dc_vote_node_form' && $form['nid']['#value'] == ''){  
-      // print "<pre>"; print_r($form); die();
        $userWishlistId = arg(1);
-      // $form['title']['#weight'] = 1;
       	hide($form['title']);
         hide($form['receiver_user_id_vote']);
         hide($form['wishlist_id_vote']); 
@@ -31,9 +29,12 @@ function dc_vote_node_submit($node, $form, &$form_state) {
         $VoteModelId = $node->wishlist_id_vote['und'][0]['value'];
 		$user_id = $node->receiver_user_id_vote['und'][0]['value'];
 		
-        
+		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+		foreach($select_currency_rates_nid AS $res_currency_rates){
+			$currency_rates_nid = $res_currency_rates->nid;
+		}        
 		
-		$vote_price = db_query('SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id =19');
+		$vote_price = db_query("SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id ='".$currency_rates_nid."'");
 		foreach($vote_price AS $res_vote_price){
 			$votePrice = $res_vote_price->field_dc_voting_price_value;
 		}
@@ -42,17 +43,27 @@ function dc_vote_node_submit($node, $form, &$form_state) {
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
-		$total_user_balance = $usd_balance + $votePrice;
-		
-			db_update('field_data_field_gift_balance_usd')
-			->fields(array('field_gift_balance_usd_value' => $total_user_balance))
-		    ->condition('entity_id', $user_id)
-		    ->execute();
-			field_cache_clear(TRUE);	
-				
-		node_save($node);
-		
-        drupal_goto('wishlist/'.$VoteModelId);
+		if($usd_balance == ''){
+			
+			$total_user_balance = $votePrice;
+			db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$total_user_balance."', 'NULL')");
+			field_cache_clear(TRUE);
+			
+			node_save($node);
+			drupal_goto('wishlist/'.$VoteModelId);
+		}else{
+			$total_user_balance = $usd_balance + $votePrice;
+			
+				db_update('field_data_field_gift_balance_usd')
+				->fields(array('field_gift_balance_usd_value' => $total_user_balance))
+			    ->condition('entity_id', $user_id)
+			    ->execute();
+				field_cache_clear(TRUE);	
+					
+			node_save($node);
+			
+	        drupal_goto('wishlist/'.$VoteModelId);
+		}
     }  
 }
 ?>

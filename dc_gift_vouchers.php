@@ -17,13 +17,17 @@ global $user;
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
+		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+		foreach($select_currency_rates_nid AS $res_currency_rates){
+			$currency_rates_nid = $res_currency_rates->nid;
+		} 
 		if($currenyIn == 'usd'){
 			
 			echo "$".number_format($usd_balance, 2);
 		
 		}else if($currenyIn == 'gbp'){
 			
-			$usd_vs_gbp = db_query('SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id =19');
+			$usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
@@ -32,7 +36,7 @@ global $user;
 			
 		}else if($currenyIn == 'eur'){
 
-			$usd_vs_eur = db_query('SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id =19');
+			$usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
 			foreach($usd_vs_eur AS $res_usd_vs_eur){
 				$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 			}	
