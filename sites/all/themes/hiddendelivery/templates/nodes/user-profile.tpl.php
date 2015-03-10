@@ -43,8 +43,10 @@
 <div class="col-md-6">
     <h3 class="profile-header">Gift Balance</h3> 
     <div class="gift-balance-user">
-    <?php  if(isset($user_profile['field_gift_balance_usd']['#object']->field_gift_balance_usd['und'][0]['value']) && $user_profile['field_gift_balance_usd']['#object']->field_gift_balance_usd['und'][0]['value'] != ''){
-    			echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p>$'.$user_profile['field_gift_balance_usd']['#object']->field_gift_balance_usd['und'][0]['value'].'</p>';
+    	
+    <?php
+      if(isset($user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value']) && $user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value'] != ''){
+    			echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p>$'.$user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value'].'</p>';
     		}else{
     			echo "$0";
     		}  

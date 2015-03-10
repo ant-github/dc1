@@ -252,7 +252,7 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				}				
 				
 				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
-			
+				field_cache_clear(TRUE);
 			}
 			if($currency == 'USD'){
 				
