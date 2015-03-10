@@ -37,7 +37,7 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
         $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];
 		$_SESSION['gift_voucher_userid']  =   $giftUserId;
         node_save($node);
-        $product = commerce_product_load_by_sku('gift_voucher');
+        $product = commerce_product_load_by_sku('dc_gift_voucher');
         commerce_cart_product_add_by_id($product->product_id);
         drupal_goto('cart');
     }  
