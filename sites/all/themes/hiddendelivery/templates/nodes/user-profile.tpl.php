@@ -52,7 +52,6 @@
     		}  
     ?> 
     </div>
-  <h3 class="profile-header">Profile information</h3>
 <?php print render($user_profile['user_picture']);?>
 <?php print render($user_profile['group_profile_information']);?>
 <?php print render($user_profile['group_size_guide']);?>
