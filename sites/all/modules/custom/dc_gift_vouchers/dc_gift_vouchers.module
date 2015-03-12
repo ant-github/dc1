@@ -39,6 +39,7 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
 		$_SESSION['gift_voucher_userid']  =   $giftUserId;
 		//drupal_mail('dc_gift_vouchers', 'dc_gift_vouchers_mail', $form_state['values']['email'], 'en', array('values' => $values));
         node_save($node);
+		$_SESSION['gift_voucher_nid'] = $node->nid;
         $product = commerce_product_load_by_sku('dc_gift_voucher');
         commerce_cart_product_add_by_id($product->product_id);
         drupal_goto('cart');
@@ -274,8 +275,18 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				}				
 				
 				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
+				
+				if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
+					db_update('field_data_status_gift_voucher')
+					->fields(array('status_gift_voucher_value' => 1))
+				    ->condition('entity_id', $_SESSION['gift_voucher_nid'])
+				    ->execute();
+				}
+				
 				field_cache_clear(TRUE);
+				
 			}else{
+				
 				if($currency == 'USD'){
 					
 					$user_balance = number_format(($usd_balance + $amount), 2);			
@@ -306,6 +317,14 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				->fields(array('field_gift_balance_usd_value' => $user_balance))
 			    ->condition('entity_id', $user_id)
 			    ->execute();
+				
+				if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
+					db_update('field_data_status_gift_voucher')
+					->fields(array('status_gift_voucher_value' => 1))
+				    ->condition('entity_id', $_SESSION['gift_voucher_nid'])
+				    ->execute();
+				}
+								
 				field_cache_clear(TRUE);			
 			}		
 			
@@ -322,6 +341,7 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 		}
 		
 	}
+	unset($_SESSION['gift_voucher_nid']);
 	unset($_SESSION['gift_voucher_userid']);
 	unset($_SESSION['gift_voucher_value']);
 	unset($_SESSION['gift_voucher_currency']);
