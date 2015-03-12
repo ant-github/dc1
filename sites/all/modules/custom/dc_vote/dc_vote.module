@@ -43,26 +43,39 @@ function dc_vote_node_submit($node, $form, &$form_state) {
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
-		if($usd_balance == ''){
-			
-			$total_user_balance = number_format($votePrice, 2);
-			db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$total_user_balance."', 'NULL')");
-			field_cache_clear(TRUE);
-			
-			node_save($node);
+		
+    	$user_ip = ip_address(); 
+    	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$VoteModelId."'");
+		foreach($vote_status AS $res_vote_status){
+			$vote_done = $res_vote_status->nid;
+		}
+		if($vote_done != ''){
+			drupal_set_message('You can not vote muliple times to the same model.', 'error');
 			drupal_goto('wishlist/'.$VoteModelId);
-		}else{
-			$total_user_balance = number_format(($usd_balance + $votePrice), 2);
 			
-				db_update('field_data_field_gift_balance_usd')
-				->fields(array('field_gift_balance_usd_value' => $total_user_balance))
-			    ->condition('entity_id', $user_id)
-			    ->execute();
-				field_cache_clear(TRUE);	
-					
-			node_save($node);
-			
-	        drupal_goto('wishlist/'.$VoteModelId);
+		}		
+		else{
+			if($usd_balance == ''){
+				
+				$total_user_balance = number_format($votePrice, 2);
+				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$total_user_balance."', 'NULL')");
+				field_cache_clear(TRUE);
+				
+				node_save($node);
+				drupal_goto('wishlist/'.$VoteModelId);
+			}else{
+				$total_user_balance = number_format(($usd_balance + $votePrice), 2);
+				
+					db_update('field_data_field_gift_balance_usd')
+					->fields(array('field_gift_balance_usd_value' => $total_user_balance))
+				    ->condition('entity_id', $user_id)
+				    ->execute();
+					field_cache_clear(TRUE);	
+						
+				node_save($node);
+				
+		        drupal_goto('wishlist/'.$VoteModelId);
+			}
 		}
     }  
 }
