@@ -36,6 +36,7 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
         $_SESSION['gift_voucher_currency'] = $node->select_currency_gift_voucher['und'][0]['value'];
         $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];
 		$_SESSION['gift_voucher_userid']  =   $giftUserId;
+		//drupal_mail('dc_gift_vouchers', 'dc_gift_vouchers_mail', $form_state['values']['email'], 'en', array('values' => $values));
         node_save($node);
         $product = commerce_product_load_by_sku('dc_gift_voucher');
         commerce_cart_product_add_by_id($product->product_id);
@@ -49,11 +50,34 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
         $gift_voucher_value = $_SESSION['gift_voucher_value'];
         $gift_voucher_currency = $_SESSION['gift_voucher_currency'];
         $price = 100 * $gift_voucher_value; //1 dollar
-    	$giftVoucherRate = db_query("SELECT rate  FROM commerce_tax_rate WHERE  name='deliverycode_fee'");
+        
+		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+		foreach($select_currency_rates_nid AS $res_currency_rates){
+			$currency_rates_nid = $res_currency_rates->nid;
+		}
+        
+        if($gift_voucher_value < 25){
+        	
+        	$giftVoucherRate = db_query("SELECT field_dc_fee_25_value AS rate FROM field_data_field_dc_fee_25 WHERE entity_id='".$currency_rates_nid."'");
+			
+        }elseif($gift_voucher_value >= 25 && $gift_voucher_value < 50){
+        	
+        	$giftVoucherRate = db_query("SELECT field_dc_fee_25_00_49_99_value AS rate FROM field_data_field_dc_fee_25_00_49_99 WHERE entity_id='".$currency_rates_nid."'");
+
+        }elseif($gift_voucher_value >= 50 && $gift_voucher_value < 100){
+        	
+        	$giftVoucherRate = db_query("SELECT field_dc_fee_50_00_99_99_value AS rate FROM field_data_field_dc_fee_50_00_99_99 WHERE entity_id='".$currency_rates_nid."'");
+
+        }elseif($gift_voucher_value >= 100){
+        	
+        	$giftVoucherRate = db_query("SELECT field_dc_fee_100__value AS rate FROM field_data_field_dc_fee_100_ WHERE entity_id='".$currency_rates_nid."'");
+
+        }
+    	//$giftVoucherRate = db_query("SELECT rate  FROM commerce_tax_rate WHERE  name='deliverycode_fee'");
 	       foreach($giftVoucherRate AS $resGiftVoucherRate){
 	           $giftRate = $resGiftVoucherRate->rate;
 	       }
-		$rate = $giftRate * 100;        
+		$rate = $giftRate;        
         $fee = ($gift_voucher_value * $rate) / 100;
         $deliveryCodeFee = $fee * 100;
         $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
