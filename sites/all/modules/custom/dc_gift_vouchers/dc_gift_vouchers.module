@@ -25,6 +25,7 @@ function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
            $userId = $wishlistUser->uid;
        }
        $form['receiver_user_id_gift_voucher']['und'][0]['value']['#default_value'] = $userId;
+	   $form['status_gift_voucher']['und'][0]['value']['#default_value'] = 0;
        $form['actions']['submit']['#value'] = 'Send';
        unset($form['actions']['preview']);
        
@@ -73,10 +74,11 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
         	$giftVoucherRate = db_query("SELECT field_dc_fee_100__value AS rate FROM field_data_field_dc_fee_100_ WHERE entity_id='".$currency_rates_nid."'");
 
         }
-    	//$giftVoucherRate = db_query("SELECT rate  FROM commerce_tax_rate WHERE  name='deliverycode_fee'");
+    	
 	       foreach($giftVoucherRate AS $resGiftVoucherRate){
 	           $giftRate = $resGiftVoucherRate->rate;
 	       }
+		   
 		$rate = $giftRate;        
         $fee = ($gift_voucher_value * $rate) / 100;
         $deliveryCodeFee = $fee * 100;
@@ -273,39 +275,39 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				
 				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
 				field_cache_clear(TRUE);
-			}
-			if($currency == 'USD'){
-				
-				$user_balance = number_format(($usd_balance + $amount), 2);			
-				
-			}else if($currency == 'GBP'){
-				
-				$usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
-				foreach($usd_vs_gbp AS $res_usd_vs_gbp){
-					$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
-				}
-								
-				$amount_usd = number_format(($amount / $gbp_rate), 2);
-				$user_balance = $usd_balance + $amount_usd;
-				
-			}else if($currency == 'EUR'){
-				
-				$usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
-				foreach($usd_vs_eur AS $res_usd_vs_eur){
-					$eur_rate = $res_usd_vs_eur->field__1_eur_value;
-				}
-				
-				$amount_eur = number_format(($amount / $eur_rate), 2);
-				$user_balance = $usd_balance + $amount_eur;
-				
-			}
-			
-			db_update('field_data_field_gift_balance_usd')
-			->fields(array('field_gift_balance_usd_value' => $user_balance))
-		    ->condition('entity_id', $user_id)
-		    ->execute();
-			field_cache_clear(TRUE);			
+			}else{
+				if($currency == 'USD'){
 					
+					$user_balance = number_format(($usd_balance + $amount), 2);			
+					
+				}else if($currency == 'GBP'){
+					
+					$usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+					foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+						$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+					}
+									
+					$amount_usd = number_format(($amount / $gbp_rate), 2);
+					$user_balance = $usd_balance + $amount_usd;
+					
+				}else if($currency == 'EUR'){
+					
+					$usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+					foreach($usd_vs_eur AS $res_usd_vs_eur){
+						$eur_rate = $res_usd_vs_eur->field__1_eur_value;
+					}
+					
+					$amount_eur = number_format(($amount / $eur_rate), 2);
+					$user_balance = $usd_balance + $amount_eur;
+					
+				}
+				
+				db_update('field_data_field_gift_balance_usd')
+				->fields(array('field_gift_balance_usd_value' => $user_balance))
+			    ->condition('entity_id', $user_id)
+			    ->execute();
+				field_cache_clear(TRUE);			
+			}		
 			
 		}
 
