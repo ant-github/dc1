@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Provide support for external billing system CCBill.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function ccbill_uninstall() {
+  // Delete variables set by this module
+  variable_del('ccbill_datalink_account_number');
+  variable_del('ccbill_datalink_username');
+  variable_del('ccbill_datalink_password');
+  variable_del('ccbill_datalink_active');
+  variable_del('ccbill_datalink_cron_last_day');
+}
+
+
+/**
+ * Implements hook_schema().
+ */
+function ccbill_schema() {
+
+  $schema['ccbill'] = array(
+    'description' => 'Table that stores subscription information for premium memberships.',
+    'fields' => array(
+      'sub_id' => array(
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Primary Key: CCBill Subscription ID.',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'User id for this subscription.',
+      ),
+      'start_date' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Timestamp of the beginning of the premium membership.',
+      ),
+      'initial_period' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Initial duration (in days) of the subscription.',
+      ),
+      'initial_price' => array(
+        'type' => 'float',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Price for the initial interval.',
+      ),
+      'rebills' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Amount of intervals after initial period.',
+      ),
+      'recurring_period' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'Duration of intervals after initial period.',
+      ),
+      'recurring_price' => array(
+        'type' => 'float',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'Price for recurring intervals.',
+      ),
+      'expiration_date' => array(
+        'description' => 'Expiration date of this subscription. Can be 0.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('sub_id'),
+    'indexes' => array(
+      'uid' => array('uid'),
+    ),
+  );
+
+  return $schema;
+}

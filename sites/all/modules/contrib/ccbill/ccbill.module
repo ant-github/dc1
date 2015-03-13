@@ -1,0 +1,538 @@
+<?php
+
+/**
+ * @file
+ *
+ * Contains functions that allow integration of Drupal with
+ * external billing system CCBill.
+ */
+
+/**
+ * Implements hook_menu().
+ *
+ */
+function ccbill_menu() {
+
+  $items = array();
+
+  $items['ccbill'] = array(
+    'page callback' => 'ccbill_transform_data',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/ccbill'] = array(
+    'title' => 'CCBill Settings',
+    'description' => 'Administration page for CCBill integration.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ccbill_settings_admin_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer ccbill'),
+    'file' => 'ccbill.admin.inc',
+    'file path' => drupal_get_path('module', 'ccbill') . '/includes',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+
+}
+
+
+
+/**
+ * Implements hook_permission().
+ */
+function ccbill_permission() {
+  return array(
+    'administer ccbill' => array(
+      'title' => t('administer ccbill'),
+      'description' => t('Administer integration with external payment service CCBill.'),
+    ),
+  );
+}
+
+
+
+/**
+ * Transform incoming data from CCBill.
+ */
+function ccbill_transform_data() {
+
+  $ccbill['referring_url'] = $_POST['referringUrl'];
+  $ccbill['sub_id'] = $_POST['subscription_id'];
+  $ccbill['start_date'] = $_POST['start_date'];
+  $ccbill['initial_period'] = $_POST['initialPeriod'];
+  $ccbill['initial_price'] = $_POST['initialPrice'];
+  $ccbill['recurring_period'] = $_POST['recurringPeriod'];
+  $ccbill['recurring_price'] = $_POST['recurringPrice'];
+  $ccbill['rebills'] = $_POST['rebills'];
+  $ccbill['uid'] = $_POST['drupalUserId'];
+
+  // Get the IP address of the server
+  // posting the data, for verification
+  $source_ip = $_SERVER['REMOTE_ADDR'];
+
+  // Log a system message
+  watchdog('ccbill', t('CCBill call registered for User ID %uid. (Subscription ID: %sub_id)', array('%uid' => $ccbill['uid'], '%sub_id' => $ccbill['sub_id'])));
+
+  // Process the data
+  ccbill_process_data($ccbill, $source_ip);
+
+}
+
+
+/**
+ * Process data sent by CCBill.
+ *
+ * @param $ccbill
+ *   An array that contains selected information passed by CCBill.
+ * @param $source_ip
+ *   Source IP address of the remote server that sent data.
+ */
+function ccbill_process_data($ccbill = '', $source_ip = '') {
+
+  // Only process the request if it's coming from CCBill
+  if (_ccbill_verify_source($source_ip)) {
+
+    // Only add the data to the site if data
+    // includes a subscription ID AND a user ID
+    if (!empty($ccbill['sub_id']) && !empty($ccbill['uid'])) {
+      // Store this record in the database
+      ccbill_store_record($ccbill);
+      // Create a hook for this module.
+      // Implementation of this hook would be something like:
+      // modulename_ccbill($op, $ccbill) { do something }
+      module_invoke_all('ccbill', 'add', $ccbill);
+    }
+
+  }
+
+}
+
+
+
+/**
+ * Verify the source server's IP
+ * address to make sure people aren't
+ * trying to trick the system.
+ *
+ * @paramn $source_ip
+ *   IP address
+ *
+ * @return
+ *   Boolean TRUE if the IP address passes validation.
+ */
+function _ccbill_verify_source($source_ip) {
+
+  // Convert source IP to IPv4 Internet network address
+  $ipv4 = ip2long($source_ip);
+
+  if (_ccbill_valid_ip($ipv4)) {
+    return TRUE;
+  }
+
+}
+
+
+
+/**
+ * Function to validate CCBill's server's
+ * IP address ranges for IPv4 number.
+ *
+ * Valid Ranges are:
+ * 64.38.240.0 - 64.38.240.255
+ * 64.38.241.0 - 64.38.241.255
+ *
+ * @param $ipv4
+ *   IP address in IPv4 network address format.
+ *
+ * @return
+ *   Boolean TRUE if the passed address is a CCBill server.
+ *
+ */
+function _ccbill_valid_ip($ipv4) {
+
+  // Array of valid IPv4 CCBill ranges
+  $valid_ip[0]['start'] = 1076293632;
+  $valid_ip[0]['end'] =   1076293887;
+  $valid_ip[1]['start'] = 1076293888;
+  $valid_ip[1]['end'] =   1076294143;
+
+  // Find out if IP address is in either range
+  $in_range[0] = ($ipv4 >= $valid_ip[0]['start'] && $ipv4 <= $valid_ip[0]['end']);
+  $in_range[1] = ($ipv4 >= $valid_ip[1]['start'] && $ipv4 <= $valid_ip[1]['end']);
+
+  if ($in_range[0] || $in_range[1]) {
+    return TRUE;
+  }
+
+}
+
+
+
+/**
+ * Store the CCBill record in the database.
+ *
+ * @param $ccbill
+ *   CCBill subscription information stored in an array
+ */
+function ccbill_store_record($ccbill = '') {
+
+  // Make sure we're getting passed an array
+  if (!is_array($ccbill)) {
+    return;
+  }
+
+  // Prevent duplicate entry
+  $existing_subscription = db_query("SELECT COUNT(sub_id) FROM {ccbill} WHERE sub_id = :sub_id", array(':sub_id' => $ccbill['sub_id']))->fetchField();
+  if ($existing_subscription) {
+    watchdog('ccbill', 'CCBill Subscription ID %sub_id is already in this system.', array('%sub_id' => $ccbill['sub_id']), WATCHDOG_WARNING);
+    return;
+  }
+
+  // Write subscription details to the database
+  $table = 'ccbill';
+  $record = new stdClass();
+  $record->sub_id = $ccbill['sub_id'];
+  $record->uid = $ccbill['uid'];
+  $record->start_date = strtotime($ccbill['start_date']);
+  $record->initial_period = $ccbill['initial_period'];
+  $record->initial_price = $ccbill['initial_price'];
+  $record->rebills = $ccbill['rebills'];
+  $record->recurring_period = $ccbill['recurring_period'];
+  $record->recurring_price = $ccbill['recurring_price'];
+  drupal_write_record($table, $record);
+
+}
+
+
+
+/**
+ * Implements hook_cron().
+ */
+function ccbill_cron() {
+
+  // Only proceed if CCBill expiration function is activated.
+  $datalink_active = variable_get('ccbill_datalink_active', '');
+  if (!$datalink_active) {
+    return;
+  }
+
+  // Only run cron once per day.
+  $last_run_day = variable_get('ccbill_datalink_cron_last_day', '');
+  $current_day = date('z');
+  if ($last_run_day != $current_day) {
+    $perform_update = TRUE;
+  }
+
+  // Run the cron job once per day, but only after 6 AM.
+  // By running the cron job, we make sure to capture
+  // all CCBill expirations from the previous day,
+  // at least in the US.
+  if ($perform_update && date('G') > 6) {
+
+    // Calculate the timestamp of yesterday:
+    $timestamp = REQUEST_TIME - 86400;
+    $year = date('Y', $timestamp);
+    $month = date('m', $timestamp);
+    $day = date('d', $timestamp);
+    $yesterday_start = (string) $year . $month . $day . '000000';
+    $yesterday_end = (string) $year . $month . $day . '235959';
+
+    // Connect to CCBill and remove all expired Supporters.
+    ccbill_datalink_update($yesterday_start, $yesterday_end);
+
+    // Update the day variable.
+    variable_set('ccbill_datalink_cron_last_day', date('z'));
+
+  }
+
+}
+
+
+
+/**
+ * Implements CCBill Datalink System.
+ *
+ * @param $yesterday_start
+ *   The start time of expirations (from yesterday) that should be checked.
+ *
+ * @param $yesterday_end
+ *   The end time of expirations (from yesterday) that should be checked.
+ *
+ */
+function ccbill_datalink_update($yesterday_start = '', $yesterday_end = '') {
+
+  // Start and end time are required
+  if ($yesterday_start == '' || $yesterday_end == '') {
+    return;
+  }
+
+  $data_link_options = array(
+    'external' => TRUE,
+    'query' => array(
+      'startTime' => $yesterday_start,
+      'endTime' => $yesterday_end,
+      'transactionTypes' => 'EXPIRE',
+      'clientAccnum' => variable_get('ccbill_datalink_account_number', ''),
+      'clientSubacc'=> 0001,
+      'username' => variable_get('ccbill_datalink_username', ''),
+      'password' => variable_get('ccbill_datalink_password', ''),
+    ),
+  );
+
+  // Compose the Data Link Source URL
+  // TODO The second parameter to this function call should be an array.
+  $data_link_url = url('https://datalink.ccbill.com/data/main.cgi', $data_link_options);
+
+  // Get the data from CCBill.
+  $data_link_response = file_get_contents($data_link_url);
+
+  // Remove quotation marks.
+  $data_link_response = str_replace('"', '', $data_link_response);
+
+  // Process results into an array.
+  $data_link_response_processed = explode("\n", $data_link_response);
+
+  foreach ($data_link_response_processed as $data) {
+    $fields = explode(',', $data);
+
+    // If a subscription ID (field 3) is found, proceed.
+    if ($fields[0] == 'EXPIRE' && $fields[3]) {
+      ccbill_expire($fields);
+    }
+
+  }
+
+}
+
+
+
+/**
+ * Remove the supporter status of a user if he expired
+ * in CCBill and has not re-signed up in the meantime.
+ *
+ * @param
+ *   Subscription information that has expired
+ */
+function ccbill_expire($fields = '') {
+
+  // $fields needs to be an array and
+  // have at least 5 values in it
+  if (!is_array($fields) && !$fields[4]) {
+    return;
+  }
+
+  // Create nicer variables
+  $sub_id = (string) $fields[3];
+  $end_date = (string) $fields[4];
+
+  if ($end_date && $sub_id) {
+
+    $ccbill['uid'] = _ccbill_subid_to_uid($sub_id);
+    $ccbill['expiration_date'] = REQUEST_TIME;
+
+    if ($ccbill['uid']) {
+      // Add an expiration date for this
+      // subscription id for tracking purposes.
+      db_update('ccbill')
+      ->fields(array(
+        'expiration_date' => $ccbill['expiration_date'],
+      ))
+      ->condition('sub_id', $sub_id)
+      ->execute();
+
+      // Make sure this user hasn't re-signed up
+      // in the meantime. If the user has signed
+      // up through CCBill again, we should be able
+      // to find a newer sub_id in our database.
+      // If a newer subscription id for this user
+      // exists, then don't invoke the expire hook,
+      // as the member hasn't lost his paying status.
+      if (_ccbill_newest_subid($sub_id)) {
+        // Expose this action to other modules
+        module_invoke_all('ccbill', 'expire', $ccbill);
+      }
+
+    }
+  }
+
+}
+
+
+
+/**
+ * Helper function to get the uid for a subscription ID.
+ *
+ * @params $sub_id
+ *   Subscription ID
+ *
+ * @return
+ *   User ID associated with this subscription ID.
+ */
+function _ccbill_subid_to_uid($sub_id = '') {
+  // Subscription ID is required
+  if ($sub_id == '') {
+    return;
+  }
+  $uid = db_query("SELECT uid FROM {ccbill} WHERE sub_id = :sub_id", array(':sub_id' => (string) $sub_id))->fetchField();
+  return $uid;
+}
+
+
+
+/**
+ * Helper Function.
+ *
+ * Make sure the passed subscription ID is
+ * the newest one for this user
+ *
+ * @param $sub_id
+ *   CCBill Subscription ID
+ *
+ * @return
+ *   Boolean TRUE if this subscription ID is the newest subscription ID OF THIS USER in the system.
+ *   Otherwise returns FALSE.
+ *
+ */
+function _ccbill_newest_subid($sub_id = '') {
+
+  // Subscription ID is required
+  if ($sub_id == '') {
+    return;
+  }
+
+  // Get the user ID and the expiration date for this subscription ID
+  $subscription = db_fetch_object(db_query("SELECT uid, expiration_date FROM {ccbill} WHERE sub_id = :sub_id", array(':sub_id' => $sub_id)));
+  $uid = $subscription->uid;
+  $expiration_date = $subscription->expiration_date;
+
+  // Problem: Non-Recurring CCBill Members
+  // If a non-recurring legacy member expires, he loses his premium status on the
+  // day of and NOT with the batch process on the later day (using CCBill's
+  // DataLink API). This means he can potentially sign up again right away
+  // and have a new subscription, but with a start date older
+  // than the expiration date of his about-to-be expired subscription
+  // (which would be set on the next day through DataLink).
+  // Unfortunately, we don't have a boolean value to separate single from
+  // recurring CCBill members for all members in our system, we also can't
+  // get it through DataLink.
+  //
+  // Therefore, we subtract 2 days of time (172800 seconds) from the timestamp
+  // of the start date that we check for in the newer subscription ID.
+  //
+  // Since DataLink is running on cron, this could theoretically cause
+  // problems, but won't in our case, since DataLink doesn't go back
+  // more than 1 day (it's not allowed by the DataLink API anyways).
+
+  // Find out if there are any newer, unexpired subscriptions for this user
+  $newer_sub_id = db_query("SELECT sub_id FROM {ccbill} WHERE uid = :uid AND start_date > :start_date AND expiration_date = :expiration_date", array(':uid' => $uid, ':start_date' => ($expiration_date - 172800), ':expiration_date' => 0))->fetchField();
+
+  if ($newer_sub_id) {
+    return FALSE;
+  }
+  else {
+    return TRUE;
+  }
+
+}
+
+
+
+
+/**
+ * Implements hook_user_cancel().
+ */
+function ccbill_user_cancel($edit, $account, $method) {
+  db_delete('ccbill')
+  ->condition('uid', $account->uid)
+  ->execute();
+}
+
+
+
+/**
+ * Form Callback: Test Mode for DataLink Integration
+ */
+function ccbill_datalink_testmode_submit($form, &$form_state) {
+
+  $datalink['account_number'] = $form_state['values']['ccbill_datalink_account_number'];
+  $datalink['username'] = $form_state['values']['ccbill_datalink_username'];
+  $datalink['password'] = $form_state['values']['ccbill_datalink_password'];
+
+  if (!is_numeric($datalink['account_number']) || !$datalink['username'] || !$datalink['password']) {
+    drupal_set_message('Test was not successful. Please make sure your CCBill account number and datalink credentials are entered at all.');
+    return;
+  }
+
+  drupal_set_message('Your CCBill DataLink integration is setup correctly if you can see a couple of lines of data loosely following this format: "EXPIRE,' . $datalink['account_number'] . ',0005,0108500301000000002,2004-12-21,2004-12-19,N"');
+
+  // Get the right format for the test date settings
+  $timestamp = REQUEST_TIME - 86400;
+  $year = date('Y', $timestamp);
+  $month = date('m', $timestamp);
+  $day = date('d', $timestamp);
+  $yesterday_start = (string) $year . $month . $day . '000000';
+  $yesterday_end = (string) $year . $month . $day . '235959';
+
+  $data_link_options = array(
+    'external' => TRUE,
+    'query' => array(
+      'startTime' => $yesterday_start,
+      'endTime' => $yesterday_end,
+      'transactionTypes' => 'EXPIRE',
+      'clientAccnum' => variable_get('ccbill_datalink_account_number', ''),
+      'clientSubacc'=> 0001,
+      'username' => variable_get('ccbill_datalink_username', ''),
+      'password' => variable_get('ccbill_datalink_password', ''),
+      'testMode' => 1,
+    ),
+  );
+
+  // Compose the Data Link Source URL
+  // TODO The second parameter to this function call should be an array.
+  $data_link_url = url('https://datalink.ccbill.com/data/main.cgi', $data_link_options);
+
+  // Get the data from CCBill
+  $data_link_response = file_get_contents($data_link_url);
+
+  // Remove quotation marks
+  $data_link_response = str_replace('"', '', $data_link_response);
+
+  // Process results into an array
+  $data_link_response_processed = explode("\n", $data_link_response);
+
+  foreach ($data_link_response_processed as $data) {
+    drupal_set_message($data);
+  }
+
+}
+
+
+
+/**
+ * Implements hook_ccbill().
+ *
+ * @param $op
+ *   CCBill action (add or expire)
+ * @param $ccbill
+ *   Array with CCBill data and User ID
+ */
+function ccbill_ccbill($op, $ccbill) {
+
+  switch ($op) {
+    case 'add':
+      if (module_exists('rules')) {
+        $account = user_load($ccbill['uid']);
+        rules_invoke_event('ccbill_add', $account);
+      }
+      break;
+    case 'expire':
+      if (module_exists('rules')) {
+        $account = user_load($ccbill['uid']);
+        rules_invoke_event('ccbill_expire', $account);
+      }
+      break;
+  }
+
+}
