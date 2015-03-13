@@ -99,14 +99,13 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
 
 
 function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
-	
+	//print "<pre>"; print_r($checkout_pane); die();
     $order_id = arg(1);
     $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order_id."'");
        foreach($getProductType AS $resProductType){
            $productType = $resProductType->line_item_label;
        }
-       if($productType == 'dc_gift_voucher'){
-       	//print "<pre>"; print_r($checkout_pane); 
+       if($productType == 'dc_gift_voucher'){ 
             unset($checkout_pane['customer_profile_billing']);
             unset($checkout_pane['commerce_shipping']);
 			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
@@ -119,7 +118,6 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 	global $user;
 
 	if($order->status != 'cart' && $user->uid != ''){
-		
 		   $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order->order_id."'");
 	       foreach($getProductType AS $resProductType){
            	$productType = $resProductType->line_item_label;
@@ -144,7 +142,7 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 						foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 							$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 						}	
-						 $gbp_gift_bal = number_format(($usd_balance * $gbp_rate), 2); 
+						$gbp_gift_bal = number_format(($usd_balance * $gbp_rate), 2); 
 						
 						if($gbp_gift_bal > $cart_total_amount){
 							
@@ -152,20 +150,26 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 								  $user_balance = number_format(($userBalance / $gbp_rate), 2);
 								  $_SESSION['user_balance_update'] = $user_balance;
 								  $cart_total = 0; 
+								  $your_gift_balance = $cart_total_amount;
 								  
 						}else if($gbp_gift_bal < $cart_total_amount){
 							      $cart_total = $cart_total_amount - $gbp_gift_bal; 
 							      $user_balance = 0;
 								  $_SESSION['user_balance_update'] = $user_balance;
+								  
+								  $your_gift_balance = $gbp_gift_bal;
 						}else{					
 							$cart_total = 0;
 							$user_balance = 0;
 							$_SESSION['user_balance_update'] = $user_balance;
+							$your_gift_balance = $gbp_gift_bal;						
 						}
 						
 						 $order->commerce_order_total['und'][0]['amount'] = $cart_total * 100; 
-					
-				}else if($currency == 'EUR'){
+						
+						drupal_set_message('Your gift balance £'.$your_gift_balance.' has been used.', 'status');
+						
+			  }else if($currency == 'EUR'){
 					
 						$usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
 						foreach($usd_vs_eur AS $res_usd_vs_eur){
@@ -179,18 +183,23 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 								  $user_balance = number_format(($userBalance / $eur_rate), 2);
 								  $_SESSION['user_balance_update'] = $user_balance;
 								  $cart_total = 0; 
+								  $your_gift_balance = $cart_total_amount;
 								  
 						}else if($eur_gift_bal < $cart_total_amount){
 							
 							      $cart_total = $cart_total_amount - $eur_gift_bal;
 							      $user_balance = 0;
 								  $_SESSION['user_balance_update'] = $user_balance;
+								  $your_gift_balance = $eur_gift_bal;
+								  
 						}else{					
 							$cart_total = 0;
 							$user_balance = 0;
 							$_SESSION['user_balance_update'] = $user_balance;
+							$your_gift_balance = $eur_gift_bal;
 						}
-						$order->commerce_order_total['und'][0]['amount'] = $cart_total*100;					
+						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;
+						drupal_set_message('Your gift balance '.$your_gift_balance.'€ has been used.', 'status');					
 									
 				}else if($currency == 'USD'){
 						
@@ -198,19 +207,24 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 							
 								  $user_balance = $usd_balance - $cart_total_amount;
 								  $_SESSION['user_balance_update'] = $user_balance;
-								  $cart_total = 0; 
+								  $cart_total = 0;
+								  $your_gift_balance = $cart_total_amount; 
 								  
 						}else if($usd_balance < $cart_total_amount){
 							
 							      $cart_total = $cart_total_amount - $usd_balance;
 							      $user_balance = 0;
 								  $_SESSION['user_balance_update'] = $user_balance;
+								  $your_gift_balance = $usd_balance;
 						}else{					
 							$cart_total = 0;
 							$user_balance = 0;
 							$_SESSION['user_balance_update'] = $user_balance;
+							$your_gift_balance = $usd_balance;
+							
 						}
-						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;								
+						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;	
+						drupal_set_message('Your gift balance $'.$your_gift_balance.' has been used.', 'status');							
 				}
 			
 		   }		
