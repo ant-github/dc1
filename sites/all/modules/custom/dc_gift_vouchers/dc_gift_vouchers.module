@@ -221,8 +221,9 @@ function dc_gift_vouchers_commerce_order_presave($order) {
 
 
 function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
-			//print "<pre>"; print_r($order); die();
+	global $user;
 	if($transaction->status == 'success'){
+		
 		$order = commerce_order_load($transaction->order_id);
 
 		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
@@ -331,10 +332,10 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 		}
 
 		if(isset($_SESSION['user_balance_update']) && $_SESSION['user_balance_update'] != ''){
-			$user_balance = $_SESSION['user_balance_update'];
+			 $user_balance = $_SESSION['user_balance_update'];
 			db_update('field_data_field_gift_balance_usd')
 			->fields(array('field_gift_balance_usd_value' => $user_balance))
-		    ->condition('entity_id', $user_id)
+		    ->condition('entity_id', $user->uid)
 		    ->execute();
 			field_cache_clear(TRUE);
 			
