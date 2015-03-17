@@ -42,6 +42,7 @@
     	<?php 
     	$user_ip = ip_address(); 
 		$wishlist_id = arg(1);
+		$vote_done = '';
     	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$wishlist_id."'");
 		foreach($vote_status AS $res_vote_status){
 			$vote_done = $res_vote_status->nid;

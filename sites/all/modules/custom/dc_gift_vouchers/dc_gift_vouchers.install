@@ -128,9 +128,9 @@ function _gift_vouchers_installed_fields() {
         'type'         => 'text',
         'module' => 'text',
       ), 
-      'status_gift_voucher' => array(
-        'field_name'   => 'status_gift_voucher',
-        'label'        => $t('Gift Voucher Status'),
+      'order_id_gift_voucher' => array(
+        'field_name'   => 'order_id_gift_voucher',
+        'label'        => $t('Gift Voucher Order Id'),
         'type'         => 'text',
         'module' => 'text',
       ),
@@ -250,10 +250,9 @@ function _gift_vouchers_installed_instances() {
             'type' => 'text_textfield',        
         ),
     ),  
-     'status_gift_voucher' => array(
-        'field_name' => 'status_gift_voucher',
-        'label' => $t('Status Gift Voucher'),
-         'description' => t('0 -order not completed, 1 - done'),
+     'order_id_gift_voucher' => array(
+        'field_name' => 'order_id_gift_voucher',
+        'label' => $t('Order Id Gift Voucher'),
         'cardinality' => 1,
         'widget' => array(
             'weight' => '1',

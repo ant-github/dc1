@@ -1,0 +1,4 @@
+name = DC User Balance Update
+description = Update model balance after purchase.
+package = Delivery Code
+core = 7.x

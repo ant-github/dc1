@@ -1,0 +1,186 @@
+<?php
+
+function dc_user_bal_update_install() {
+  // get the translation function relevant to our current localisation
+  $t = get_t();
+  // define the content type as an array (same as in hook_node_info())
+  $gift_vouchers = array(
+    'type' => 'dc_user_bal_update',
+    'name' => $t('User Balance Update Record'),
+    'base' => 'node_content',
+    'description' => $t('Content type to handle user balance variations.'),
+    'title_label' => $t('User Name'),  
+    'promote' => 0,
+    'status' => 1,
+    'comment' => 0,
+  );
+
+  // set default values for anything not explicitly defined in the above array
+  $content_type = node_type_set_defaults($gift_vouchers);
+
+  // add the body field to the content type
+  //node_add_body_field($content_type, 'Body');
+
+  // create the content type
+  node_type_save($content_type);
+
+  variable_set('node_options_dc_user_bal_update', array('status'));
+  // hide comments for this node. 
+  variable_set('comment_dc_user_bal_update', 'COMMENT_NODE_CLOSED');
+
+  // Hide date and author information
+  variable_set('node_submitted_', FALSE);
+
+  // Create all the fields we are adding to our content type.
+  foreach (_users_bal_installed_fields() as $field) {
+    field_create_field($field);
+  }
+
+  // Create all the instances for our fields.
+  foreach (_users_bal_installed_instances() as $instance) {
+    $instance['entity_type'] = 'node';
+    $instance['bundle'] = 'dc_user_bal_update';
+    field_create_instance($instance);
+  }
+
+  // adjust the weight so it's called after a dependant module called 'categories'
+  $weight = db_query("SELECT weight FROM {system} WHERE name = :name", array(':name' => 'categories'))->fetchField();
+  db_update('system')->fields(array(
+    'weight' => $weight + 1,
+  ))
+  ->condition('name', 'dc_user_bal_update')
+  ->execute();
+//  
+//  $product_type = commerce_product_ui_product_type_new();
+//
+//  $product_type['type'] = 'gift_vouchers';
+//  $product_type['name'] = t('Gift Vouchers');
+//  $product_type['description'] = t('Product type for gift vouchers.');
+//  $product_type['is_new'] = TRUE;
+//
+//  commerce_product_ui_product_type_save($product_type, FALSE);
+//  
+//  return "creation ok";
+}
+
+
+function _users_bal_installed_fields() {
+  $t = get_t();
+  $fields = array(
+    // text field
+
+      'user_id_bal_update' => array(
+        'field_name'   => 'user_id_bal_update',
+        'label'        => $t('User id'),
+        'type'         => 'text',
+        'module' => 'text',
+      ),    
+          
+      'order_id_user_bal_update' => array(
+        'field_name'   => 'order_id_user_bal_update',
+        'label'        => $t('Order id'),
+        'type'         => 'text',
+        'module' => 'text',
+      ),
+      'usd_amount_used_user_bal_update' => array(
+        'field_name'   => 'usd_amount_used_user_bal_update',
+        'label'        => $t('User Amount Used In USD'),
+        'type'         => 'text',
+        'module' => 'text',
+      ), 
+      'amount_status_user_bal_update' => array(
+        'field_name'   => 'amount_status_user_bal_update',
+        'label'        => $t('Amount Status'),
+        'type'         => 'text',
+        'module' => 'text',
+      ),           
+
+  );
+  return $fields;
+}
+
+
+function _users_bal_installed_instances() {
+  $t = get_t();
+  $instances = array(
+
+    'user_id_bal_update' => array(
+        'field_name' => 'user_id_bal_update',
+        'label' => $t('User id'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',            
+        ),
+    ),
+      
+    'order_id_user_bal_update' => array(
+        'field_name' => 'order_id_user_bal_update',
+        'label' => $t('Order id'),
+        'description' => $t('0 - user changed the product item'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',            
+        ),
+    ),
+      
+    'usd_amount_used_user_bal_update' => array(
+        'field_name' => 'usd_amount_used_user_bal_update',
+        'label' => $t('User Amount Used In USD'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',        
+        ),
+    ), 
+    'amount_status_user_bal_update' => array(
+        'field_name' => 'amount_status_user_bal_update',
+        'label' => $t('Amount Status'),
+        'description' => $t('0 - Not Used, 1 - Used'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',        
+        ),
+    ),    
+    
+	       
+  );
+  return $instances;
+}
+
+function dc_user_bal_update_uninstall() {
+  // Gather all the example content that might have been created while this
+  // module was enabled.  Simple selects still use db_query().
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $result = db_query($sql, array(':type' => 'dc_user_bal_update'));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+
+  // Delete all the nodes at once
+  node_delete_multiple($nids);
+
+
+  // Loop over each of the fields defined by this module and delete
+  // all instances of the field, their data, and the field itself.
+  foreach (array_keys(_users_bal_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+  // delete any remaining field instances attached to this content type
+    $instances = field_info_instances('node', 'dc_user_bal_update');
+  foreach ($instances as $instance_name => $instance) {
+    field_delete_instance($instance);
+  }
+  // Delete our content type
+  node_type_delete('dc_user_bal_update');
+
+  // Purge all field information
+
+  field_purge_batch(1000);
+}
+
+
+?>
