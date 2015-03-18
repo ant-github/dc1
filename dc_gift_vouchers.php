@@ -30,9 +30,10 @@ global $user;
 			
 			$usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
-			print	$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			$gbp = number_format(($usd_balance * $gbp_rate), 2);
+			$gbp_rate = number_format($gbp_rate, 2);
+			$gbp = $usd_balance * $gbp_rate;
 			echo "£".$gbp;
 			
 		}else if($currenyIn == 'eur'){
