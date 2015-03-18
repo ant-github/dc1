@@ -12,7 +12,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 global $user;
 	if(isset($_POST['option']) && $_POST['option'] != ''){
 		$currenyIn = $_POST['option'];
-		$user_id = $user->uid;	
+	print	$user_id = $user->uid;	
 		$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
