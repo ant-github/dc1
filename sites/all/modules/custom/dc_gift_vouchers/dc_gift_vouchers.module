@@ -32,45 +32,18 @@ function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
    }
 }
 function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
-	
-	
-	$key = 'dc_gift_vouchers_email';
-	$to = 'soni.kamal@antechindia.com';
-	$from = 'support@deliverycode.com';
-	$params = array(
-    'body' => 'hi this is a tes body',
-    'subject' => 'Website Information Request',
-    );
-	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);	
 	//print "<pre>"; print_r($form); die();
-	//if($form['#form_id'] == 'dc_gift_vouchers_node_form'){
-		//if($node->type == 'dc_gift_vouchers' && $node->nid == ''){
+	if($form['#form_id'] == 'dc_gift_vouchers_node_form'){
+		if($node->type == 'dc_gift_vouchers' && $node->nid == ''){
 			//die('hi');
-	    //    node_save($node);
-		//	$_SESSION['gift_voucher_nid'] = $node->nid;
-	    //    $product = commerce_product_load_by_sku('dc_gift_voucher');
-	   //     commerce_cart_product_add_by_id($product->product_id);
-	    //    drupal_goto('cart');		
-	//	}
-	//}
+	        node_save($node);
+			$_SESSION['gift_voucher_nid'] = $node->nid;
+	        $product = commerce_product_load_by_sku('dc_gift_voucher');
+	        commerce_cart_product_add_by_id($product->product_id);
+	        drupal_goto('cart');		
+		}
+	}
  
-}
-
-function dc_gift_vouchers_mail($key, &$message, $params) {
-
-  $headers = array(
-    'MIME-Version' => '1.0',
-    'Content-Type' => 'text/html; charset=UTF-8;',
-    'Content-Transfer-Encoding' => '8Bit',
-    'X-Mailer' => 'Drupal'
-  );
-
-  foreach ($headers as $key => $value) {
-    $message['headers'][$key] = $value;
-  }
-
-  $message['subject'] = $params['subject'];
-  $message['body'] = $params['body'];
 }
 
 
@@ -184,6 +157,7 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
 
 function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 	global $user;
+	global $base_url;
 	if($transaction->status == 'success'){
 		
 		$order = commerce_order_load($transaction->order_id);
@@ -210,7 +184,8 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 			$node = node_load($gv_node);
 			//print "<pre>"; print_r($node); die('hi');
 
-
+			$sender_name = $node->title;
+			$gift_message = $node->your_message_gift_voucher['und'][0]['value'];
 			$user_id = $node->receiver_user_id_gift_voucher['und'][0]['value'];
 			$amount = $node->select_amount_gift_voucher['und'][0]['value'];
 			$currency = $node->select_currency_gift_voucher['und'][0]['value'];
@@ -287,12 +262,42 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				
 								
 				field_cache_clear(TRUE);			
-			}		
+			}
+			$email_user = user_load($user_id);
+			//print_r($email_user); die();
+	$key = 'dc_gift_vouchers_email';
+	$to = $email_user->mail;
+	$from = 'no-reply@deliverycode.com';
+	$params = array(
+    'body' => 'Hi '.ucfirst($email_user->field_name).',<br/><br/>,<b>'.ucfirst($sender_name).'</b> send you a gift voucher of <b>'.$currency.'&nbsp;'.$amount.'</b><br/>,<b>Gift Message:</b><br/>'.$gift_message.'<br/><br/>To check your gift balance, please login to '.$base_url.'.<br/><br/> Thanks',
+    'subject' => 'Delivery Code Gift Voucher',
+    );
+	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
+			
+					
 			
 		}
 
 		
 	}
+}
+
+
+function dc_gift_vouchers_mail($key, &$message, $params) {
+
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8;',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  $message['subject'] = $params['subject'];
+  $message['body'] = $params['body'];
 }
 
 ?>
