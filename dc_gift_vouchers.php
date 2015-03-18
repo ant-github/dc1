@@ -32,7 +32,7 @@ global $user;
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			$gbp = $usd_balance * $gbp_rate;
+			print $gbp = $usd_balance * $gbp_rate;
 			echo "£".$gbp;
 			
 		}else if($currenyIn == 'eur'){
@@ -41,7 +41,7 @@ global $user;
 			foreach($usd_vs_eur AS $res_usd_vs_eur){
 				$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 			}	
-			$eur = $usd_balance * $eur_rate;
+		print	$eur = $usd_balance * $eur_rate;
 			echo $eur."€";
 			
 		}
