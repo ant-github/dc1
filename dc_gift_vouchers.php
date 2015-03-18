@@ -32,7 +32,7 @@ global $user;
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			$gbp_rate = number_format($gbp_rate, 2);
+			print $usd_balance; print $gbp_rate;
 			$gbp = $usd_balance * $gbp_rate;
 			echo "£".$gbp;
 			
