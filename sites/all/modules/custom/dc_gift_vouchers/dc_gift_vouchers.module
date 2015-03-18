@@ -264,12 +264,18 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 				field_cache_clear(TRUE);			
 			}
 			$email_user = user_load($user_id);
-			//print_r($email_user); die();
+			if($currency == 'USD'){
+				$currency_sign = '$';
+			}else if($currency == 'GBP'){
+				$currency_sign = '£';
+			}else if($currency == 'EUR'){
+				$currency_sign = '€';
+			}
 	$key = 'dc_gift_vouchers_email';
 	$to = $email_user->mail;
 	$from = 'no-reply@deliverycode.com';
 	$params = array(
-    'body' => 'Hi '.ucfirst($email_user->field_name).',<br/><br/>,<b>'.ucfirst($sender_name).'</b> send you a gift voucher of <b>'.$currency.'&nbsp;'.$amount.'</b><br/>,<b>Gift Message:</b><br/>'.$gift_message.'<br/><br/>To check your gift balance, please login to '.$base_url.'.<br/><br/> Thanks',
+    'body' => '<table width="100%"><tr><td>Hi '.ucfirst($email_user->field_name['und'][0]['value']).',</td></tr><tr><td></td></tr><tr><td>,<b>'.ucfirst($sender_name).'</b> send you a gift voucher of <b>'.$currency_sign.''.$amount.'</td></tr><tr><td></td></tr><tr><td>,<b>Gift Message:</b><br/>'.$gift_message.'</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>To check your gift balance, please login to '.$base_url.'.</td></tr><tr><td></td></tr><tr><td>Thanks</td></tr></table>',
     'subject' => 'Delivery Code Gift Voucher',
     );
 	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
