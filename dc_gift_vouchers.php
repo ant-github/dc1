@@ -15,9 +15,9 @@ global $user;
 		$user_id = $user->uid;	
 		$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
 		foreach($select_user_balace AS $res_balance){
-			$usd_balance = $res_balance->field_gift_balance_usd_value;
+		print	$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
-		$usd_balance = number_format($usd_balance, 2);
+		
 		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
 		foreach($select_currency_rates_nid AS $res_currency_rates){
 			$currency_rates_nid = $res_currency_rates->nid;
