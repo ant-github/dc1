@@ -15,7 +15,7 @@ global $user;
 		$user_id = $user->uid;	
 		$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
 		foreach($select_user_balace AS $res_balance){
-		print	$usd_balance = $res_balance->field_gift_balance_usd_value;
+			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
 		
 		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
@@ -24,7 +24,7 @@ global $user;
 		} 
 		if($currenyIn == 'usd'){
 			
-			echo "$".number_format($usd_balance, 2);
+			echo "$". $usd_balance;
 		
 		}else if($currenyIn == 'gbp'){
 			
@@ -32,7 +32,7 @@ global $user;
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			$gbp = number_format(($usd_balance * $gbp_rate), 2);
+			$gbp = $usd_balance * $gbp_rate;
 			echo "£".$gbp;
 			
 		}else if($currenyIn == 'eur'){
@@ -41,7 +41,7 @@ global $user;
 			foreach($usd_vs_eur AS $res_usd_vs_eur){
 				$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 			}	
-			$eur = number_format(($usd_balance * $eur_rate), 2);
+			$eur = $usd_balance * $eur_rate;
 			echo $eur."€";
 			
 		}
