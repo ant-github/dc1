@@ -17,14 +17,13 @@ global $user;
 		foreach($select_user_balace AS $res_balance){
 			$usd_balance = $res_balance->field_gift_balance_usd_value;
 		}
-		
 		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
 		foreach($select_currency_rates_nid AS $res_currency_rates){
 			$currency_rates_nid = $res_currency_rates->nid;
 		} 
 		if($currenyIn == 'usd'){
 			
-			echo "$". $usd_balance;
+			echo "$".number_format($usd_balance, 2);
 		
 		}else if($currenyIn == 'gbp'){
 			
@@ -32,8 +31,7 @@ global $user;
 			foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 				$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 			}	
-			print $usd_balance; print $gbp_rate;
-			$gbp = $usd_balance * $gbp_rate;
+			$gbp = number_format(($usd_balance * $gbp_rate), 2);
 			echo "£".$gbp;
 			
 		}else if($currenyIn == 'eur'){
@@ -47,5 +45,5 @@ global $user;
 			
 		}
 	}
-   
+
 ?>
