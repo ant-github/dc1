@@ -33,11 +33,14 @@ function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
 }
 function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
 	
- $email_content = get_mail_content();
-	$params = array('body' => $email_content);
+	
 	$key = 'dc_gift_vouchers_email';
 	$to = 'soni.kamal@antechindia.com';
 	$from = 'support@deliverycode.com';
+	$params = array(
+    'body' => 'hi this is a tes body',
+    'subject' => 'Website Information Request',
+    );
 	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);	
 	//print "<pre>"; print_r($form); die();
 	//if($form['#form_id'] == 'dc_gift_vouchers_node_form'){
@@ -54,30 +57,22 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
 }
 
 function dc_gift_vouchers_mail($key, &$message, $params) {
-	$language = $message['language'];
-	switch ($key) {
-	//switching on $key lets you create variations of the email based on the $key parameter
-	case 'test_email':
-	$message['subject'] = t('Test Email');
-	//the email body is here, inside the $message array
-	$message['body'][] = $params['body'];
-	break;
-	}
+
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8;',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  $message['subject'] = $params['subject'];
+  $message['body'] = $params['body'];
 }
 
-function get_mail_content() {
- 
-$email_to = 'soni.kamal@antechindia.com';
-$pos = strpos($email_to, '@');
-$user_name = substr($email_to, 0, $pos);
-$body = '';
-$body .= 'Hi ' . $user_name . '<br>';
-$body .= 'Please find my test email. <br>';
-$body .= 'Hi this is a test email soni<br>';
-$body .= 'Thanks<br>';
-$body .= 'TestTeam';
-return $body;
-}
 
 function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
    // print "<pre>"; print_r($line_item->order_id); die();
