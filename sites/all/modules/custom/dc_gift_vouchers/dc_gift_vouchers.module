@@ -167,12 +167,18 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
 
 }
 
-function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
-	global $user;
-	global $base_url;
-	if($transaction->status == 'success'){
+function dc_gift_vouchers_commerce_checkout_complete($order) {
+global $user;
+global $base_url;
+
+		$select_transaction_status = db_query('SELECT status FROM commerce_payment_transaction WHERE order_id ='.$order->order_id);
+		foreach($select_transaction_status AS $res_transaction_status){
+			$transaction_status = $res_transaction_status->status;
+		}
 		
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
+		if($transaction_status == 'success'){
+		
+		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$order->order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
 		}
@@ -187,7 +193,7 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 
 
 			
-			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
+			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$order->order_id);
 			foreach($select_gv_node AS $res_gv_node){
 				 $gv_node = $res_gv_node->entity_id;
 			}			
