@@ -160,8 +160,6 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 	global $base_url;
 	if($transaction->status == 'success'){
 		
-		$order = commerce_order_load($transaction->order_id);
-
 		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
