@@ -290,7 +290,7 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 	$to = $email_user->mail;
 	$from = 'no-reply@deliverycode.com';
 	$params = array(
-    'body' => '<table width="100%"><tr><td>Hi '.ucfirst($email_user->field_name['und'][0]['value']).',</td></tr><tr><td></td></tr><tr><td><b>'.ucfirst($sender_name).'</b> send you a gift voucher of <b>'.$currency_sign.''.$amount.'.</td></tr><tr><td></td></tr><tr><td><b>Gift Message:</b><br/>'.$gift_message.'</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>To check your gift balance, please login to '.$base_url.'.</td></tr><tr><td></td></tr><tr><td>Thanks</td></tr></table>',
+    'body' => '<table width="100%"><tr><td>Dear '.ucfirst($email_user->field_name['und'][0]['value']).',</td></tr><tr><td></td></tr><tr><td>You have received a <b>'.$currency_sign.''.$amount.'.</b> gift voucher!</td></tr><tr><td>Customer Name: '.ucfirst($sender_name).'</td></tr><tr><td></td></tr><tr><td>The customer wrote the following gift message:</td></tr><tr><td>'.$gift_message.'</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>Login to '.$base_url.' to spend your voucher or add more products to your wishlist.</td></tr><tr><td></td></tr><tr><td><b>- DeliveryCode team</b></td></tr></table>',
     'subject' => 'Delivery Code Gift Voucher',
     );
 	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
