@@ -18,14 +18,26 @@ function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
         hide($form['receiver_user_id_gift_voucher']);
         hide($form['wishlist_id_gift_voucher']); 
         hide($form['order_id_gift_voucher']);
+		hide($form['order_status_gift_voucher']);
+		hide($form['username_gift_voucher']);
         
        $form['wishlist_id_gift_voucher']['und'][0]['value']['#default_value'] = $userWishlistId;
        $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$userWishlistId."'");
        foreach($getUserId AS $wishlistUser){
            $userId = $wishlistUser->uid;
+		   
        }
+
+       $getUserName = db_query("SELECT name FROM users WHERE uid ='".$userId."'");
+       foreach($getUserName AS $resGetUserName){
+           $userName = $resGetUserName->name;
+		   
+       }	   
+	   
        $form['receiver_user_id_gift_voucher']['und'][0]['value']['#default_value'] = $userId;
+	   $form['username_gift_voucher']['und'][0]['value']['#default_value'] = $userName;
 	   $form['order_id_gift_voucher']['und'][0]['value']['#default_value'] = 0;
+	   $form['order_status_gift_voucher']['und'][0]['value']['#default_value'] = 0;
        $form['actions']['submit']['#value'] = 'Send';
        unset($form['actions']['preview']);
        
@@ -261,8 +273,8 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 								
 				field_cache_clear(TRUE);			
 			}
-			db_update('field_data_field_order_status_dc_gift_vouch')
-				->fields(array('field_order_status_dc_gift_vouch_value' => 1))
+			db_update('field_data_order_status_gift_voucher')
+				->fields(array('order_status_gift_voucher_value' => 1))
 			    ->condition('entity_id', $node->nid)
 			    ->execute();
 				

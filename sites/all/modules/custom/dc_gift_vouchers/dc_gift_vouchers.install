@@ -128,12 +128,24 @@ function _gift_vouchers_installed_fields() {
         'type'         => 'text',
         'module' => 'text',
       ), 
+      'username_gift_voucher' => array(
+        'field_name'   => 'username_gift_voucher',
+        'label'        => $t('Receiver Username'),
+        'type'         => 'text',
+        'module' => 'text',
+      ),      
       'order_id_gift_voucher' => array(
         'field_name'   => 'order_id_gift_voucher',
         'label'        => $t('Gift Voucher Order Id'),
         'type'         => 'text',
         'module' => 'text',
       ),
+      'order_status_gift_voucher' => array(
+        'field_name'   => 'order_status_gift_voucher',
+        'label'        => $t('Order Status Gift Voucher'),
+        'type'         => 'text',
+        'module' => 'text',
+      ),      
       
 
   );
@@ -250,6 +262,15 @@ function _gift_vouchers_installed_instances() {
             'type' => 'text_textfield',        
         ),
     ),  
+    'username_gift_voucher' => array(
+        'field_name' => 'username_gift_voucher',
+        'label' => $t('Receiver Username'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',        
+        ),
+    ),    
      'order_id_gift_voucher' => array(
         'field_name' => 'order_id_gift_voucher',
         'label' => $t('Order Id Gift Voucher'),
@@ -258,7 +279,17 @@ function _gift_vouchers_installed_instances() {
             'weight' => '1',
             'type' => 'text_textfield',        
         ),
-    ),  
+    ),
+     'order_status_gift_voucher' => array(
+        'field_name' => 'order_status_gift_voucher',
+        'label' => $t('Order Status Gift Voucher'),
+        'description' => $t('0 - not done, 1- order paid'),
+        'cardinality' => 1,
+        'widget' => array(
+            'weight' => '1',
+            'type' => 'text_textfield',        
+        ),
+    ),      
       
   );
   return $instances;
