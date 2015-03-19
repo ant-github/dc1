@@ -261,6 +261,11 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 								
 				field_cache_clear(TRUE);			
 			}
+			db_update('field_data_field_order_status_dc_gift_vouch')
+				->fields(array('field_order_status_dc_gift_vouch_value' => 1))
+			    ->condition('entity_id', $node->nid)
+			    ->execute();
+				
 			$email_user = user_load($user_id);
 			if($currency == 'USD'){
 				$currency_sign = '$';

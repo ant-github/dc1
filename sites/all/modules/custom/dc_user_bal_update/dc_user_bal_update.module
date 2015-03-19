@@ -215,7 +215,7 @@ function dc_user_bal_update_commerce_payment_transaction_presave($transaction) {
 			$order_type = $res_order_type->line_item_label;
 		}
 		
-		if($order_type != 'dc_gift_voucher'){
+		if($order_type != 'dc_gift_voucher' && $user->uid != ''){
 						
 			$select_user_bal_node = db_query('SELECT entity_id FROM field_data_order_id_user_bal_update WHERE order_id_user_bal_update_value ='.$transaction->order_id);
 			foreach($select_user_bal_node AS $res_user_bal_node){
