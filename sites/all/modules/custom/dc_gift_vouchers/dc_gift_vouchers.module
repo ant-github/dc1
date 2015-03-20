@@ -17,42 +17,94 @@ function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
       
         hide($form['receiver_user_id_gift_voucher']);
         hide($form['wishlist_id_gift_voucher']); 
-        hide($form['status_gift_voucher']);
+        hide($form['order_id_gift_voucher']);
+		hide($form['order_status_gift_voucher']);
+		hide($form['username_gift_voucher']);
         
        $form['wishlist_id_gift_voucher']['und'][0]['value']['#default_value'] = $userWishlistId;
        $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$userWishlistId."'");
        foreach($getUserId AS $wishlistUser){
            $userId = $wishlistUser->uid;
+		   
        }
+
+       $getUserName = db_query("SELECT name FROM users WHERE uid ='".$userId."'");
+       foreach($getUserName AS $resGetUserName){
+           $userName = $resGetUserName->name;
+		   
+       }	   
+	   
        $form['receiver_user_id_gift_voucher']['und'][0]['value']['#default_value'] = $userId;
-	   $form['status_gift_voucher']['und'][0]['value']['#default_value'] = 0;
+	   $form['username_gift_voucher']['und'][0]['value']['#default_value'] = $userName;
+	   $form['order_id_gift_voucher']['und'][0]['value']['#default_value'] = 0;
+	   $form['order_status_gift_voucher']['und'][0]['value']['#default_value'] = 0;
        $form['actions']['submit']['#value'] = 'Send';
        unset($form['actions']['preview']);
        
    }
 }
 function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
-    if($node->type == 'dc_gift_vouchers' && $node->nid ==''){
-        $_SESSION['gift_voucher_value'] = $node->select_amount_gift_voucher['und'][0]['value'];
-        $_SESSION['gift_voucher_currency'] = $node->select_currency_gift_voucher['und'][0]['value'];
-        $giftUserId = $node->receiver_user_id_gift_voucher['und'][0]['value'];
-		$_SESSION['gift_voucher_userid']  =   $giftUserId;
-		//drupal_mail('dc_gift_vouchers', 'dc_gift_vouchers_mail', $form_state['values']['email'], 'en', array('values' => $values));
-        node_save($node);
-		$_SESSION['gift_voucher_nid'] = $node->nid;
-        $product = commerce_product_load_by_sku('dc_gift_voucher');
-        commerce_cart_product_add_by_id($product->product_id);
-        drupal_goto('cart');
-    }  
+	//print "<pre>"; print_r($form); die();
+	if($form['#form_id'] == 'dc_gift_vouchers_node_form'){
+		if($node->type == 'dc_gift_vouchers' && $node->nid == ''){
+			//die('hi');
+	        node_save($node);
+			$_SESSION['gift_voucher_nid'] = $node->nid;
+	        $product = commerce_product_load_by_sku('dc_gift_voucher');
+	        commerce_cart_product_add_by_id($product->product_id);
+	        drupal_goto('cart');		
+		}
+	}
+ 
 }
 
+
 function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
-   // print "<pre>"; print_r($line_item); 
+   // print "<pre>"; print_r($line_item->order_id); die();
     if ($line_item->line_item_label == 'dc_gift_voucher') {
-        $gift_voucher_value = $_SESSION['gift_voucher_value'];
-        $gift_voucher_currency = $_SESSION['gift_voucher_currency'];
+    	
+			if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
+			$user_node_del = '';
+			$select_user_bal_node = db_query('SELECT entity_id FROM field_data_order_id_user_bal_update WHERE order_id_user_bal_update_value ='.$line_item->order_id);
+			foreach($select_user_bal_node AS $res_user_bal_node){
+				 $user_node_del = $res_user_bal_node->entity_id;
+			}
+			if($user_node_del != ''){
+				node_delete($user_node_del);
+			}
+			
+							
+					db_update('field_data_order_id_gift_voucher')
+					->fields(array('order_id_gift_voucher_value' => 0))
+				    ->condition('order_id_gift_voucher_value', $line_item->order_id)
+				    ->execute();
+				
+							
+					db_update('field_data_order_id_gift_voucher')
+					->fields(array('order_id_gift_voucher_value' => $line_item->order_id))
+				    ->condition('entity_id', $_SESSION['gift_voucher_nid'])
+				    ->execute();			
+					unset($_SESSION['gift_voucher_nid']);
+				}
+				
+				field_cache_clear(TRUE);		
+		
+		
+    	$gv_node = '';
+
+			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$line_item->order_id);
+			foreach($select_gv_node AS $res_gv_node){
+				 $gv_node = $res_gv_node->entity_id;
+			}			
+			$node = node_load($gv_node);
+			//print "<pre>"; print_r($node); die('hi');
+
+
+			$gift_voucher_value = $node->select_amount_gift_voucher['und'][0]['value'];
+			$gift_voucher_currency = $node->select_currency_gift_voucher['und'][0]['value'];		
+
         $price = 100 * $gift_voucher_value; //1 dollar
-        
+        $currency_rates_nid = '';
 		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
 		foreach($select_currency_rates_nid AS $res_currency_rates){
 			$currency_rates_nid = $res_currency_rates->nid;
@@ -75,7 +127,7 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
         	$giftVoucherRate = db_query("SELECT field_dc_fee_100__value AS rate FROM field_data_field_dc_fee_100_ WHERE entity_id='".$currency_rates_nid."'");
 
         }
-    	
+    	$giftRate = '';
 	       foreach($giftVoucherRate AS $resGiftVoucherRate){
 	           $giftRate = $resGiftVoucherRate->rate;
 	       }
@@ -99,14 +151,14 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
 
 
 function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
-	
+	//print "<pre>"; print_r($checkout_pane); die();
     $order_id = arg(1);
+	$productType = '';
     $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order_id."'");
        foreach($getProductType AS $resProductType){
            $productType = $resProductType->line_item_label;
        }
-       if($productType == 'dc_gift_voucher'){
-       	//print "<pre>"; print_r($checkout_pane); 
+       if($productType == 'dc_gift_voucher'){ 
             unset($checkout_pane['customer_profile_billing']);
             unset($checkout_pane['commerce_shipping']);
 			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
@@ -115,132 +167,39 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
 
 }
 
-function dc_gift_vouchers_commerce_order_presave($order) {
-	global $user;
+function dc_gift_vouchers_commerce_payment_order_paid_in_full($order, $transaction) {
+global $user;
+global $base_url;
 
-	if($order->status != 'cart' && $user->uid != ''){
+		if($transaction->status == 'success'){
 		
-		   $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order->order_id."'");
-	       foreach($getProductType AS $resProductType){
-           	$productType = $resProductType->line_item_label;
-       		}
-		   $select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user->uid);
-		   foreach($select_user_balace AS $res_balance){
-			  $usd_balance = $res_balance->field_gift_balance_usd_value;
-		   }
-		   
+			$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
+			foreach($select_order_type AS $res_order_type){
+				$order_type = $res_order_type->line_item_label;
+			}
+			
 			$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
 			foreach($select_currency_rates_nid AS $res_currency_rates){
 				$currency_rates_nid = $res_currency_rates->nid;
-			}		   
-		   
-		   if($productType != 'dc_gift_voucher' && $usd_balance != '' && $usd_balance > 0){
-		   	
-		   		$cart_total_amount = $order->commerce_order_total['und'][0]['amount'] / 100; 
-			 	$currency = $order->commerce_order_total['und'][0]['currency_code'];
+			}
 				
-				if($currency == 'GBP'){
-						$usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
-						foreach($usd_vs_gbp AS $res_usd_vs_gbp){
-							$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
-						}	
-						 $gbp_gift_bal = number_format(($usd_balance * $gbp_rate), 2); 
-						
-						if($gbp_gift_bal > $cart_total_amount){
-							
-								  $userBalance = $gbp_gift_bal - $cart_total_amount;
-								  $user_balance = number_format(($userBalance / $gbp_rate), 2);
-								  $_SESSION['user_balance_update'] = $user_balance;
-								  $cart_total = 0; 
-								  
-						}else if($gbp_gift_bal < $cart_total_amount){
-							      $cart_total = $cart_total_amount - $gbp_gift_bal; 
-							      $user_balance = 0;
-								  $_SESSION['user_balance_update'] = $user_balance;
-						}else{					
-							$cart_total = 0;
-							$user_balance = 0;
-							$_SESSION['user_balance_update'] = $user_balance;
-						}
-						
-						 $order->commerce_order_total['und'][0]['amount'] = $cart_total * 100; 
-					
-				}else if($currency == 'EUR'){
-					
-						$usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
-						foreach($usd_vs_eur AS $res_usd_vs_eur){
-							$eur_rate = $res_usd_vs_eur->field__1_eur_value;
-						}	
-						$eur_gift_bal = number_format(($usd_balance * $eur_rate), 2);
-						
-						if($eur_gift_bal > $cart_total_amount){
-							
-								  $userBalance = $eur_gift_bal - $cart_total_amount;
-								  $user_balance = number_format(($userBalance / $eur_rate), 2);
-								  $_SESSION['user_balance_update'] = $user_balance;
-								  $cart_total = 0; 
-								  
-						}else if($eur_gift_bal < $cart_total_amount){
-							
-							      $cart_total = $cart_total_amount - $eur_gift_bal;
-							      $user_balance = 0;
-								  $_SESSION['user_balance_update'] = $user_balance;
-						}else{					
-							$cart_total = 0;
-							$user_balance = 0;
-							$_SESSION['user_balance_update'] = $user_balance;
-						}
-						$order->commerce_order_total['und'][0]['amount'] = $cart_total*100;					
-									
-				}else if($currency == 'USD'){
-						
-						if($usd_balance > $cart_total_amount){
-							
-								  $user_balance = $usd_balance - $cart_total_amount;
-								  $_SESSION['user_balance_update'] = $user_balance;
-								  $cart_total = 0; 
-								  
-						}else if($usd_balance < $cart_total_amount){
-							
-							      $cart_total = $cart_total_amount - $usd_balance;
-							      $user_balance = 0;
-								  $_SESSION['user_balance_update'] = $user_balance;
-						}else{					
-							$cart_total = 0;
-							$user_balance = 0;
-							$_SESSION['user_balance_update'] = $user_balance;
-						}
-						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;								
-				}
-			
-		   }		
-	}
-
-}
-
-
-
-function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
-			//print "<pre>"; print_r($order); die();
-	if($transaction->status == 'success'){
-		$order = commerce_order_load($transaction->order_id);
-
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
-		foreach($select_order_type AS $res_order_type){
-			$order_type = $res_order_type->line_item_label;
-		}
-		
-		$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
-		foreach($select_currency_rates_nid AS $res_currency_rates){
-			$currency_rates_nid = $res_currency_rates->nid;
-		}
-				
-				
+		//print $order_type; die();		
 		if($order_type == 'dc_gift_voucher'){
 
-			$user_id = $_SESSION['gift_voucher_userid'];
-			$amount = $_SESSION['gift_voucher_value'];
-			$currency = $_SESSION['gift_voucher_currency'];
+
+			
+			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
+			foreach($select_gv_node AS $res_gv_node){
+				 $gv_node = $res_gv_node->entity_id;
+			}			
+			$node = node_load($gv_node);
+			//print "<pre>"; print_r($node); die('hi');
+
+			$sender_name = $node->title;
+			$gift_message = $node->your_message_gift_voucher['und'][0]['value'];
+			$user_id = $node->receiver_user_id_gift_voucher['und'][0]['value'];
+			$amount = $node->select_amount_gift_voucher['und'][0]['value'];
+			$currency = $node->select_currency_gift_voucher['und'][0]['value'];
 			
 			$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
 			foreach($select_user_balace AS $res_balance){
@@ -273,15 +232,9 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 					$user_balance =  $amount_eur;
 					
 				}				
-				
+				$user_balance = number_format(($user_balance), 2);
 				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
 				
-				if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
-					db_update('field_data_status_gift_voucher')
-					->fields(array('status_gift_voucher_value' => 1))
-				    ->condition('entity_id', $_SESSION['gift_voucher_nid'])
-				    ->execute();
-				}
 				
 				field_cache_clear(TRUE);
 				
@@ -312,40 +265,61 @@ function dc_gift_vouchers_commerce_payment_transaction_presave($transaction) {
 					$user_balance = $usd_balance + $amount_eur;
 					
 				}
-				
+				$user_balance = number_format(($user_balance), 2);
 				db_update('field_data_field_gift_balance_usd')
 				->fields(array('field_gift_balance_usd_value' => $user_balance))
 			    ->condition('entity_id', $user_id)
 			    ->execute();
 				
-				if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
-					db_update('field_data_status_gift_voucher')
-					->fields(array('status_gift_voucher_value' => 1))
-				    ->condition('entity_id', $_SESSION['gift_voucher_nid'])
-				    ->execute();
-				}
 								
 				field_cache_clear(TRUE);			
-			}		
+			}
+			db_update('field_data_order_status_gift_voucher')
+				->fields(array('order_status_gift_voucher_value' => 1))
+			    ->condition('entity_id', $node->nid)
+			    ->execute();
+				
+			$email_user = user_load($user_id);
+			if($currency == 'USD'){
+				$currency_sign = '$';
+			}else if($currency == 'GBP'){
+				$currency_sign = '£';
+			}else if($currency == 'EUR'){
+				$currency_sign = '€';
+			}
+	$key = 'dc_gift_vouchers_email';
+	$to = $email_user->mail;
+	$from = 'no-reply@deliverycode.com';
+	$params = array(
+    'body' => '<table width="100%"><tr><td>Dear '.ucfirst($email_user->field_name['und'][0]['value']).',</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>You have received a <b>'.$currency_sign.''.$amount.'</b> gift voucher!</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>Customer Name: '.ucfirst($sender_name).'</td></tr><tr><td></td><tr><td></td></tr></tr><tr><td>The customer wrote the following gift message:</td></tr><tr><td>'.$gift_message.'</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td>Login to '.$base_url.' to spend your voucher or add more products to your wishlist.</td></tr><tr><td></td></tr><tr><td></td></tr><tr><td><b>- DeliveryCode team</b></td></tr></table>',
+    'subject' => 'Delivery Code Gift Voucher',
+    );
+	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
+			
+					
 			
 		}
 
-		if(isset($_SESSION['user_balance_update']) && $_SESSION['user_balance_update'] != ''){
-			$user_balance = $_SESSION['user_balance_update'];
-			db_update('field_data_field_gift_balance_usd')
-			->fields(array('field_gift_balance_usd_value' => $user_balance))
-		    ->condition('entity_id', $user_id)
-		    ->execute();
-			field_cache_clear(TRUE);
-			
-		}
 		
 	}
-	unset($_SESSION['gift_voucher_nid']);
-	unset($_SESSION['gift_voucher_userid']);
-	unset($_SESSION['gift_voucher_value']);
-	unset($_SESSION['gift_voucher_currency']);
-	unset($_SESSION['user_balance_update']);
+}
+
+
+function dc_gift_vouchers_mail($key, &$message, $params) {
+
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8;',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  $message['subject'] = $params['subject'];
+  $message['body'] = $params['body'];
 }
 
 ?>
