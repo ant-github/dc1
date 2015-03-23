@@ -203,7 +203,39 @@ $productType = '';
 
 }
 
+function dc_user_bal_update_form_commerce_checkout_form_review_alter(&$form, &$form_state, $form_id) {
+   
+   if($form_id == 'commerce_checkout_form_review'){
+   		//print $form_id; die();
+	   $form['buttons']['continue']['#submit'][] = 'dc_user_bal_update_submit_function'; 
+   }
+   //$form['buttons']['continue']['#value'] = 'Send Me A Quote!';
+         
+}
 
+
+function dc_user_bal_update_submit_function($form, &$form_state) {
+	//print "<pre>"; print_r($form_state['order']); die();
+	if($form_state['order']->commerce_order_total['und'][0]['amount'] == 0){
+		//$transaction_status = 'success';
+		$orderId = $form_state['order']->order_id;
+		dc_user_bal_update_transaction($orderId);
+	}
+}
+
+
+function dc_user_bal_update_transaction($orderId) {
+ // $card_details = $order->data['commerce_payment_example']['credit_card'];
+
+  $transaction = commerce_payment_transaction_new('commerce_no_payment', $orderId);
+  $transaction->instance_id = 'commerce_no_payment|commerce_payment_commerce_no_payment';
+  $transaction->amount = 0;
+  $transaction->currency_code = 'USD';
+  $transaction->status = COMMERCE_PAYMENT_STATUS_SUCCESS;
+
+  commerce_payment_transaction_save($transaction);
+  return $transaction;
+}
 
 function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transaction) {
 	global $user;
