@@ -204,7 +204,7 @@ $productType = '';
 }
 
 function dc_user_bal_update_form_commerce_checkout_form_review_alter(&$form, &$form_state, $form_id) {
-   
+   print $form_id; die();
    if($form_id == 'commerce_checkout_form_review'){
    		//print $form_id; die();
 	   $form['buttons']['continue']['#submit'][] = 'dc_user_bal_update_submit_function'; 
