@@ -51,14 +51,16 @@ function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_w
 
 function dc_user_bal_update_commerce_order_presave($order) {
 	global $user;
-	//print "<pre>"; print_r($user); die();
+	//print "<pre>"; print_r($order); die();
+	//$arg1 = arg(1);
+	//$arg0 = arg(0);
 $productType = '';
 		   $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order->order_id."'");
 	       foreach($getProductType AS $resProductType){
            	$productType = $resProductType->line_item_label;
        		}
        		
-    if($productType != 'dc_gift_voucher' && $order->status != 'cart'){
+    if($productType != 'dc_gift_voucher' && $order->status != 'cart' && $order->original->status == 'cart'){
     	
 			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$order->order_id);
 			foreach($select_gv_node AS $res_gv_node){
@@ -182,6 +184,10 @@ $productType = '';
 				}
 				
 					/*********  Create node User Balance Update Record to store user balance need to update after successfull transaction  *************/
+						
+						if($order->status != 'cart' && $user->uid != '' && $order->original->status == 'cart'){
+							
+						
 						$node = new StdClass();
 						$node->type = 'dc_user_bal_update';
 						$node->language = LANGUAGE_NONE;
@@ -194,7 +200,7 @@ $productType = '';
 						$node->amount_status_user_bal_update['und'][0]['value'] = 0;
 						
 						node_save($node);
-					
+						}
 					/****** End  *******/						
 						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;					
 			
@@ -204,8 +210,8 @@ $productType = '';
 }
 
 function dc_user_bal_update_form_commerce_checkout_form_review_alter(&$form, &$form_state, $form_id) {
-   //print $form_id; die();
-   if($form_id == 'commerce_checkout_form_review'){
+   //print "<pre>"; print($form_state['order']->commerce_order_total['und'][0]['amount']); print $form_state['checkout_page']['name']; die();
+   if($form_id == 'commerce_checkout_form_review' && $form_state['order']->commerce_order_total['und'][0]['amount'] == 0 && $form_state['checkout_page']['name'] == 'Review'){
    		//print $form_id; die();
 	   $form['buttons']['continue']['#submit'][] = 'dc_user_bal_update_submit_function'; 
    }
@@ -220,7 +226,7 @@ function dc_user_bal_update_submit_function($form, &$form_state) {
 		//$transaction_status = 'success';
 		$orderId = $form_state['order']->order_id;
 		dc_user_bal_update_transaction($form_state['order']);
-		//print "<pre>"; print_r($form_state['order']); die();
+		
 	}
 }
 
