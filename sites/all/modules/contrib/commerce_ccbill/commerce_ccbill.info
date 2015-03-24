@@ -1,0 +1,4 @@
+name = Commerce CCBILL
+description  = Integrates CCBill Dynamic pricing with Drupal Commerce.
+package = Commerce Contrib
+core = 7.x

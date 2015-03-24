@@ -1,0 +1,272 @@
+<?php
+define('CCBILL_FORM_PERIOD', 30);
+
+/**
+ * @file
+ * Implements CCBill payment gateway in Drupal Commerce checkout.
+ */
+function commerce_ccbill_menu() {
+  $items['ccbill/success-process'] = array(
+    'title' => 'Order Update',
+    'page callback' => 'commerce_ccbill_update',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['ccbill/success'] = array(
+    'title' => 'Order Update',
+    'page callback' => 'commerce_ccbill_update_message',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['ccbill/denied'] = array(
+    'title' => 'Order Not Processed',
+    'page callback' => 'commerce_ccbill_denied',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+function commerce_ccbill_update_message() {
+  return 'Your order has been received. You will shortly receive an email containing the details of the purchase';
+}
+
+function commerce_ccbill_denied() {
+  return 'There was an error with CCBill payment processing for your order. Your order has not been processed.';
+}
+function commerce_ccbill_update() {
+  if($_POST['order_id']) {
+    $order = commerce_order_load($_POST['order_id']);
+    // first lets complete the checkout process before making this order complete
+    // this ensures the relevant checkout_complete rules are triggered.
+    $order = commerce_order_status_update($order, 'checkout_complete');
+    commerce_checkout_complete($order);
+    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+    $order_wrapper->status->set('completed');
+    $order_wrapper->save();
+    $message = 'Order updated for Order id ' . $_POST['order_id'];
+  } else {
+    $message = 'No order id found in $_POST variable';
+  }
+  return $message;
+}
+
+/**
+ * Implements hook_commerce_payment_method_info().
+ */
+function commerce_ccbill_commerce_payment_method_info() {
+  $payment_methods = array();
+
+  $icons = commerce_ccbill_icons();
+  $display_title = t('Pay securely on CCBill payment gateway.');
+  unset($icons['ccbill']);
+  $display_title .= '<div class="commerce-ccbill-icons"><span class="label">' . t('Includes:') . '</span>' . implode(' ', $icons) . '</div>';
+
+  $payment_methods['commerce_ccbill_payment'] = array(
+    'base' => 'commerce_ccbill',
+    'title' => t('CCBill'),
+    'display_title' => $display_title,
+    'description' => t('CCBill payment gateway.'),
+    'terminal' => FALSE,
+    'offsite' => TRUE,
+    'offsite_autoredirect' => TRUE,
+  );
+
+  return $payment_methods;
+}
+
+/**
+ * Payment method callback: settings form.
+ */
+function commerce_ccbill_settings_form($settings = NULL) {
+  $form = array();
+
+  // Merge default settings into the stored settings array.
+  $default_currency = variable_get('commerce_default_currency', 'USD');
+
+  $settings = (array) $settings + array(
+    'clientAccnum' => '1.0.0',
+    'clientSubacc' => '',
+    'currencyCode' => '840',
+    'salt' => '3qufIzhNheemjjWlX9vfNPmq'
+  );
+
+  $form['clientAccnum'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client Account Number'),
+    '#description' => t('An integer value representing the 6-digit client account number'),
+    '#default_value' => $settings['clientAccnum'],
+    '#required' => TRUE,
+  );
+  $form['clientSubacc'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Client Sub-account Number'),
+    '#description' => t('An integer value representing the 4-digit client subaccount number.'),
+    '#required' => TRUE,
+    '#default_value' => $settings['clientSubacc'],
+  );
+  $form['currencyCode'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Currency Code'),
+    '#description' => t('An integer representing the 3-digit currency code that will be used for the transaction. See http://en.wikipedia.org/wiki/ISO_4217 for available codes.'),
+    '#required' => TRUE,
+    '#default_value' => $settings['currencyCode'],
+  );
+  $form['salt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Salt'),
+    '#description' => t('Random alpha numeric salt value used for encryption. Change of this value should be intimated to CCBill.'),
+    '#required' => TRUE,
+    '#default_value' => $settings['salt'],
+  );
+  return $form;
+}
+
+/**
+ * Payment method callback: adds a message and CSS to the submission form.
+ */
+function commerce_ccbill_submit_form($payment_method, $pane_values, $checkout_pane, $order) {
+  $form['commerce_ccbill_payment_information'] = array(
+    '#markup' => '<span class="commerce-ccbill-info">' . t('(Continue with checkout to complete payment via CCBill.)') . '</span>',
+    '#attached' => array(
+      'css' => array(drupal_get_path('module', 'commerce_ccbill') . '/theme/commerce_ccbill.css'),
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Payment method callback: redirect form, a wrapper around the module's general
+ *   use function for building a WPS form.
+ */
+function commerce_ccbill_redirect_form($form, &$form_state, $order, $payment_method) {
+  // Return an error if the enabling action's settings haven't been configured.
+  //if (empty($payment_method['settings']['clientAccnum']) || empty($payment_method['settings']['clientSubacc'])) {
+  //  drupal_set_message(t('CCBill is not configured for use. Please check if Client Account ID and Client Sub Account ID for CCBill is set.'), 'error');
+  //  return array();
+  //}
+
+  $settings = $payment_method['settings'] + array(
+    // Return to the payment redirect page for processing successful payments
+    //'return' => url('checkout/' . $order->order_id . '/payment/return/' . $order->data['payment_redirect_key'], array('absolute' => TRUE)),
+  );
+
+  return commerce_ccbill_order_form($form, $form_state, $order, $settings);
+}
+
+/**
+ * Payment method callback: redirect form return validation.
+ */
+function commerce_ccbill_redirect_form_validate($order, $payment_method) {
+}
+
+/**
+ * Payment method callback:
+ */
+function commerce_ccbill_return_validate($order, $payment_method, $ipn) {
+
+}
+
+/**
+ * Payment method callback:
+ */
+function commerce_ccbill_return_process($order, $payment_method, &$ipn) {
+
+}
+
+/**
+ * Builds a MPG form from an order object.
+ *
+ * @return
+ *   A renderable form array.
+ */
+function commerce_ccbill_order_form($form, &$form_state, $order, $settings) {
+  $wrapper = entity_metadata_wrapper('commerce_order', $order);
+  $currency_code = $wrapper->commerce_order_total->currency_code->value();
+  $amount = $wrapper->commerce_order_total->amount->value();
+  $decimal_amount = round(commerce_currency_amount_to_decimal($amount, $currency_code), 2);
+  $order_id = $order->order_number;
+  $form_digest = md5($decimal_amount . CCBILL_FORM_PERIOD . $settings['currencyCode'] . $settings['salt']);
+
+
+  // Build the data array that will be translated into hidden form values.
+  $data = array(
+    // Version of Maldives Payment Gateway
+    'clientAccnum' => $settings['clientAccnum'],
+    'clientSubacc' =>  $settings['clientSubacc'],
+    'currencyCode' =>  $settings['currencyCode'],
+    //default form name
+    //'formName' => '105cc',
+    //custom form name
+    'formName' => '940889-0009cc-1',
+    'order_id' => $order_id,
+    'formPrice' => $decimal_amount,
+    'formPeriod' => CCBILL_FORM_PERIOD,
+    'formDigest' => $form_digest,
+  );
+  $form['#action'] = commerce_ccbill_server_url('live');
+
+  foreach ($data as $name => $value) {
+    if (!empty($value)) {
+      $form[$name] = array('#type' => 'hidden', '#value' => $value);
+    }
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Proceed to CCBill'),
+  );
+
+  return $form;
+}
+
+
+/**
+ * Returns the URL to the specified CCBill WPS server.
+ *
+ * @param $server
+ *   Either sandbox or live indicating which server to get the URL for.
+ *
+ * @return
+ *   The URL to use to submit requests to the CCBill WPS server.
+ */
+function commerce_ccbill_server_url($server) {
+  switch ($server) {
+    case 'sandbox':
+      return 'https://bill.ccbill.com/jpost/signup.cgi';
+    case 'live':
+      return 'https://bill.ccbill.com/jpost/signup.cgi';
+  }
+}
+
+
+/**
+ * Returns an array of MPG payment method icon img elements.
+ *
+ * @return
+ *   The array of themed payment method icons keyed by name: visa, mastercard,
+ *   amex, discover, echeck, paypal
+ */
+function commerce_ccbill_icons() {
+  $icons = array();
+
+  $payment_methods = array(
+    'visa' => t('Visa'),
+    'mastercard' => t('Mastercard'),
+    'amex' => t('American Express'),
+  );
+
+  foreach ($payment_methods as $name => $title) {
+    $variables = array(
+      'path' => drupal_get_path('module', 'commerce_ccbill') . '/images/' . $name . '.gif',
+      'title' => $title,
+      'alt' => $title,
+      'attributes' => array(
+        'class' => array('commerce-ccbill-icon'),
+      ),
+    );
+    $icons[$name] = theme('image', $variables);
+  }
+
+  return $icons;
+}
