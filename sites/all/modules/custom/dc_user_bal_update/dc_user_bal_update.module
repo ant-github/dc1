@@ -126,7 +126,7 @@ $productType = '';
 						}
 						
 						
-						drupal_set_message('Your gift balance £'.$your_gift_balance.' has been used.', 'status');
+						drupal_set_message('Your total order amount has been deducted as according to your gift balance. Your gift balance £'.$your_gift_balance.' will be deducted after successful checkout.', 'status');
 						
 			  }else if($currency == 'EUR'){
 					
@@ -156,7 +156,7 @@ $productType = '';
 						}
 						
 
-						drupal_set_message('Your gift balance '.$your_gift_balance.'€ has been used.', 'status');					
+						drupal_set_message('Your total order amount has been deducted as according to your gift balance.<br/> Your gift balance '.$your_gift_balance.'€ will be deducted after successful checkout.', 'status');					
 									
 				}else if($currency == 'USD'){
 						
@@ -180,7 +180,7 @@ $productType = '';
 						}
 						
 
-						drupal_set_message('Your gift balance $'.$your_gift_balance.' has been used.', 'status');							
+						drupal_set_message('Your total order amount has been deducted as according to your gift balance. Your gift balance $'.$your_gift_balance.' will be deducted after successful checkout.', 'status');							
 				}
 				
 					/*********  Create node User Balance Update Record to store user balance need to update after successfull transaction  *************/
