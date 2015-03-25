@@ -87,7 +87,7 @@ function commerce_ccbill_settings_form($settings = NULL) {
     'clientAccnum' => '1.0.0',
     'clientSubacc' => '',
     'currencyCode' => '840',
-    'salt' => '3qufIzhNheemjjWlX9vfNPmq'
+    'salt' => 'Js3MrV8NFs1enC7mWPaCP53S'
   );
 
   $form['clientAccnum'] = array(
@@ -198,7 +198,7 @@ function commerce_ccbill_order_form($form, &$form_state, $order, $settings) {
     //default form name
     //'formName' => '105cc',
     //custom form name
-    'formName' => '940889-0009cc-1',
+    'formName' => '201cc',
     'order_id' => $order_id,
     'formPrice' => $decimal_amount,
     'formPeriod' => CCBILL_FORM_PERIOD,
