@@ -30,46 +30,6 @@ function hd_wishlist_page_add() {
  * - Call on the Field API to pull in the form elements
  *   for fields attached to the entity.
  */
-function hd_wishlist_form($form, &$form_state, $entity) {
-  $form_message_html = '<div class="alert alert-warning">';
-  $form_message_html .= '<h3>Rename your wishlist</h3>';
-  $form_message_html .= '<p>Give your wishlist a name and click "Save"</p>';
-  $form_message_html .= '</div>';
-
-  $form['message'] = array(
-    '#markup' => $form_message_html
-  );
-
-  $form['name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Name'),
-    '#required' => TRUE,
-    '#default_value' => $entity->name,
-  );
-
-  $form['wishlist'] = array(
-    '#type' => 'value',
-    '#value' => $entity,
-  );
-  //dpm($entity);
-  field_attach_form('wishlist', $entity, $form, $form_state);
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-    '#weight' => 100,
-  );
-
-  if (!isset($entity->is_new)) {
-    $form['delete'] = array(
-      '#type' => 'submit',
-      '#value' => t('Delete'),
-      '#submit' => array('hd_wishlist_form_delete'),
-      '#weight' => 200,
-    );
-  }
-  return $form;
-}
 
 /**
  * Validation handler for hd_wishlist_form form.
