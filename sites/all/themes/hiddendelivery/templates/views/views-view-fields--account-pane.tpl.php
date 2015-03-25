@@ -27,11 +27,11 @@
  * @ingroup views_templates
  */
 ?>
-<div>
-	<?php print $fields['name']->wrapper_prefix; ?>
-	<?php print $fields['name']->label_html; ?>
-	<?php print $fields['name']->content; ?>
-	<?php print $fields['name']->wrapper_suffix; ?>
+<div><?php //print "<pre>"; print_r($fields['name']); die(); ?>
+	<?php // print $fields['name']->wrapper_prefix; ?>
+	<?php // print $fields['name']->label_html; ?>
+	<?php // print $fields['name']->content; ?>
+	<?php // print $fields['name']->wrapper_suffix; ?>
 	<?php print $fields['picture']->wrapper_prefix; ?>
 	<?php print $fields['picture']->label_html; ?>
 	<?php print $fields['picture']->content; ?>
