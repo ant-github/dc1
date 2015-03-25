@@ -39,7 +39,6 @@ function hd_wishlist_form($form, &$form_state, $entity) {
   $form['message'] = array(
     '#markup' => $form_message_html
   );
-
   $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
@@ -52,7 +51,7 @@ function hd_wishlist_form($form, &$form_state, $entity) {
     '#value' => $entity,
   );
   //dpm($entity);
-  field_attach_form('wishlist', $entity, $form, $form_state);
+  //field_attach_form('wishlist', $entity, $form, $form_state);
 
   $form['submit'] = array(
     '#type' => 'submit',
