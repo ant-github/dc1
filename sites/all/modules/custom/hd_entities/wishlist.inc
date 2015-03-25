@@ -46,12 +46,12 @@ function hd_wishlist_form($form, &$form_state, $entity) {
     '#default_value' => $entity->name,
   );
 
- // $form['wishlist'] = array(
- //   '#type' => 'value',
- //   '#value' => $entity,
- // );
+  $form['wishlist'] = array(
+    '#type' => 'value',
+    '#value' => $entity,
+  );
   //dpm($entity);
-  field_attach_form('wishlist', $entity, $form, $form_state);
+  //field_attach_form('wishlist', $entity, $form, $form_state);
 
   $form['submit'] = array(
     '#type' => 'submit',
