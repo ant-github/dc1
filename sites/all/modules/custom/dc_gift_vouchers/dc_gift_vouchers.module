@@ -371,8 +371,9 @@ function dc_gift_vouchers_mail($key, &$message, $params) {
   $headers = array(
     'MIME-Version' => '1.0',
     'Content-Type' => 'text/html; charset=UTF-8;',
-    'Content-Transfer-Encoding' => '8Bit',
-    'X-Mailer' => 'Drupal'
+    'Content-Transfer-Encoding' => '64Bit',
+    'X-Mailer' => 'Drupal',
+    'format' => 'flowed'
   );
 
   foreach ($headers as $key => $value) {
