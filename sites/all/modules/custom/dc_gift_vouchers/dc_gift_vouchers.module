@@ -291,10 +291,10 @@ global $base_url;
 	$to = $email_user->mail;
 	$from = 'no-reply@deliverycode.com';
 	$params = array(
-    'body' => 'hiii how are lyou',
-    'subject' => 'Delivery Code Gift Voucher',
+    'body' => 'hi how are you.',
+    'subject' => 'Delivery Code Gift Voucher'
     );
-	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);	print_r($mail);	die();		
+	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
 			
 					
 			
