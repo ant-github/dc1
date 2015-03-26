@@ -290,7 +290,7 @@ global $base_url;
 	$key = 'dc_gift_vouchers_email';
 	$to = $email_user->mail;
 	$from = 'no-reply@deliverycode.com';
-print	$params = '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	$body_text = '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
 	<tbody>
 		<tr>
 			<td bgcolor="#FFFFFF" style="border-collapse: collapse;" valign="top">
@@ -499,8 +499,8 @@ print	$params = '<table align="center" border="0" cellpadding="0" cellspacing="0
 									<tbody>
 										<tr>
 											<td align="center" bgcolor="#000000" style="border-collapse: collapse; padding: 5px 0;" valign="top">
-												<!-- <br /> --><span style="color: #ffffff; font-family: Arial; font-size: 11px;"><a href="'.$base_url.'/contact-us" style="text-decoration: none; color: #ffffff;">Contact Us</a> &nbsp;/&nbsp; <a href="'.$base_url.'/privacy" style="text-decoration: none; color: #ffffff;">Privacy</a> &nbsp;/&nbsp; <a href="'.$base_url.'/terms" style="text-decoration: none; color: #ffffff;">Terms and Conditions</a> </span><br />
-												<!-- <br /> --></td>
+												<span style="color: #ffffff; font-family: Arial; font-size: 11px;"><a href="'.$base_url.'/contact-us" style="text-decoration: none; color: #ffffff;">Contact Us</a> &nbsp;/&nbsp; <a href="'.$base_url.'/privacy" style="text-decoration: none; color: #ffffff;">Privacy</a> &nbsp;/&nbsp; <a href="'.$base_url.'/terms" style="text-decoration: none; color: #ffffff;">Terms and Conditions</a> </span><br/>
+												</td>
 										</tr>
 										<tr>
 											<!-- <td valign="top"  bgcolor="#000000" align="center" style="border-collapse: collapse;">
@@ -536,7 +536,11 @@ print	$params = '<table align="center" border="0" cellpadding="0" cellspacing="0
 		</tr>
 	</tbody>
 </table>
-<p>&nbsp;</p>'; die();
+<p>&nbsp;</p>';
+	$params = array(
+    'body' => $body_text,
+    'subject' => 'Delivery Code Gift Voucher',
+    );
 	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
 			
 					
