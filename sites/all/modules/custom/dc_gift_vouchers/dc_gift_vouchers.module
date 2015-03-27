@@ -291,7 +291,7 @@ global $base_url;
 	$to = $email_user->mail;
 	$from = 'soni@delivery-code-sta.sites.ac';
 	$params = array(
-            'body' => '<table><tr><td>hi how are you.</td></tr></table>',
+            'body' => 'hi how are youfdgdfgdgdsgdsfgdf.',
             'subject' => 'Delivery Code Gift Voucher' 
         );
 	$mail = drupal_mail('dc_gift_vouchers', $key, $to, language_default(), $params, $from);				
