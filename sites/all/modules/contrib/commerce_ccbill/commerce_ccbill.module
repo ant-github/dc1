@@ -27,7 +27,7 @@ function commerce_ccbill_menu() {
   return $items;
 }
 function commerce_ccbill_update_message() {
-	print "<pre>"; print_r($_POST); die();
+	print "<pre>"; print_r($_POST['order_id']); die();
   return 'Your order has been received. You will shortly receive an email containing the details of the purchase';
 }
 
