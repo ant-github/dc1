@@ -34,7 +34,7 @@ function commerce_ccbill_update_message() {
   return 'Your order has been received. You will shortly receive an email containing the details of the purchase';
 }
 
-function commerce_ccbill_denied() {
+function commerce_ccbill_denied() { 
   return 'There was an error with CCBill payment processing for your order. Your order has not been processed.';
 }
 function commerce_ccbill_update() {
