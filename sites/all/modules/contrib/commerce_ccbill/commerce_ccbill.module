@@ -48,9 +48,9 @@ function commerce_ccbill_update() {
     commerce_checkout_complete($order);
 	commerce_ccbill_transaction($order);
 	//commerce_ccbill_commerce_payment_order_paid_in_full($order, $transaction);
-    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-   	$order_wrapper->status->set('pending');
-    $order_wrapper->save();
+   // $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+   //	$order_wrapper->status->set('pending');
+   // $order_wrapper->save();
 	
     $message = 'Order updated for Order id ' . $_POST['order_id'];
   } else {
