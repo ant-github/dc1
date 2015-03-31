@@ -212,7 +212,7 @@ function commerce_ccbill_order_form($form, &$form_state, $order, $settings) {
   	$currency_code =  978;
   }
   $amount = $wrapper->commerce_order_total->amount->value();
-  $decimal_amount = round(commerce_currency_amount_to_decimal($amount, $currency_code), 2);
+  $decimal_amount = round(commerce_currency_amount_to_decimal($amount), 2);
   $order_id = $order->order_number;
   $form_digest = md5($decimal_amount . CCBILL_FORM_PERIOD . $currency_code . $settings['salt']);
 
