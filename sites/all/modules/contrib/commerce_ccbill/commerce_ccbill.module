@@ -46,6 +46,14 @@ function commerce_ccbill_update() {
 			//$order->commerce_order_total['und'][0]['amount'] = 7873;
 		   // $order = commerce_order_status_update($order, 'checkout_complete');
 		   // commerce_checkout_complete($order);
+		   
+				db_update('field_data_commerce_order_total')
+				->fields(array('commerce_order_total_amount' => $order->commerce_order_total['und'][0]['amount']))
+			    ->condition('entity_id', $order->order_id)
+			    ->execute();
+				
+								
+				field_cache_clear(TRUE);		   
 			commerce_ccbill_transaction($order);
 			//commerce_ccbill_commerce_payment_order_paid_in_full($order, $transaction);
 		  //  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
