@@ -43,16 +43,29 @@ function commerce_ccbill_update() {
     $order = commerce_order_load($_POST['order_id']);
     // first lets complete the checkout process before making this order complete
     // this ensures the relevant checkout_complete rules are triggered.
-    $order = commerce_order_status_update($order, 'checkout_complete');
-    commerce_checkout_complete($order);
-    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-    $order_wrapper->status->set('completed');
-    $order_wrapper->save();
+    commerce_ccbill_transaction($order);
+    //$order = commerce_order_status_update($order, 'checkout_complete');
+    //commerce_checkout_complete($order);
+   // $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+   // $order_wrapper->status->set('completed');
+   // $order_wrapper->save();
     $message = 'Order updated for Order id ' . $_POST['order_id'];
   } else {
     $message = 'No order id found in $_POST variable';
   }
   return $message;
+}
+function commerce_ccbill_transaction($order) {
+ // $card_details = $order->data['commerce_payment_example']['credit_card'];
+
+  $transaction = commerce_payment_transaction_new('commerce_ccbill', $order->order_id);
+  $transaction->instance_id = 'commerce_ccbill|commerce_payment_commerce_ccbill';
+  $transaction->amount = 0;
+  $transaction->currency_code = $order->commerce_order_total['und'][0]['currency_code'];
+  $transaction->status = COMMERCE_PAYMENT_STATUS_SUCCESS;
+
+  commerce_payment_transaction_save($transaction);
+  return $transaction;
 }
 
 /**
