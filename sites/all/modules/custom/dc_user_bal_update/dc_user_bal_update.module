@@ -81,7 +81,7 @@ $productType = '';
 			    			
 	}   		
 
-	if($order->status != 'cart' && $user->uid != ''){
+	if($order->status != 'cart' && $user->uid != '' && $user->uid != 0){
 
 		   $select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user->uid);
 		   foreach($select_user_balace AS $res_balance){
@@ -248,7 +248,7 @@ function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transac
 	global $user;
 	if($transaction->status == 'success' && $user->uid != ''){
 
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
+		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$transaction->order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
 		}
