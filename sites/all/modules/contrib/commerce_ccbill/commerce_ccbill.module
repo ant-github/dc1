@@ -47,7 +47,7 @@ function commerce_ccbill_update() {
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
 		} 
-		if($order_type == 'product'){  
+		if($order_type == ''){  
 		    $order = commerce_order_status_update($order, 'checkout_complete');
 		    commerce_checkout_complete($order);
 			commerce_ccbill_transaction($order);
