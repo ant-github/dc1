@@ -215,7 +215,7 @@ function commerce_ccbill_order_form($form, &$form_state, $order, $settings) {
     // Version of Maldives Payment Gateway
     'clientAccnum' => $settings['clientAccnum'],
     'clientSubacc' =>  $settings['clientSubacc'],
-    'currencyCode' =>  $settings['currencyCode'],
+    'currencyCode' =>  $currency_code,
     //default form name
     //'formName' => '105cc',
     //custom form name
