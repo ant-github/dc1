@@ -203,11 +203,18 @@ function commerce_ccbill_return_process($order, $payment_method, &$ipn) {
  */
 function commerce_ccbill_order_form($form, &$form_state, $order, $settings) {
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
-  $currency_code = $wrapper->commerce_order_total->currency_code->value();
+  $currency = $wrapper->commerce_order_total->currency_code->value();
+  if($currency == 'USD'){
+  	$currency_code =  840;
+  }else if($currency == 'GBP'){
+  	$currency_code =  826;
+  }else if($currency == 'EUR'){
+  	$currency_code =  978;
+  }
   $amount = $wrapper->commerce_order_total->amount->value();
   $decimal_amount = round(commerce_currency_amount_to_decimal($amount, $currency_code), 2);
   $order_id = $order->order_number;
-  $form_digest = md5($decimal_amount . CCBILL_FORM_PERIOD . $settings['currencyCode'] . $settings['salt']);
+  $form_digest = md5($decimal_amount . CCBILL_FORM_PERIOD . $currency_code . $settings['salt']);
 
 
   // Build the data array that will be translated into hidden form values.
