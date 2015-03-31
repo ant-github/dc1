@@ -203,7 +203,7 @@ $productType = '';
 						}
 					/****** End  *******/						
 						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;
-						commerce_order_save($order);					
+						//commerce_order_save($order);					
 			
 		   }		
 	}
