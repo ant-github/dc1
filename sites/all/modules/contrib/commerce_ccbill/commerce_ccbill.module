@@ -43,19 +43,15 @@ function commerce_ccbill_update() {
     $order = commerce_order_load($_POST['order_id']);
     // first lets complete the checkout process before making this order complete
     // this ensures the relevant checkout_complete rules are triggered.
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$_POST['order_id']);
-		foreach($select_order_type AS $res_order_type){
-			$order_type = $res_order_type->line_item_label;
-		} 
-		if($order_type != ''){  
-		    $order = commerce_order_status_update($order, 'checkout_complete');
+
+		    //$order = commerce_order_status_update($order, 'checkout_complete');
 		    commerce_checkout_complete($order);
 			commerce_ccbill_transaction($order);
 			//commerce_ccbill_commerce_payment_order_paid_in_full($order, $transaction);
 		    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
 		   	$order_wrapper->status->set('pending');
 		    $order_wrapper->save();
-		}
+	
     $message = 'Order updated for Order id ' . $_POST['order_id'];
   } else {
     $message = 'No order id found in $_POST variable';
