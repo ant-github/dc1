@@ -13,8 +13,8 @@ function commerce_ccbill_update() {
 	//print "<pre>"; print_r($_POST); print "<pre>"; print $_POST['order_id']; die();
   if($_POST['order_id']) {
     $order = commerce_order_load($_POST['order_id']);
-   		commerce_ccbill_transaction($order);	
-		dc_user_bal_update_7100($order);
+   		$transaction = commerce_ccbill_transaction($order);	
+			dc_user_bal_update_7100($order);
 
 		   // $order1 = commerce_order_status_update($order, 'checkout_complete');
 		   // commerce_checkout_complete($order1);
@@ -53,7 +53,7 @@ function commerce_ccbill_transaction($order) {
 
   return $transaction;
 }
-function dc_user_bal_update_7100($order){
+function dc_user_bal_update_7100(&$order){
 	
 $select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order->order_id);
 		foreach($select_order_type AS $res_order_type){
@@ -91,6 +91,7 @@ $select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WH
 		    ->execute();	
 					
 			field_cache_clear(TRUE);
+			return $order;
 					
 		}	
 	
