@@ -44,9 +44,9 @@ function commerce_ccbill_update() {
     // first lets complete the checkout process before making this order complete
     // this ensures the relevant checkout_complete rules are triggered.
 			//$order->commerce_order_total['und'][0]['amount'] = 7873;
-			commerce_order_save($order);
-		    $order = commerce_order_status_update($order, 'checkout_complete');
-		    commerce_checkout_complete($order);
+			//commerce_order_save($order);
+		    //$order = commerce_order_status_update($order, 'checkout_complete');
+		    //commerce_checkout_complete($order);
 		   
 			commerce_ccbill_transaction($order);
 			//commerce_ccbill_commerce_payment_order_paid_in_full($order, $transaction);
