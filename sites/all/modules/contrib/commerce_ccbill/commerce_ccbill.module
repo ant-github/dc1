@@ -46,13 +46,14 @@ function commerce_ccbill_update() {
 		  //  commerce_checkout_complete($order);
 		   
 			
-
+			$transaction = commerce_ccbill_transaction($order);
+			
 		    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-			$order_wrapper->commerce_order_total->amount = $order->commerce_order_total['und'][0]['amount'];
-  			$order_wrapper->commerce_order_total->currency_code = $order->commerce_order_total['und'][0]['currency_code'];
+			$order_wrapper->commerce_order_total->amount = $transaction->amount;
+  			$order_wrapper->commerce_order_total->currency_code = $transaction->currency_code;
 		   	$order_wrapper->status->set('pending');
 		    $order_wrapper->save();
-			commerce_ccbill_transaction($order);
+			
 	
     $message = 'Order updated for Order id ' . $_POST['order_id'];
   } else {
