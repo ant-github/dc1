@@ -42,9 +42,15 @@ function commerce_ccbill_update() {
   if($_POST['order_id']) {
     $order = commerce_order_load($_POST['order_id']);
    			
-		    $order = commerce_order_status_update($order, 'checkout_complete');
-		  //  commerce_checkout_complete($order);
-		   
+		   // $order1 = commerce_order_status_update($order, 'checkout_complete');
+		   // commerce_checkout_complete($order1);
+				db_update('commerce_order')
+				->fields(array('status' => 'checkout_complete'))
+			    ->condition('order_id', $_POST['order_id'])
+			    ->execute();
+				
+								
+				field_cache_clear(TRUE);		   
 			commerce_ccbill_transaction($order);
 			
 			
