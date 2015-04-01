@@ -45,7 +45,7 @@ function commerce_ccbill_update() {
 		   // $order1 = commerce_order_status_update($order, 'checkout_complete');
 		   // commerce_checkout_complete($order1);	   
 			commerce_ccbill_transaction($order);
-			commerce_ccbill_order_paid_in_full($order);
+			commerce_ccbill_full($order->order_id);
 			
 		  //  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
 		//	$order_wrapper->commerce_order_total->amount = $order->commerce_order_total['und'][0]['amount'];
@@ -64,15 +64,15 @@ function commerce_ccbill_update() {
 //  $orders = commerce_order_load_multiple(array($order_id), array());
 //  return $orders;
 //}
-function commerce_ccbill_order_paid_in_full($order) {
+function commerce_ccbill_full($order_id) {
 	global $user;
 	if($user->uid != ''){
 $node = '';
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order->order_id);
+		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
 		}
-			$select_user_bal_node = db_query('SELECT entity_id FROM field_data_order_id_user_bal_update WHERE order_id_user_bal_update_value ='.$order->order_id);
+			$select_user_bal_node = db_query('SELECT entity_id FROM field_data_order_id_user_bal_update WHERE order_id_user_bal_update_value ='.$order_id);
 			foreach($select_user_bal_node AS $res_user_bal_node){
 				 $user_bal_node = $res_user_bal_node->entity_id;
 			}			
@@ -104,7 +104,9 @@ $node = '';
 		    ->execute();	
 					
 			field_cache_clear(TRUE);
-			return True;		
+			
+			return $order_id;
+				
 		}
 		
 	}
