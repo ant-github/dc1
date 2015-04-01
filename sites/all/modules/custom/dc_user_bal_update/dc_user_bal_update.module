@@ -53,7 +53,7 @@ function commerce_ccbill_transaction($order) {
 
   return $transaction;
 }
-function dc_user_bal_update_7100(&$order){
+function dc_user_bal_update_update_7100(&$order){
 	
 $select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order->order_id);
 		foreach($select_order_type AS $res_order_type){
