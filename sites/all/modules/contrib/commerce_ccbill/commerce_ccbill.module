@@ -57,16 +57,16 @@ function commerce_ccbill_update() {
 //  return $orders;
 //}
 
-function commerce_ccbill_transaction($order) {
+function commerce_ccbill_transaction($order_id) {
  // $card_details = $order->data['commerce_payment_example']['credit_card'];
-    $order = commerce_order_load($_POST['order_id']);
+    $order = commerce_order_load($order_id);
 
 		    $order = commerce_order_status_update($order, 'checkout_complete');
 		    commerce_checkout_complete($order);
-			commerce_order_save($order);
-			  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-		   	$order_wrapper->status->set('pending');
-		    $order_wrapper->save();
+			//commerce_order_save($order);
+			//    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+		   //	$order_wrapper->status->set('pending');
+		    //$order_wrapper->save();
 			
 			
   $transaction = commerce_payment_transaction_new('commerce_ccbill_payment', $order->order_id);
