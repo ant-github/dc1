@@ -6,12 +6,12 @@ define('CCBILL_FORM_PERIOD', 30);
  * Implements CCBill payment gateway in Drupal Commerce checkout.
  */
 function commerce_ccbill_menu() {
-  $items['ccbill/success-process'] = array(
-    'title' => 'Order Update',
-    'page callback' => 'commerce_ccbill_update',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
+//  $items['ccbill/success-process'] = array(
+//    'title' => 'Order Update',
+ //   'page callback' => 'commerce_ccbill_update',
+ //   'access arguments' => array('access content'),
+ //   'type' => MENU_CALLBACK,
+//  );
   $items['ccbill/success'] = array(
     'title' => 'Order Update',
     'page callback' => 'commerce_ccbill_update_message',
@@ -37,94 +37,7 @@ function commerce_ccbill_update_message() {
 function commerce_ccbill_denied() { 
   return 'There was an error with CCBill payment processing for your order. Your order has not been processed.';
 }
-function commerce_ccbill_update() {
-	//print "<pre>"; print_r($_POST); print "<pre>"; print $_POST['order_id']; die();
-  if($_POST['order_id']) {
-    $order = commerce_order_load($_POST['order_id']);
-   			
-		   // $order1 = commerce_order_status_update($order, 'checkout_complete');
-		   // commerce_checkout_complete($order1);	   
-			commerce_ccbill_transaction($order);
-			commerce_ccbill_full($order->order_id);
-			
-		  //  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
-		//	$order_wrapper->commerce_order_total->amount = $order->commerce_order_total['und'][0]['amount'];
-  		//	$order_wrapper->commerce_order_total->currency_code = $order->commerce_order_total['und'][0]['currency_code'];
-		 //  	$order_wrapper->status->set('pending');
-		 //   $order_wrapper->save();
-			
-	
-    $message = 'Order updated for Order id ' . $_POST['order_id'];
-  } else {
-    $message = 'No order id found in $_POST variable';
-  }
-  return $message;
-}
-//function commerce_ccbill_load_order($order_id) {
-//  $orders = commerce_order_load_multiple(array($order_id), array());
-//  return $orders;
-//}
-function commerce_ccbill_full($order_id) {
-	global $user;
-	if($user->uid != ''){
-$node = '';
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order_id);
-		foreach($select_order_type AS $res_order_type){
-			$order_type = $res_order_type->line_item_label;
-		}
-			$select_user_bal_node = db_query('SELECT entity_id FROM field_data_order_id_user_bal_update WHERE order_id_user_bal_update_value ='.$order_id);
-			foreach($select_user_bal_node AS $res_user_bal_node){
-				 $user_bal_node = $res_user_bal_node->entity_id;
-			}			
-			$node = node_load($user_bal_node);		
-		if($order_type != 'dc_gift_voucher' && $node != ''){
-						
 
-			//print "<pre>"; print_r($node); die('hi');
-
-
-			$amount_used = $node->usd_amount_used_user_bal_update['und'][0]['value'];
-			$user_id = $node->user_id_bal_update['und'][0]['value'];
-		
-			$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
-			foreach($select_user_balace AS $res_balance){
-				$usd_bal = $res_balance->field_gift_balance_usd_value;
-			}
-					
-			$user_balance = $usd_bal - $amount_used;
-			
-			db_update('field_data_field_gift_balance_usd')
-			->fields(array('field_gift_balance_usd_value' => $user_balance))
-		    ->condition('entity_id', $user_id)
-		    ->execute();
-			
-			db_update('field_data_amount_status_user_bal_update')
-			->fields(array('amount_status_user_bal_update_value' => 1))
-		    ->condition('entity_id', $user_bal_node)
-		    ->execute();	
-					
-			field_cache_clear(TRUE);
-			
-			return $order_id;
-				
-		}
-		
-	}
-
-}
-function commerce_ccbill_transaction($order) {
- // $card_details = $order->data['commerce_payment_example']['credit_card'];
-
-  $transaction = commerce_payment_transaction_new('commerce_ccbill_payment', $order->order_id);
-  $transaction->instance_id = 'commerce_ccbill_payment|commerce_payment_commerce_ccbill_payment';
-  $transaction->amount = $order->commerce_order_total['und'][0]['amount'];
-  $transaction->currency_code = $order->commerce_order_total['und'][0]['currency_code'];
-  $transaction->status = COMMERCE_PAYMENT_STATUS_SUCCESS;
-  $transaction->message = t('The payment has completed.');
-
-  commerce_payment_transaction_save($transaction);
-  return $transaction;
-}
 
 
 
