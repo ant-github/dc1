@@ -84,7 +84,7 @@ function commerce_ccbill_transaction($order) {
 		    ->execute();	
 					
 			field_cache_clear(TRUE);  
-  
+			}
   return $transaction;
 }
 
