@@ -13,7 +13,7 @@ function commerce_ccbill_update() {
 	//print "<pre>"; print_r($_POST); print "<pre>"; print $_POST['order_id']; die();
   if($_POST['order_id']) {
     $order = commerce_order_load($_POST['order_id']);
-   			
+   		commerce_ccbill_transaction($order);	
 		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$order->order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
@@ -55,7 +55,7 @@ function commerce_ccbill_update() {
 		   // $order1 = commerce_order_status_update($order, 'checkout_complete');
 		   // commerce_checkout_complete($order1);
 		   //commerce_order_calculate_total($order);	   
-			commerce_ccbill_transaction($order);
+			
 			
 			
 			
