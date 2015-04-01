@@ -43,7 +43,7 @@ function commerce_ccbill_update() {
     $order = commerce_order_load($_POST['order_id']);
    
 		    $order = commerce_order_status_update($order, 'checkout_complete');
-		    commerce_checkout_complete($order);
+		  //  commerce_checkout_complete($order);
 		   
 			
 			$transaction = commerce_ccbill_transaction($order);
