@@ -349,7 +349,7 @@ function dc_user_bal_update_transaction($order) {
 
 function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transaction) {
 	global $user;
-	if($transaction->status == 'success' && $user->uid != ''){
+	if($transaction->status == 'success' && $user->uid != '' && $transaction->payment_method == 'commerce_no_payment'){
 
 		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
 		foreach($select_order_type AS $res_order_type){
@@ -380,6 +380,11 @@ function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transac
 			->fields(array('field_gift_balance_usd_value' => $user_balance))
 		    ->condition('entity_id', $user_id)
 		    ->execute();
+			
+			db_update('field_data_commerce_order_total')
+			->fields(array('commerce_order_total_amount' => 0))
+		    ->condition('entity_id', $transaction->order_id)
+		    ->execute();			
 			
 			db_update('field_data_amount_status_user_bal_update')
 			->fields(array('amount_status_user_bal_update_value' => 1))
