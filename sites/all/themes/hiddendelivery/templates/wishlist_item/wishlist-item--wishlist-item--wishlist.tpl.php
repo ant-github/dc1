@@ -56,7 +56,14 @@
     <div class="actions col-md-10">
     <?php if (!$is_owner): ?>
         <?php print render($content['field_commerce_produc_ref']); ?>
-
+        <?php
+        global $user; 
+		global $base_url;
+	        if(isset($user->roles[5])){
+	        	 print "<div class='admin-edit-link-product'><a href='".$base_url."/admin/commerce/products/".render($content['field_commerce_produc_ref']['#items'][0]['product_id'])."/edit' target='_blank'>Edit</a></div>";
+			}
+        ?>
+		
       <?php print render($wishlist_item_popup); ?>
     <?php endif; ?>
 
