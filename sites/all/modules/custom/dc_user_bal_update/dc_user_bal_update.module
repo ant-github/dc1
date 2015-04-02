@@ -351,7 +351,7 @@ function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transac
 	global $user;
 	if($transaction->status == 'success' && $user->uid != ''){
 
-		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE type = "product" AND order_id ='.$transaction->order_id);
+		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
 		foreach($select_order_type AS $res_order_type){
 			$order_type = $res_order_type->line_item_label;
 		}
