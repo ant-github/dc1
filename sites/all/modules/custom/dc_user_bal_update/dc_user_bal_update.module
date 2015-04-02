@@ -379,11 +379,6 @@ function dc_user_bal_update_commerce_payment_order_paid_in_full($order, $transac
 			db_update('field_data_field_gift_balance_usd')
 			->fields(array('field_gift_balance_usd_value' => $user_balance))
 		    ->condition('entity_id', $user_id)
-		    ->execute();
-			
-			db_update('field_data_commerce_order_total')
-			->fields(array('commerce_order_total_amount' => 0))
-		    ->condition('entity_id', $transaction->order_id)
 		    ->execute();			
 			
 			db_update('field_data_amount_status_user_bal_update')
