@@ -102,6 +102,18 @@ function dc_user_bal_update_commerce_payment_transaction_presave($transaction) {
 	}
 
 }
+function dc_user_bal_update_commerce_payment_transaction_insert($transaction) {
+	global $user;
+	if($transaction->status == 'success' && $transaction->payment_method == 'commerce_ccbill_payment'){
+
+			db_update('field_data_commerce_order_total')
+			->fields(array('commerce_order_total_amount' => $transaction->amount))
+		    ->condition('entity_id', $transaction->order_id)
+		    ->execute();
+		
+	}
+
+}
 function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_wrapper){
 	global $user;
 
@@ -332,6 +344,7 @@ function dc_user_bal_update_submit_function($form, &$form_state) {
 		//$transaction_status = 'success';
 		$orderId = $form_state['order']->order_id;
 		dc_user_bal_update_transaction($form_state['order']);
+		
 			db_update('field_data_commerce_order_total')
 			->fields(array('commerce_order_total_amount' => 0))
 		    ->condition('entity_id', $form_state['order']->order_id)
@@ -343,7 +356,6 @@ function dc_user_bal_update_submit_function($form, &$form_state) {
 
 function dc_user_bal_update_transaction($order) {
  // $card_details = $order->data['commerce_payment_example']['credit_card'];
-
   $transaction = commerce_payment_transaction_new('commerce_no_payment', $order->order_id);
   $transaction->instance_id = 'commerce_no_payment|commerce_payment_commerce_no_payment';
   $transaction->amount = 0;
