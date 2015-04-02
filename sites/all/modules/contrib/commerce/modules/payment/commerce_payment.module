@@ -412,7 +412,7 @@ function commerce_payment_commerce_payment_totals_row_info($totals, $order) {
 
       $rows[] = array(
         'data' => array(
-          array('data' => t('Gift balance'), 'class' => array('label')),
+          array('data' => t('Order balance'), 'class' => array('label')),
           array('data' => commerce_currency_format($balance['amount'], $balance['currency_code']), 'class' => array('balance')),
         ),
         'class' => array('order-balance'),
