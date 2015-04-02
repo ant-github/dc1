@@ -153,7 +153,7 @@ function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_w
 
 function dc_user_bal_update_commerce_order_presave($order) {
 	global $user;
-	//print "<pre>"; print_r($order); die();
+	//	print "<pre>"; print_r($order); die();	
 	//$arg1 = arg(1);
 	//$arg0 = arg(0);
 $productType = '';
@@ -181,9 +181,11 @@ $productType = '';
 			}			
 			
 			    			
-	}   		
+	} 
+	  		
 
 	if($order->status != 'cart' && $user->uid != '' && $user->uid != 0){
+		
 
 		   $select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user->uid);
 		   foreach($select_user_balace AS $res_balance){
@@ -305,7 +307,8 @@ $productType = '';
 						}
 					/****** End  *******/						
 						$order->commerce_order_total['und'][0]['amount'] = $cart_total * 100;
-						//commerce_order_save($order);					
+						//commerce_order_save($order);		
+							
 			
 		   }		
 	}
@@ -329,6 +332,10 @@ function dc_user_bal_update_submit_function($form, &$form_state) {
 		//$transaction_status = 'success';
 		$orderId = $form_state['order']->order_id;
 		dc_user_bal_update_transaction($form_state['order']);
+			db_update('field_data_commerce_order_total')
+			->fields(array('commerce_order_total_amount' => 0))
+		    ->condition('entity_id', $form_state['order']->order_id)
+		    ->execute();		
 		
 	}
 }
