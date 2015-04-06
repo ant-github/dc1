@@ -312,7 +312,7 @@ function editablefields_form($form, &$form_state, $entity_type, $entity, $field,
   // Remove the title of the field.
   $instance['label'] = '';
 
-  $edit_mode_state = isset($form_state['edit_mode']) && drupal_array_get_nested_value($form_state['edit_mode'], $form['#parents']);
+$edit_mode_state = isset($form_state['edit_mode']) && is_array($form_state['edit_mode']) && drupal_array_get_nested_value($form_state['edit_mode'], $form['#parents']);
   $edit_mode = empty($display['settings']['click_to_edit']) || $edit_mode_state;
 
   if ($edit_mode) {
