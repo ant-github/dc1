@@ -37,6 +37,15 @@
     <?php if ($status == 'purchased'): ?>
       <div class="purchased-message"><p><?php print t('Product Purchased'); ?></p></div>
     <?php endif; ?>
+     <?php 
+      if (!$is_owner): 
+     
+    // print "<pre>"; print_r($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']); die();
+    unset($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']);
+	 unset($content['product:field_product_image'][0]['actions']);
+		  
+     endif; 
+     ?>
      <?php print render($content['product:field_product_image']); ?>
      <?php print render($content['product:title']); ?>
      <?php print render($content['product:field_info']); ?>
