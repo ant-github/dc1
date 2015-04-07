@@ -432,6 +432,7 @@ function hd_tweaks_add_to_cart_form_submit(&$form, &$form_state){
     //query the wishlist item to get the id
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'wishlist_item')
+	->propertyCondition('uid', $wishlist->uid)
     ->fieldCondition('field_commerce_produc_ref ', 'product_id', $pid, '=')
     ->addMetaData('account', user_load(1)); // Run the query as user 1.
     $result = $query->execute();
