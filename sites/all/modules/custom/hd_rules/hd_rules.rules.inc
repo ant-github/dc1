@@ -101,7 +101,21 @@ function hd_rules_create_purchase($commerce_order){
     $pw->save();
   }
 }
-
+function hd_rules_set_item_to_shipped($commerce_order){
+  //load line_tem from the order
+  $line_item = commerce_line_item_load(
+    $commerce_order->commerce_line_items[LANGUAGE_NONE]['0']['line_item_id']);
+  //check if line item is a product
+  if($line_item->type == 'product'){
+    // Update the wishlist item status to purchased
+    $wishlist_item = hd_wishlist_item_load(
+      $line_item->field_wishlist_item_id_ref['und'][0]['target_id']);
+    $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+    $wr->field_reserving_user = $commerce_order->uid;
+    $wr->field_status = 'shipped';
+    $wr->save();
+  }
+}
 function hd_rules_set_item_to_reserved($commerce_order){
   //load line_tem from the order
   $line_item = commerce_line_item_load(
