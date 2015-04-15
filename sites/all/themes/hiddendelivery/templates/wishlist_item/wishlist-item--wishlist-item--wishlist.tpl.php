@@ -38,11 +38,12 @@
       <div class="purchased-message"><p><?php print t('Product Purchased'); ?></p></div>
     <?php endif; ?>
      <?php 
+    // print "<pre>"; print_r($content); die(); 
       if (!$is_owner): 
      
     // print "<pre>"; print_r($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']); die();
-    unset($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']);
-	 unset($content['product:field_product_image'][0]['actions']);
+   // unset($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']);
+	// unset($content['product:field_product_image'][0]['actions']);
 		  
      endif; 
      ?>

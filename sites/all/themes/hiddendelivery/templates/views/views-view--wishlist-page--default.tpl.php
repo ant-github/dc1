@@ -38,6 +38,10 @@
       <div class="row">
       <div class="view-filters col-md-7">
         <?php print $exposed; ?>
+        <?php if ($is_owner): ?>
+        	<div class="manage-wishlist-display">Manage Wishlist Display Items</div>
+        	<div class="back-to-wishlist-items">Back To Wishlist</div>
+        <?php endif; ?>
       </div>
       <div class="share-wishlist-container col-md-5">
         <?php if ($is_owner){ ?>
@@ -92,12 +96,17 @@
   <?php if ($more): ?>
     <?php print $more; ?>
   <?php endif; ?>
-
-  <?php if ($footer): ?>
+  
+  <?php if ($is_owner):
+  		if ($footer): 
+  ?>
     <div class="view-footer">
       <?php print $footer; ?>
     </div>
-  <?php endif; ?>
+  <?php 
+  		endif; 
+  		endif;
+  ?>
 
   <?php if ($feed_icon): ?>
     <div class="feed-icon">
