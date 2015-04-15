@@ -31,11 +31,11 @@
 <div class="<?php print $classes . ' ' . $status_class; ?> clearfix row"<?php print $attributes; ?>>
   <div class="product-info col-md-9">
     <?php if ($status == 'reserved'): ?>
-      <div class="reserved-message"><p><?php print t('Product Reserved'); ?></p></div>
+      <div class="reserved-message"><p><?php print t('Product Purchased'); ?></p></div>
     <?php endif; ?>
 
     <?php if ($status == 'purchased'): ?>
-      <div class="purchased-message"><p><?php print t('Product Purchased'); ?></p></div>
+      <div class="purchased-message"><p><?php print t('Product Shipped'); ?></p></div>
     <?php endif; ?>
      <?php 
     // print "<pre>"; print_r($content); die(); 
