@@ -36,15 +36,8 @@ $('.view-wishlist-page.view-display-id-default .view-footer .view-content').css(
 $('.view-wishlist-page.view-display-id-default .view-footer .text-center').css('display', 'block');  
 });
 $(".back-to-wishlist-items").click(function(e){
-$(this).css('display', 'none'); 
-$('#views-exposed-form-wishlist-page-default').css('display', 'block');
-$('.manage-wishlist-display').css('display', 'block'); 
-$('.share-wishlist-container').css('display', 'block'); 
-$('.view-wishlist-page.view-display-id-default .view-content').css('display', 'block'); 
-$('.view-wishlist-page.view-display-id-default .text-center').css('display', 'block');
-$('.view-id-wishlist_page.view-display-id-default .view-footer').css('display', 'none');  
-$('.view-wishlist-page.view-display-id-default .view-footer .view-content').css('display', 'none'); 
-$('.view-wishlist-page.view-display-id-default .view-footer .text-center').css('display', 'none');  
+	window.location.reload();
+  
 });
 			//remove click on menu delimiter
 			$(".navbar a.menu-delimiter", context).click(function(e){

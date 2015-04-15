@@ -39,7 +39,7 @@
       <div class="view-filters col-md-7">
         <?php print $exposed; ?>
         <?php if ($is_owner): ?>
-        	<div class="manage-wishlist-display">Manage Wishlist Display Items</div>
+        	<div class="manage-wishlist-display">Manage Wishlist Items Display</div>
         	<div class="back-to-wishlist-items">Back To Wishlist</div>
         <?php endif; ?>
       </div>
