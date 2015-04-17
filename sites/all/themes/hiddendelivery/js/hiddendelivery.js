@@ -1,20 +1,22 @@
 (function ($) {
 	Drupal.behaviors.globalScript = {
     attach: function (context, settings) {
+$('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button').html('Edit Image');
 
 // remove master card logo on checkout review page
+
       $(".commerce-paypal-icons img").each(function () {
         if ($(this).attr("title") == "Mastercard") {
             $(this).remove();
         }
       }); 
+    
  // user profile page change currency for logged in user
  
  $("#userProfileCurrency").change(function() {
-    //get the selected value
+ 	
     var selectedValue = this.value;
 
-	 //make the ajax call
     $.ajax({
         url: '../dc_gift_vouchers.php',
         type: 'POST',
@@ -35,14 +37,16 @@ $('.view-id-wishlist_page.view-display-id-default .view-footer').css('display', 
 $('.view-wishlist-page.view-display-id-default .view-footer .view-content').css('display', 'block'); 
 $('.view-wishlist-page.view-display-id-default .view-footer .text-center').css('display', 'block');  
 });
+
 $(".back-to-wishlist-items").click(function(e){
 	window.location.reload();
   
 });
-			//remove click on menu delimiter
-			$(".navbar a.menu-delimiter", context).click(function(e){
-				e.preventDefault();
-			});
+
+//remove click on menu delimiter
+	$(".navbar a.menu-delimiter", context).click(function(e){
+		e.preventDefault();
+	});
 
       if($('.youtubeVideo').length) {
         setupVideo();
@@ -60,13 +64,13 @@ $(".back-to-wishlist-items").click(function(e){
       }
 
       function setupVideo() {
-             var tag = document.createElement('script');
+            var tag = document.createElement('script');
 
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             Drupal.settings.introVideo = false;
-        }
+      }
 
         window.onYouTubeIframeAPIReady = function() {
           var videos = $('.youtubeVideo');
