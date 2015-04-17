@@ -1,7 +1,7 @@
 (function ($) {
 	Drupal.behaviors.globalScript = {
     attach: function (context, settings) {
-$('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button').html('Edit Image');
+$('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button.btn-danger').html('Edit Image');
 
 // remove master card logo on checkout review page
 
