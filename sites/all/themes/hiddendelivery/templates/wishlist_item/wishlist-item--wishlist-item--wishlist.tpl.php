@@ -38,13 +38,17 @@
       <div class="purchased-message"><p><?php print t('Product Shipped'); ?></p></div>
     <?php endif; ?>
     <?php 
-     //print "<pre>"; print_r($content); die(); 
-     $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
-      if ($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD'): 
+     //print "<pre>"; print_r($content); die();
+     global $user; 
+	 global $base_url;
+	    	if(!isset($user->roles[5])){ 
+     			$product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
+      				if ($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD'): 
 	?>  
-     	<div class="reserved-message"><p><?php print t('Required Admin Approval'); ?></p></div>	
+     					<div class="reserved-message"><p><?php print t('Admin Approval Required To Purchase'); ?></p></div>	
 	<?php 
-	  endif; 
+	  				endif; 
+			}
      ?>
      <?php print render($content['product:field_product_image']); ?>
      <?php print render($content['product:title']); ?>
@@ -54,6 +58,7 @@
       <?php print render($disclaimer); ?>
      <?php endif; ?>
      <?php if (isset($note)): ?>
+     
       <?php print render($note); ?>
      <?php endif; ?>
 
