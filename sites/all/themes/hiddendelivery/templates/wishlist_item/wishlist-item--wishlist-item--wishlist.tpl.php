@@ -37,15 +37,14 @@
     <?php if ($status == 'purchased'): ?>
       <div class="purchased-message"><p><?php print t('Product Shipped'); ?></p></div>
     <?php endif; ?>
-     <?php 
-    // print "<pre>"; print_r($content); die(); 
-      if (!$is_owner): 
-     
-    // print "<pre>"; print_r($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']); die();
-   // unset($content['product:field_product_image'][0]['field_product_image']['und'][0]['remove_button']);
-	// unset($content['product:field_product_image'][0]['actions']);
-		  
-     endif; 
+    <?php 
+     //print "<pre>"; print_r($content); die(); 
+     $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
+      if ($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD'): 
+	?>  
+     	<div class="reserved-message"><p><?php print t('Required Admin Approval'); ?></p></div>	
+	<?php 
+	  endif; 
      ?>
      <?php print render($content['product:field_product_image']); ?>
      <?php print render($content['product:title']); ?>
