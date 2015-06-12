@@ -21,6 +21,10 @@ function dc_vote_form_alter(&$form, &$form_state, $form_id) {
        $form['actions']['submit']['#value'] = 'Click here to <span class="vote-me-text">Vote</span> for me';
        unset($form['actions']['preview']);
        
+   }else if($form_id == 'user_profile_form'){
+   		$form['field_delivery_address']['und']['0']['phone_block']['phone_number']['phone_number']['#required'] = TRUE;
+   }else if($form_id == 'user_register_form'){
+   		$form['field_delivery_address']['und']['0']['phone_block']['phone_number']['phone_number']['#required'] = TRUE;
    }
 }
 function dc_vote_node_submit($node, $form, &$form_state) {
