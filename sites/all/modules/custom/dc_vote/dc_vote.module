@@ -34,14 +34,24 @@ function dc_vote_node_submit($node, $form, &$form_state) {
 	    	
 	        $VoteModelId = $node->wishlist_id_vote['und'][0]['value'];
 			$user_id = $node->receiver_user_id_vote['und'][0]['value'];
+	
+			//print "<pre>"; print_r(user_load($user_id)); die();
 			$select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
 			foreach($select_currency_rates_nid AS $res_currency_rates){
 				$currency_rates_nid = $res_currency_rates->nid;
 			}        
-			
-			$vote_price = db_query("SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id ='".$currency_rates_nid."'");
-			foreach($vote_price AS $res_vote_price){
-				$votePrice = $res_vote_price->field_dc_voting_price_value;
+
+			$load_user_id = user_load($user_id);
+			if(isset($load_user_id->field_promotion_model['und']['0']['value']) && $load_user_id->field_promotion_model['und']['0']['value'] == 1){
+				$vote_price = db_query("SELECT field_dc_promotional_voting_pric_value FROM field_data_field_dc_promotional_voting_pric WHERE entity_id ='".$currency_rates_nid."'");
+					foreach($vote_price AS $res_vote_price){
+						$votePrice = $res_vote_price->field_dc_promotional_voting_pric_value;
+					}				
+			}else{
+				$vote_price = db_query("SELECT field_dc_voting_price_value FROM field_data_field_dc_voting_price WHERE entity_id ='".$currency_rates_nid."'");
+					foreach($vote_price AS $res_vote_price){
+						$votePrice = $res_vote_price->field_dc_voting_price_value;
+					}				
 			}
 			
 			$select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
