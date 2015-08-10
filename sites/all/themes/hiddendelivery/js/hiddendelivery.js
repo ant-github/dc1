@@ -2,6 +2,32 @@
 	Drupal.behaviors.globalScript = {
     attach: function (context, settings) {
 $('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button.btn-danger').html('Edit Image');
+$('.wishlist-view').css('margin-top', '55px');
+
+//$(".form-type-select.form-item-field-product-store-country-value .form-item .form-item-edit-field-product-store-country-value-all").insertAfter($(".form-type-select.form-item-field-product-store-country-value .form-item div:last"));
+$(".form-type-select.form-item-field-product-category-tid .form-item .form-item-edit-field-product-category-tid-all").insertAfter($(".form-type-select.form-item-field-product-category-tid .form-item div:last"));
+$(".form-type-select.form-item-field-product-brand-tid .form-item .form-item-edit-field-product-brand-tid-all").insertAfter($(".form-type-select.form-item-field-product-brand-tid .form-item div:last"));
+//$(".form-item-edit-field-product-store-country-value-all a").text('See all');
+$('#edit-commerce-price-amount-wrapper').insertAfter($("#edit-field-product-brand-tid-wrapper"));
+
+var min  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-min').val();
+var max  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-max').val();
+$('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:first').html('<span class="min-price-filter">'+min+'</span>');
+$('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last').html('<span class="max-price-filter">'+max+'</span>');
+
+$(".view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:first").mousemove(function(e){
+var min  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-min').val();
+$('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:first').html('<span class="min-price-filter">'+min+'</span>'); 
+});
+$(".view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last").mousemove(function(e){
+var max  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-max').val();
+$('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last').html('<span class="max-price-filter">'+max+'</span>'); 
+});
+
+
+	$('#twitter-widget-0').contents().find('#widget').css({
+	    width: '55px'
+	});
 
 // remove master card logo on checkout review page
 

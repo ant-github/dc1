@@ -1,0 +1,4 @@
+name = DC Shop Products
+description = Delivery shop products.
+package = Delivery Code
+core = 7.x

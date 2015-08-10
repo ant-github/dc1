@@ -56,7 +56,7 @@ function commerce_ccbill_transaction($order) {
 
 function dc_user_bal_update_commerce_payment_transaction_presave($transaction) {
 	global $user;
-	if($transaction->status == 'success' && $transaction->payment_method == 'commerce_ccbill_payment'){
+	if($transaction->status == 'success' && $transaction->payment_method == 'commerce_stripe'){
 
 		$select_order_type = db_query('SELECT line_item_label FROM commerce_line_item WHERE order_id ='.$transaction->order_id);
 		foreach($select_order_type AS $res_order_type){
@@ -219,7 +219,7 @@ $productType = '';
 						foreach($usd_vs_gbp AS $res_usd_vs_gbp){
 							$gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
 						}	
-						$gbp_gift_bal = number_format(($usd_balance * $gbp_rate), 2); 
+						$gbp_gift_bal = $usd_balance * $gbp_rate; 
 						
 						if($gbp_gift_bal > $cart_total_amount){
 							
@@ -250,17 +250,17 @@ $productType = '';
 						foreach($usd_vs_eur AS $res_usd_vs_eur){
 							$eur_rate = $res_usd_vs_eur->field__1_eur_value;
 						}	
-						$eur_gift_bal = number_format(($usd_balance * $eur_rate), 2);
+
+						$eur_gift_bal = $usd_balance * $eur_rate;
 						
 						if($eur_gift_bal > $cart_total_amount){
-							
+
 								  $userBalance = $eur_gift_bal - $cart_total_amount;
 								  $user_balance = number_format(($cart_total_amount / $eur_rate), 2);
 								  $cart_total = 0; 
 								  $your_gift_balance = $cart_total_amount;
 								  
 						}else if($eur_gift_bal < $cart_total_amount){
-							
 							      $cart_total = $cart_total_amount - $eur_gift_bal;
 							      $user_balance = number_format(($eur_gift_bal / $eur_rate), 2);
 								  $your_gift_balance = $eur_gift_bal;

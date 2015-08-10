@@ -98,41 +98,21 @@ function hd_theme_alterations_block_view_alter(&$data, $block) {
 //html content for the cards block
 function _cards_block_content(){
   global $user;
+  global $base_url;
   //load the user to get their wishlist
   $current_user = user_load($user->uid);
   if($current_user->uid != 0){
   $wishlist_url = str_replace("http://www.deliverycode.com", "",
       $current_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value']);
   //print view my wishlist link
-  $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my Wishlist</span></a></p>';
+  $wishlist_link = '<p><a class="btn-create-wishlist" href="'.$wishlist_url.'"><span class="bg-sprite bg-sprite-ico-star">View my wishlist</span></a></p>';
   }else{
     // print create my wishlist link
-    $wishlist_link = '<p><a class="btn-create-wishlist" href="/create-a-wishlist"><span class="bg-sprite bg-sprite-ico-star">Create a Wishlist</span></a></p>';
+    $wishlist_link = '<p><a class="btn-create-wishlist" href="/create-a-wishlist"><span class="bg-sprite bg-sprite-ico-star">Create a wishlist</span></a></p>';
   }
   $output = $wishlist_link;
   $output.='<div class="payment-methods">
-  <p>We accept all of the following payment methods:</p>
-  <img alt="" class="payment-methods-img" src="/sites/all/themes/hiddendelivery/images/HomePage/payment-methods.jpg" />
-  <ul class="visually-hidden payment-list">
-    <li class="visa">
-      Visa</li>
-    <li class="amex">
-      American Express</li>
-    <li class="diners-club">
-      Diners Club</li>
-    <li class="mastercard">
-      Mastercard</li>
-    <li class="jcb">
-      JCB</li>
-    <li>
-      ???</li>
-    <li class="giropay">
-      GiroPay</li>
-    <li class="paypal">
-      Paypal</li>
-    <li class="bitcoin">
-      Bitcoin</li>
-  </ul>
-</div>';
+  <span>We accept all of the following payment methods:</span>
+  <img alt="" class="payment-methods-img" src="'.$base_url.'/sites/all/themes/hiddendelivery/images/HomePage/payment-methods.jpg" /></div>';
   return $output;
 }

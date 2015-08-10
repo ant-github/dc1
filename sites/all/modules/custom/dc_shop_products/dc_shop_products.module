@@ -1,0 +1,405 @@
+<?php
+
+function dc_shop_products_menu() {   
+  $items['admin/add-products-from-url'] = array(
+    'title' => 'Add products from url',
+    'page callback' => 'dc_shop_products_form',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['add-shop-product-to-wishlist'] = array(
+    'page callback' => 'add_shop_products_to_wishlist',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );  
+
+  $items['add-shop-product-to-cart'] = array(
+    'page callback' => 'add_shop_products_to_cart',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+function dc_shop_products_form() {
+  return drupal_get_form('dc_shop_products_add_a_products_url_form');
+}
+// Add a custom product URL !
+function dc_shop_products_add_a_products_url_form($form, &$form_state) { 
+  
+  $form['admin_product_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Product URL:'),
+    '#description' => t('Make sure you include the full path!'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add to shop'),
+    '#submit' => array('dc_shop_products_add_a_products_url_form_submit'),
+  );
+  return $form;
+}
+function dc_shop_products_add_a_products_url_form_validate($form, &$form_state) {	
+// print_r($form); die('hii');
+}
+
+function dc_shop_products_add_a_products_url_form_submit($form, &$form_state) {
+  //print_r($form); die('hii');
+    global $user;
+    $product_url = $form_state['values']['admin_product_url'];
+    $uid = $user->uid;
+
+				
+    $add_item = _admin_add_products_from_url($uid,$product_url);
+    if($add_item){
+      drupal_set_message(t('Your product has been added!'), 'status', FALSE);
+    } else {
+      drupal_set_message(t('This site is not currently compatible with the DeliveryCode system. The item could not be added.'), 'error', FALSE);
+    }
+
+
+}
+
+function _admin_add_products_from_url($uid,$product_url){
+
+  $token = '3680574cf5ef2770f93937f4ad4350d8';
+  $api_endpoint = 'http://api.diffbot.com/v3/product';
+  $encoded_url = rawurlencode($product_url);
+  $geturl = $api_endpoint.'?token='.$token.'&url='.$encoded_url;
+  $opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"X-Forward-Accept-language: en-gb\r\n"
+    )
+  );
+  $context = stream_context_create($opts);
+  // Open the file using the HTTP headers set above
+  $json = file_get_contents($geturl, false, $context);
+  $product_data = json_decode($json, TRUE);
+//print "<pre>"; print_r($product_data); die();
+  // Let's check to see if there is a price available - if not, this won't work, so bail out.
+  if(isset($product_data['objects'][0]['offerPrice'])){
+    // Strip and build the title..
+    $title_original = $product_data['objects'][0]['title'];
+    $title_stripped = str_replace(' ', '_', strtolower($title_original)); // Replace spaces with underscores
+    $title_stripped = preg_replace('/[^A-Za-z0-9\-_]/', '', $title_stripped); // Removes special chars (except underscores);
+
+    // Build the sku..
+    $sku = isset($product_data['objects'][0]['productId']) ? $product_data['objects'][0]['productId'].'_'.$title_stripped : $title_stripped;
+    $product = commerce_product_load_by_sku($sku);
+
+    if(empty($product)){
+      // Build the product
+      $product = commerce_product_new('delivery_code_shop');
+      $product->sku = 'shop_'.$sku;
+      $product->title = $product_data['objects'][0]['title'];
+      $product->language = LANGUAGE_NONE;
+      $product->uid = $uid;
+
+      // image stuff - check to see if it does exists..
+      $i = 0;
+
+      if(isset($product_data['objects'][0]['images'][$i])){
+        // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
+        $product_url = $product_data['objects'][0]['images'][$i]['url'];
+        $http_exists = strpos($product_url,'http:');
+        //review this!!!
+        if($http_exists===0){
+          $image_data = file_get_contents($product_url);
+        }else{
+          $image_data = '';
+        }
+        if(!empty($image_data)){
+          // Check size of the array - looks like we need another image..
+          if(count($product_data['objects'][0]['images']) > 1){
+            // Break when we have a valid image
+            for ($i=1; $i <= count($product_data['objects'][0]['images']) ; $i++) {
+              $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+              if($image_data) break;
+            }
+          }
+        }
+        // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
+        if($image_data){
+          $img = file_get_contents($product_url);
+          if(isset($image_data['mime'])){
+            $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
+            $img_name = $sku.'.'.$img_type[1];
+          }else{
+            $img_name = $sku.'jpg';
+          }
+          $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
+          $product->field_product_image[LANGUAGE_NONE][0] = array(
+            'fid' => $file->fid,
+            'filename' => $file->filename,
+            'filemime' => $file->filemime,
+            'uid' => 1,
+            'uri' => $file->uri,
+            'status' => 1,
+            'display' => 1
+          );
+        }
+      }
+      $price = $product_data['objects'][0]['offerPrice'];
+      //price with currency codes in the end
+      //ISO currency codes have 3 letters so we check for the last 3 characters
+      $price_ending_currency_code = substr($price, -3);
+      //strip currency code from string
+      $price_stripped = _admin_get_amount($price);
+      //multiple the unit price
+      $final_price = $price_stripped*100;
+
+      //check wich currency and set its code by symbol
+      //todo refactor this code!!!!
+      if(!is_string($price_ending_currency_code)){
+        $currency_unit =  mb_substr($price, 0, 1, "utf-8");
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='£'||mb_substr($price, 0, 3, "utf-8")=='GBP') {
+        $currency_unit = '£';
+      }elseif (mb_substr($price, 0, 1, "utf-8")=='$'||mb_substr($price, 0, 3, "utf-8")=='USD') {
+        $currency_unit = '$';
+      }elseif($price_ending_currency_code == '€'||mb_substr($price, 0, 3, "utf-8")=='EUR'||mb_substr($price, 0, 1, "utf-8")=='€'){
+        $currency_unit = 'EUR';
+      }else{
+        $currency_unit = $price_ending_currency_code;
+      }
+      switch ($currency_unit) {
+        case '$':
+          $code = 'USD';
+        break;
+        case '£':
+          $code = 'GBP';
+        break;
+        case is_numeric($currency_unit);
+          $code = 'EUR';
+        break;
+        default:
+          $code = $currency_unit;
+        break;
+      }
+      // Check the price is numeric - if not skip this for now? :/
+      if(is_numeric($final_price)){
+        $product->commerce_price[LANGUAGE_NONE][0] = array(
+          'amount' => $final_price,
+          'currency_code' => $code,
+        );
+      } // else - default price?
+      $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_data['objects'][0]['pageUrl'];
+      
+    }
+    //add store
+        $site_url = parse_url($product_url);
+        $country_code = explode('/', $site_url['path']);
+        $country_code = $country_code[1];
+        //check country_code lengh to see if has a country in it. e.g gb
+        if (strlen($country_code) == 2) {
+            $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+        } else {
+            $store_name = 'http://' . $site_url['host'];
+        }
+        //check if store exists to get the id
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'store')
+                ->propertyCondition('name', $store_name, '=')
+                ->addMetaData('account', user_load(1)); // Run the query as user 1.
+        $result = $query->execute();
+        //create a new store if it does not exist
+        if (empty($result)) {
+            //create store entity and save its reference to the new $wishlist_item
+            $store = entity_create('store', array('type' => 'store'));
+            $store->name = $store_name;
+            $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+            //load wishlist user object to get its country
+            $wishlist_user = user_load($uid);
+            $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+            $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+//save store
+            $store->save();
+            //save store ref id into the wishlist item
+            $product->field_store_ref[LANGUAGE_NONE][0]['target_id'] = $store->store_id;
+            $product->field_product_store_country[LANGUAGE_NONE][0]['value'] = $store->field_store_country;
+            commerce_product_save($product);
+        } else {
+            //set store id to existing store
+            $store_id = key($result['store']);
+            $product->field_store_ref[LANGUAGE_NONE][0]['target_id'] = $store_id;
+            $store_entity = entity_load('store', array($store_id));
+            $product->field_product_store_country[LANGUAGE_NONE][0]['value'] = $store_entity[$store_id]->field_store_country['und'][0]['value'];
+            commerce_product_save($product);
+        }    
+    
+    return $product_data;
+  } else {
+    return FALSE;
+  }
+    
+}
+
+function _admin_get_amount($price){
+    $cleanString = preg_replace('/([^0-9\.,])/i', '', $price);
+    $onlyNumbersString = preg_replace('/([^0-9])/i', '', $price);
+
+    $separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
+
+    $stringWithCommaOrDot = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
+    $removedThousendSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
+
+    return (float) str_replace(',', '.', $removedThousendSeparator);
+}
+
+
+/****** adding shop product to wishlist items and products type *******/
+function add_shop_products_to_wishlist(){
+    global $user;
+    $uid = $user->uid;
+    $shop_product_id =  arg(1);
+    $shop_product = commerce_product_load($shop_product_id);
+    //$shop_product_sku = $shop_product->sku;
+    $check_product_sku = str_replace("shop_", "", $shop_product->sku);
+    $product = commerce_product_load_by_sku($check_product_sku);
+
+        if (empty($product)) {
+            $product = commerce_product_new('product');
+            $product->sku = $check_product_sku;
+            $product->title = $shop_product->title;
+            $product->language = LANGUAGE_NONE;
+            $product->uid = 1;
+            $product->field_info[LANGUAGE_NONE][0]['value'] = $shop_product->field_info[LANGUAGE_NONE][0]['value'];
+            $product->field_product_image[LANGUAGE_NONE][0] = array(
+                'fid' => $shop_product->field_product_image[LANGUAGE_NONE][0]['fid'],
+                'filename' => $shop_product->field_product_image[LANGUAGE_NONE][0]['filename'],
+                'filemime' => $shop_product->field_product_image[LANGUAGE_NONE][0]['filemime'],
+                'uid' => 1,
+                'uri' => $shop_product->field_product_image[LANGUAGE_NONE][0]['uri'],
+                'status' => 1,
+                'display' => 1
+            );
+            $product->commerce_price[LANGUAGE_NONE][0] = array(
+                    'amount' => $shop_product->commerce_price[LANGUAGE_NONE][0]['amount'],
+                    'currency_code' => $shop_product->commerce_price[LANGUAGE_NONE][0]['currency_code'],
+            );
+            $product->field_product_url[LANGUAGE_NONE][0]['value'] = $shop_product->field_product_url[LANGUAGE_NONE][0]['value'];
+            commerce_product_save($product);    
+        }
+        /************ Add wishlist item of product ********************/
+        $wishlist_user = user_load($uid);
+        $wishlist_id = end((explode('/', $wishlist_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'])));
+    //print "<pre>"; print_r($wishlist_user); die();        
+        $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+        // Create the wishlist item.
+        $values['user'] = $uid;
+        $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+        $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+        $wiw->field_commerce_produc_ref = $product->product_id;
+        $wiw->field_status = 'available';
+        $wiw->field_store_ref = $shop_product->field_store_ref[LANGUAGE_NONE][0]['target_id'];
+        $wiw->save();
+        // Add our wishlist item reference to the existing references.
+        $current_items = $wlw->field_wishlist_items->value();
+        if (!$current_items) {
+            $current_items = array();
+        }
+        $current_items[] = $wiw->value();
+        $wlw->field_wishlist_items = $current_items;
+        $wlw->save();
+        drupal_goto("wishlist/".$wishlist_id);
+
+}
+
+/****** adding shop product first to wishlist items and products type, after this add to cart *******/
+function add_shop_products_to_cart(){
+    global $user;
+    $uid = $user->uid;
+    $shop_product_id =  arg(1);
+    $shop_product = commerce_product_load($shop_product_id);
+    //$shop_product_sku = $shop_product->sku;
+    $check_product_sku = str_replace("shop_", "", $shop_product->sku);
+    $product = commerce_product_load_by_sku($check_product_sku);
+
+        if (empty($product)) {
+            $product = commerce_product_new('product');
+            $product->sku = $check_product_sku;
+            $product->title = $shop_product->title;
+            $product->language = LANGUAGE_NONE;
+            $product->uid = 1;
+            $product->field_info[LANGUAGE_NONE][0]['value'] = $shop_product->field_info[LANGUAGE_NONE][0]['value'];
+            $product->field_product_image[LANGUAGE_NONE][0] = array(
+                'fid' => $shop_product->field_product_image[LANGUAGE_NONE][0]['fid'],
+                'filename' => $shop_product->field_product_image[LANGUAGE_NONE][0]['filename'],
+                'filemime' => $shop_product->field_product_image[LANGUAGE_NONE][0]['filemime'],
+                'uid' => 1,
+                'uri' => $shop_product->field_product_image[LANGUAGE_NONE][0]['uri'],
+                'status' => 1,
+                'display' => 1
+            );
+            $product->commerce_price[LANGUAGE_NONE][0] = array(
+                    'amount' => $shop_product->commerce_price[LANGUAGE_NONE][0]['amount'],
+                    'currency_code' => $shop_product->commerce_price[LANGUAGE_NONE][0]['currency_code'],
+            );
+            $product->field_product_url[LANGUAGE_NONE][0]['value'] = $shop_product->field_product_url[LANGUAGE_NONE][0]['value'];
+            commerce_product_save($product);    
+        }
+        /************ Add wishlist item of product ********************/
+        $wishlist_user = user_load($uid);
+        $wishlist_id = end((explode('/', $wishlist_user->field_profile_wishlist_url[LANGUAGE_NONE][0]['value'])));
+    //print "<pre>"; print_r($wishlist_user); die();        
+        $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+        // Create the wishlist item.
+        $values['user'] = $uid;
+        $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+        $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+        $wiw->field_commerce_produc_ref = $product->product_id;
+        $wiw->field_status = 'available';
+        $wiw->field_store_ref = $shop_product->field_store_ref[LANGUAGE_NONE][0]['target_id'];
+        $wiw->save();
+        // Add our wishlist item reference to the existing references.
+        $current_items = $wlw->field_wishlist_items->value();
+        if (!$current_items) {
+            $current_items = array();
+        }
+        $current_items[] = $wiw->value();
+        $wlw->field_wishlist_items = $current_items;
+        $wlw->save();
+        
+        /************ Add product to cart ********************/
+        //$uid = $form['uid']['#value'];
+        $pid = $product->product_id;
+        $quantity = 1;
+        if ($product = commerce_product_load($pid) ) {
+          $line_item = commerce_product_line_item_new($product, $quantity);
+          //load wishlist
+          $wishlist = hd_wishlist_load($wishlist_id);
+          //set wishlist owner reference field
+          $line_item->field_wish_list_owner_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->uid;
+          //set custom wishlist id reference field
+          $line_item->field_wishlist_id_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->wishlist_id;
+          //query the wishlist item to get the id
+          $query = new EntityFieldQuery();
+          $query->entityCondition('entity_type', 'wishlist_item')
+              ->propertyCondition('uid', $wishlist->uid)
+          ->fieldCondition('field_commerce_produc_ref ', 'product_id', $pid, '=')
+          ->addMetaData('account', user_load(1)); // Run the query as user 1.
+          $result = $query->execute();
+          $wiw_id = key($result['wishlist_item']);
+          $wiw = entity_load_single('wishlist_item', $wiw_id);
+          //set custom wishlist item id reference field
+          $line_item->field_wishlist_item_id_ref[LANGUAGE_NONE][0]['target_id'] = $wiw_id;
+          //set custom store id reference field
+          $line_item->field_store_country_ref[LANGUAGE_NONE][0]['target_id'] =
+            $wiw->field_store_ref[LANGUAGE_NONE][0]['target_id'];
+          //additional product info
+          if(!empty($wiw->field_note[LANGUAGE_NONE][0]['value'])){
+            $line_item->field_additional_information[LANGUAGE_NONE][0]['value'] =
+              $wiw->field_note[LANGUAGE_NONE][0]['value'];
+          }
+          //add to cart
+          $line_item = commerce_cart_product_add($uid, $line_item, FALSE);
+          drupal_goto('cart');
+        }   
+}
+?>

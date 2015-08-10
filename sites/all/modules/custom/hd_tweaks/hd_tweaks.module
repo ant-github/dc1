@@ -429,11 +429,14 @@ function hd_tweaks_form_views_exposed_form_alter(&$form, &$form_state) {
 }
 
 //change text on the add to cart button
-function hd_tweaks_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state) {
-  $form['submit']['#value'] = t('Buy');
+function hd_tweaks_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state) { 
+   // $product_id = $form['product_id']['#value'];
+  //  $product = commerce_product_load($product_id);
+  //  if($product->type == 'product'){
+         $form['submit']['#value'] = t('Buy');
   //custom submit handler for adding wishlist id and wishlist_item_id to line item
-  $form['#submit'][0] = "hd_tweaks_add_to_cart_form_submit";
-
+        $form['#submit'][0] = "hd_tweaks_add_to_cart_form_submit";        
+  //  }
 }
 
 // add a product to cart

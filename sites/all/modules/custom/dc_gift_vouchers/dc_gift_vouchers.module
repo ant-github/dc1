@@ -3,7 +3,7 @@ drupal_session_start();
 global $user;
 
 function dc_gift_vouchers_form_alter(&$form, &$form_state, $form_id) {
-    
+    //print "<pre>"; print_r($form); die('hii');
    if($form_id == 'dc_gift_vouchers_node_form' && $form['nid']['#value'] == ''){  
        //print "<pre>"; print_r($form); die();
        $userWishlistId = arg(1);
@@ -164,7 +164,6 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
 			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
 
        }
-
 }
 
 function dc_gift_vouchers_commerce_payment_order_paid_in_full($order, $transaction) {

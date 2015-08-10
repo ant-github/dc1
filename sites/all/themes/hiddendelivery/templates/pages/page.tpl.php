@@ -72,38 +72,92 @@
  *
  * @ingroup themeable
  */
+
 ?>
 <header id="navbar" role="banner" class="navbar navbar-default">
+    <?php
+        global $user;
+        if($user->uid == 0){
+    ?>
+        <div class="homepage-top-headertext">
+            <?php
+                $block = block_load('block', '7');
+                $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
+                print $output;
+            ?>
+        </div>
+    <?php
+        }
+    ?>
   <div class="container">
-    <div class="navbar-header">
-      <?php if ($logo): ?>
-      <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
-        <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-      </a>
-      <?php endif; ?>
+      <div class="header-three-columns">
+          <div class="header-left-side">
+            
+              <div class="app-store-link">
+              <?php
+                $block = block_load('block', '2');
+                $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
+                print $output;
+              ?>
+              </div>
+              <?php
+                if(!empty($primary_nav)){ 
+              ?>
+              <div class="header-primary-menu">
+  
+                    <?php print render($primary_nav);?>
+              </div>
+              <?php
+               }   
+              ?>          
+          </div>
+          <div class="header-center-side">
+                <div class="navbar-header">
+                  <?php if ($logo): ?>
+                  <a class="logo navbar-btn" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
+                    <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+                  </a>
+                  <?php endif; ?>
 
-      <?php if (!empty($site_name)): ?>
-      <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
-      <?php endif; ?>
+                  <?php if (!empty($site_name)): ?>
+                  <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
+                  <?php endif; ?>
 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
+                  <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+<!--                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>-->
+                </div>              
+          </div>
+      
+            <div class="header-right-side">
+                <div class="header-search-block">
+                    <?php
+                           $block = module_invoke('search', 'block_view');
+                           print render($block);                     
+                    ?>
+                </div>
+               <?php
+                    if(!empty($secondary_nav)){  
+                ?>
+                <div class="home-secondary-nav">
+                    <?php print render($secondary_nav);?>
+                </div>
+                <?php
+                    }
+                ?>    
+            </div> 
 
-    <?php if (!empty($primary_nav) || !empty($secondary_nav) || !empty($page['navigation'])): ?>
+      </div>    
+      
+    
+
+    <?php if (!empty($page['navigation'])): ?>
       <div class="navbar-collapse collapse">
         <nav role="navigation" class="pull-right">
-          <?php if (!empty($secondary_nav)): ?>
-            <?php print render($secondary_nav); ?>
-          <?php endif; ?>
-          <?php if (!empty($primary_nav)): ?>
-            <?php print render($primary_nav); ?>
-          <?php endif; ?>
           <?php if (!empty($page['navigation'])): ?>
             <?php print render($page['navigation']); ?>
           <?php endif; ?>
@@ -113,8 +167,14 @@
   </div>
 </header>
 
-<?php if($is_front): ?>
-  <div class="hero-banner row">
+<?php if($is_front){ ?>
+<div class="container homepage-visitshop-slider">
+<?php
+$block = module_invoke('views', 'block_view', 'home_page_slider-block_1');
+print render($block['content']);
+?>
+</div>
+<!--  <div class="hero-banner row">
     <div class="description col-sm-6">
       <h1 class="hero-title">Wishlist Service</h1></br>
       <h2 class="sub-title">Delivering to you. Wherever you are.</h2>
@@ -137,9 +197,15 @@
     <?php // Start homepage video block ?>
 
     <?php // END homepage video block ?>
-  </div>
-<?php endif; ?>
-
+  </div>-->
+<?php }elseif(isset($page["#views_contextual_links_info"]["views_ui"]["view_name"]) && $page["#views_contextual_links_info"]["views_ui"]["view_name"] == 'visit_our_shop'){ ?>
+<div class="container homepage-visitshop-slider">
+<?php
+$block = module_invoke('views', 'block_view', 'home_page_slider-block_2');
+print render($block['content']);
+?>
+</div>
+<?php }else{ ?>
 <div class="page-title-wrapper">
   <?php print render($title_prefix); ?>
   <?php if (!empty($title)): ?>
@@ -151,6 +217,7 @@
       </div>
   <?php endif; ?>
 </div>
+<?php } ?>
 
 <div class="main-container container">
 

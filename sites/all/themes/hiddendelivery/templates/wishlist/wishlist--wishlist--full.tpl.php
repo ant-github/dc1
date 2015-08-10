@@ -84,7 +84,7 @@
   </div>
   <div class="col-sm-9">
     <div class="wishlist-view">
-      <?php print $wishlist_view; ?>
+      <?php  print $wishlist_view; ?>
     </div>
   </div>
 </div>
