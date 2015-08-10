@@ -61,7 +61,7 @@
 }
 .header-left-side .appstore-block{
     left: 0 !Important;
-    position: unset !Important;
+    position: relative !Important;
     top: 0 !Important;
     transform: none !Important;    
 }
