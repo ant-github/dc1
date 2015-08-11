@@ -299,8 +299,8 @@
 }
 .view-visit-our-shop ul li .views-field-field-product-image {
   border: 1px solid #d1d1d1;
-  height: 184px;
-  line-height: 182px;
+  height: 182px;
+  line-height: 178px;
   text-align: center;
   overflow: hidden;
 }
@@ -488,8 +488,8 @@
 }
 .view-all-shop-products ul li .views-field-field-product-image {
     border: 1px solid #d1d1d1;
-    height: 184px;
-    line-height: 182px;
+    height: 182px;
+    line-height: 178px;
     overflow: hidden;
     text-align: center;
 }

@@ -14,10 +14,6 @@ var min  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-
 var max  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-max').val();
 $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:first').html('<span class="min-price-filter">'+min+'</span>');
 $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last').html('<span class="max-price-filter">'+max+'</span>');
-var min_length = min.length;
-if(min_length == 3){
-$('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a .min-price-filter').css('left','-9px');    
-}
 
 $(".view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:first").mousemove(function(e){
 var min  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-commerce-price-amount-min').val();
