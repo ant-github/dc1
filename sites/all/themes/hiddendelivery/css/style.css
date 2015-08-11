@@ -318,12 +318,12 @@
 }
 .view-visit-our-shop ul li .views-field-field-info {
     color: #848484;
-    min-height: 45px;
 }
 .view-visit-our-shop ul li .views-field-commerce-price{
     font-size: 14px;
     font-weight: 700;
     color: #383838;
+    margin-top: 5px;
 }
 .view-visit-our-shop ul li .old-price {
   color: #a30100;
@@ -505,12 +505,12 @@
 }
 .view-all-shop-products ul li .views-field-field-info {
     color: #848484;
-    min-height: 40px;
 }
 .view-all-shop-products ul li .views-field-commerce-price {
     color: #383838;
     font-size: 14px;
     font-weight: 700;
+    margin-top: 5px;
 }
 .view-all-shop-products ul li .old-price {
     color: #a30100;
@@ -631,7 +631,7 @@
 .view-all-shop-products .text-center .pagination li.prev{
     width: 120px;
 }
-.view-all-shop-products .text-center .pagination li.last{
+.view-all-shop-products .text-center .pagination li.next{
     width: 80px;
 }
 .view-all-shop-products .view-footer{
