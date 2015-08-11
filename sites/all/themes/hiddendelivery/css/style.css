@@ -304,9 +304,9 @@
   text-align: center;
   overflow: hidden;
 }
-/*.view-visit-our-shop ul li .views-field-field-product-image img {
+.view-visit-our-shop ul li .views-field-field-product-image img {
   width: 140px;
-}*/
+}
 .view-visit-our-shop ul li .views-field-title {
   display: block;
   font-size: 15px;
@@ -489,12 +489,13 @@
 .view-all-shop-products ul li .views-field-field-product-image {
     border: 1px solid #d1d1d1;
     height: 184px;
+    line-height: 182px;
     overflow: hidden;
     text-align: center;
 }
-/*.view-all-shop-products ul li .views-field-field-product-image img {
+.view-all-shop-products ul li .views-field-field-product-image img {
     width: 140px;
-}*/
+}
 .view-all-shop-products ul li .views-field-title{
     color: #000;
     display: block;
