@@ -3,6 +3,12 @@
 global $user;
 
 function dc_vote_form_alter(&$form, &$form_state, $form_id) {
+    if($form['#id'] == 'views-exposed-form-new-wishlists-page-1'){
+        if (isset($form['name'])) {
+                $form['name']['#attributes'] = array('placeholder' => array(t('search for model...')));
+        }
+    }
+    
    $user_ip = ip_address();
    if($form_id == 'dc_vote_node_form' && $form['nid']['#value'] == ''){  
        $userWishlistId = arg(1);

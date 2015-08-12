@@ -135,8 +135,10 @@
             <div class="header-right-side">
                 <div class="header-search-block">
                     <?php
-                           $block = module_invoke('search', 'block_view');
-                           print render($block);                     
+//                           $block = module_invoke('search', 'block_view');
+//                           print render($block);  
+                             $block = module_invoke('views', 'block_view', '-exp-new_wishlists-page_1');
+                             print render($block['content']);                    
                     ?>
                 </div>
                <?php
