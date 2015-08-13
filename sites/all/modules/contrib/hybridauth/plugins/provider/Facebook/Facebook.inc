@@ -9,6 +9,7 @@
  */
 $plugin = array(
   'configuration_form_callback' => 'hybridauth_provider_facebook_configuration_form_callback',
+  'configuration_callback' => 'hybridauth_provider_facebook_configuration_callback',
 );
 
 function hybridauth_provider_facebook_configuration_form_callback(&$form, $provider_id) {
@@ -40,9 +41,7 @@ function hybridauth_provider_facebook_configuration_form_callback(&$form, $provi
   $form['vtabs']['advanced']['hybridauth_provider_' . $provider_id . '_scope'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Scope'),
-    '#default_value' => variable_get('hybridauth_provider_' . $provider_id . '_scope', array(
-      'email', 'user_about_me', 'user_birthday', 'user_hometown', 'user_website', 'offline_access',
-    )),
+    '#default_value' => variable_get('hybridauth_provider_' . $provider_id . '_scope', hybridauth_provider_facebook_scope_default()),
     '#options' => array(
       // See http://developers.facebook.com/docs/reference/api/permissions/
       // Regular permissions.
@@ -81,12 +80,24 @@ function hybridauth_provider_facebook_configuration_form_callback(&$form, $provi
       'create_event'         => '<strong>create_event</strong> -- ' . t("Enables your application to create and modify events on the user's behalf"),
       'manage_friendlists'   => '<strong>manage_friendlists</strong> -- ' . t("Enables your app to create and edit the user's friend lists."),
       'manage_notifications' => '<strong>manage_notifications</strong> -- ' . t('Enables your app to read notifications and mark them as read. This permission will be required to all access to notifications after October 22, 2011.'),
-      'offline_access'       => '<strong>offline_access</strong> -- ' . t('Enables your app to perform authorized requests on behalf of the user at any time. By default, most access tokens expire after a short time period to ensure applications only make requests on behalf of the user when the are actively using the application. This permission makes the access token returned by our OAuth endpoint long-lived.'),
+      // offline_access permission has been removed by Facebook.
+      // 'offline_access'       => '<strong>offline_access</strong> -- ' . t('Enables your app to perform authorized requests on behalf of the user at any time. By default, most access tokens expire after a short time period to ensure applications only make requests on behalf of the user when the are actively using the application. This permission makes the access token returned by our OAuth endpoint long-lived.'),
       'publish_checkins'     => '<strong>publish_checkins</strong> -- ' . t('Enables your app to perform checkins on behalf of the user.'),
-      'publish_stream'       => '<strong>publish_stream</strong> -- ' . t("Enables your app to post content, comments, and likes to a user's stream and to the streams of the user's friends. With this permission, you can publish content to a user's feed at any time, without requiring offline_access. However, please note that Facebook recommends a user-initiated sharing model."),
+      // publish_stream permission has been removed by Facebook.
+      // 'publish_stream'       => '<strong>publish_stream</strong> -- ' . t("Enables your app to post content, comments, and likes to a user's stream and to the streams of the user's friends. With this permission, you can publish content to a user's feed at any time, without requiring offline_access. However, please note that Facebook recommends a user-initiated sharing model."),
       'rsvp_event'           => '<strong>rsvp_event</strong> -- ' . t("Enables your application to RSVP to events on the user's behalf"),
       'sms'                  => '<strong>sms</strong> -- ' . t('Enables your application to send messages to the user and respond to messages from the user via text message'),
       'publish_actions'      => '<strong>publish_actions</strong> -- ' . t('Enables your application to publish user scores and achievements.'),
     ),
   );
+}
+
+function hybridauth_provider_facebook_configuration_callback(&$config, $provider_id) {
+  if (empty($config['scope'])) {
+    $config['scope'] = hybridauth_provider_facebook_scope_default();
+  }
+}
+
+function hybridauth_provider_facebook_scope_default() {
+  return array('email', 'user_about_me', 'user_birthday', 'user_hometown', 'user_website');
 }
