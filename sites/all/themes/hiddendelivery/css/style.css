@@ -618,6 +618,7 @@
 }
 .view-id-new_wishlists .views-field-name {
   overflow: hidden;  
+  margin-top: 5px;
 }
 
 .view-id-new_wishlists.view-display-id-page_1 .views-field-name{
