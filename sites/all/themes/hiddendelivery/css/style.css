@@ -152,22 +152,17 @@
 #node-3{
     padding: 0 12px;
 }
-.home-slider-left-text .h-title {
-  display: block;
-  font-family: kaus;
-  font-size: 25px;
-  text-align: left;
-  padding-left: 30px;
-  margin-bottom: -10px;
-  font-size: 35px;
-  color:   #fff;
-  white-space: nowrap;
-}
+
 .home-slider-left-text .h-title, .home-slider-left-text .h-title:hover{
     color:   #fff;
     text-decoration: none;
     font-size: 80px;
     font-family: 'Manus';
+    margin-bottom: -10px;
+    padding-left: 30px;
+    text-align: left;
+    white-space: nowrap;
+     display: block;
 }
 .home-slider-left-text .h-des {
   color: #07a290;
@@ -836,7 +831,7 @@
   margin-top: 16px;
   width: 109px !important;
 }
-.home-slider-left-text .h-title a, .home-slider-left-text .h-title a:hover {
+.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
   font-size: 52px;
 }
 .views-field.views-field-body-1 {
@@ -877,7 +872,7 @@
   float: left;
   padding: 15px 0 0;
 }
-.home-slider-left-text .h-title a, .home-slider-left-text .h-title a:hover {
+.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
   font-size: 49px;
 }
 .navbar .logo{
@@ -902,7 +897,7 @@
 .views-field.views-field-body-1 {
   width: 100%;
 }
-.home-slider-left-text .h-title {
+.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
   font-size: 29px;
   }
 #block-block-8, #block-block-9, #block-block-10{
@@ -959,7 +954,7 @@
 .navbar .navbar-nav li a {
   margin: 0 11px;
 }
-.home-slider-left-text .h-title a, .home-slider-left-text .h-title a:hover {
+.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
   font-size: 39px;
 }
 }
