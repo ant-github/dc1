@@ -24,7 +24,9 @@
  * @ingroup views_templates
  */
 ?>
-<a href="<?php print $row->field_field_profile_wishlist_url[0]['raw']['value'];?>">
+<?php 
+?>
+<a href="<?php print $row->_field_data['uid']['entity']->field_profile_wishlist_url['und'][0]['value'];?>">
 	<?php print $fields['picture']->wrapper_prefix; ?>
 	<?php print $fields['picture']->label_html; ?>
 	<?php print $fields['picture']->content; ?>
