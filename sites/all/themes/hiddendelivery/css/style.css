@@ -760,7 +760,7 @@
     display: none !important;
 }
 
-@media screen and (min-device-width: 1024px) and (max-device-width: 1159px)  {     
+@media screen and (min-device-width: 1024px) and (max-device-width: 1199px)  {     
 .header-right-side .home-secondary-nav ul li {
   margin-right: 0 !important;
 }
