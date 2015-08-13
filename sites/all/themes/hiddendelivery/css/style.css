@@ -611,14 +611,17 @@
 .view-id-new_wishlists.view-display-id-page_1 .views-field-picture img{
     height: 165px;
 }
-.view-id-new_wishlists.view-display-id-page_1 .views-field-name .field-content{
+.view-id-new_wishlists .views-field-name .field-content{
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.view-id-new_wishlists .views-field-name {
+  overflow: hidden;  
+}
+
 .view-id-new_wishlists.view-display-id-page_1 .views-field-name{
     min-height: 40px;
-    overflow: hidden;
 }
 .view-all-shop-products .view-filters{
     float: left;
