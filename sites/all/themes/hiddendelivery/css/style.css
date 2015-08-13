@@ -760,7 +760,7 @@
     display: none !important;
 }
 
-@media(max-width:1024px) {
+@media screen and (min-device-width: 1024px) and (max-device-width: 1159px)  {     
 .header-right-side .home-secondary-nav ul li {
   margin-right: 0 !important;
 }
@@ -897,9 +897,6 @@
 .views-field.views-field-body-1 {
   width: 100%;
 }
-.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
-  font-size: 29px;
-  }
 #block-block-8, #block-block-9, #block-block-10{
     width: 100% !important;
 }
