@@ -654,13 +654,14 @@
 .view-all-shop-products .text-center{
     float: right;
     width: 82%;
-    height: 50px;
+    margin-bottom: 30px;
 }
 .view-all-shop-products .text-center .pagination li{
     border: 1px solid #b2b2b2;
     height: 30px;
     padding-left: 20px;
     width: 50px;
+    margin-bottom: 10px;
 }
 .view-all-shop-products .text-center .pagination li a{
   padding: 0px;
@@ -1078,7 +1079,13 @@
 }
 }
 @media(max-width: 360px) {
-    .home-secondary-nav .navbar-nav{margin-left: 0;}
+section{
+    padding-left: 0px !important;
+}
+.view-all-shop-products .views-exposed-widget .views-widget .form-type-select a.active{
+    font-size: 16px;
+}
+.home-secondary-nav .navbar-nav{margin-left: 0;}
 .navbar .logo img {
   width: 188px !important;
 }    
