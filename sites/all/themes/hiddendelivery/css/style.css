@@ -280,7 +280,7 @@
 .header-right-side #views-exposed-form-new-wishlists-page-1 .views-exposed-form .views-exposed-widget{
     padding: 0;
 }
-.header-right-side #views-exposed-form-new-wishlists-page-1 #edit-name {
+.header-right-side #views-exposed-form-new-wishlists-page-1 .views-exposed-widgets .form-type-textfield input{
     background: url("../images/icon-search.jpg") no-repeat scroll 5px 50% #fff;
     border: 1px solid #8d8b7e;
     float: left;
@@ -615,6 +615,7 @@
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: uppercase;
 }
 .view-id-new_wishlists .views-field-name {
   overflow: hidden;  
