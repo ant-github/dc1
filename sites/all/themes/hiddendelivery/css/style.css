@@ -884,7 +884,33 @@
 .page-wishlist .wishlist-view{
     margin-top: -7px;
 }
-
+#commerce-checkout-form-review #edit-commerce-payment{
+    margin: auto;
+    width: 500px;   
+}
+#commerce-checkout-form-review #edit-terms-conditions{
+    margin: auto;
+    width: 500px;   
+}
+#commerce-checkout-form-review #edit-buttons{
+    margin: 25px auto auto;
+    width: 500px;    
+}
+#commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label:after{
+    background: url("../images/HomePage/payment-methods.jpg") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    content: "";
+    display: inline-block;
+    height: 36px;
+    left: 79px;
+    margin-bottom: -10px;
+    position: relative;
+    top: -26px;
+    width: 265px;    
+}
+#commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label {
+    display: inline-block;
+    width: 75px;
+}
 
 @media(max-width: 1199px) {     
 .header-right-side .home-secondary-nav ul li {
@@ -1150,6 +1176,15 @@
     width: 90% !important;
     left: 5% !important;
 }
+#commerce-checkout-form-review #edit-commerce-payment{
+    width: 400px;   
+}
+#commerce-checkout-form-review #edit-terms-conditions{
+    width: 400px;   
+}
+#commerce-checkout-form-review #edit-buttons{
+    width: 400px;    
+}
 }
 @media(max-width: 480px) {
 .view-visit-our-shop{
@@ -1207,6 +1242,15 @@
 }
 .modeldialog-product-description{
     width: 100%;
+}
+#commerce-checkout-form-review #edit-commerce-payment{
+    width: 300px;   
+}
+#commerce-checkout-form-review #edit-terms-conditions{
+    width: 300px;   
+}
+#commerce-checkout-form-review #edit-buttons{
+    width: 300px;    
 }
 }
 @media(max-width: 375px) {
