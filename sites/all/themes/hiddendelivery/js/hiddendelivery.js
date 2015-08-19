@@ -1,6 +1,11 @@
 (function ($) {
 	Drupal.behaviors.globalScript = {
     attach: function (context, settings) {
+        
+$('.close-product-model-box span').click(function() {
+    $('#simple-dialog-container').dialog('close');
+});        
+        
 $('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button.btn-danger').html('Edit Image');
 $('.wishlist-view').css('margin-top', '55px');
 
