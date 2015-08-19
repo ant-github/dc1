@@ -881,6 +881,9 @@
 #simple-dialog-container .product-original-image img{
     width: 100%;
 }
+.page-wishlist .wishlist-view{
+    margin-top: -7px;
+}
 
 
 @media(max-width: 1199px) {     

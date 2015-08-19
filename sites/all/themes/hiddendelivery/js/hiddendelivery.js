@@ -7,7 +7,6 @@ $('.close-product-model-box span').click(function() {
 });        
         
 $('.view-wishlist-page.view-display-id-block_2 .field-name-field-product-image .image-widget-data button.btn-danger').html('Edit Image');
-$('.wishlist-view').css('margin-top', '55px');
 
 //$(".form-type-select.form-item-field-product-store-country-value .form-item .form-item-edit-field-product-store-country-value-all").insertAfter($(".form-type-select.form-item-field-product-store-country-value .form-item div:last"));
 $(".form-type-select.form-item-field-product-category-tid .form-item .form-item-edit-field-product-category-tid-all").insertAfter($(".form-type-select.form-item-field-product-category-tid .form-item div:last"));
