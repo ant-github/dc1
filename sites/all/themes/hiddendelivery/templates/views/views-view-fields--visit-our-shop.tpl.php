@@ -77,6 +77,7 @@ global $base_url;
     </div>
 </div>
 <div id="proImage<?php echo $row->product_id;?>" class="dc-shop-product-detail-popup">
+    <div class="close-product-model-box"><span>X</span></div>
     <div class="product-original-image">
     <img src="<?php echo $base_url.'/sites/default/files/'.$row->_field_data['product_id']['entity']->field_product_image['und'][0]['filename'];?>"/>        
     </div>
