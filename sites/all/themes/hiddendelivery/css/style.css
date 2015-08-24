@@ -911,6 +911,9 @@
     display: inline-block;
     width: 75px;
 }
+.page-wishlist .view-wishlist-page .product-info p a{
+    display: none;
+}
 
 @media(max-width: 1199px) {     
 .header-right-side .home-secondary-nav ul li {
