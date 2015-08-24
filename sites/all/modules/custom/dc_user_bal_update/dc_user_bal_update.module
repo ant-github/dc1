@@ -168,11 +168,12 @@ function dc_user_bal_update_commerce_order_presave($order) {
 	//	print "<pre>"; print_r($order); die();	
 	//$arg1 = arg(1);
 	//$arg0 = arg(0);
-$productType = '';
+if((!isset($user->roles[5])) && (!isset($user->roles[6])) && (!isset($user->roles[4]))){        
+    $productType = '';
 		   $getProductType = db_query("SELECT line_item_label  FROM commerce_line_item WHERE  order_id='".$order->order_id."'");
-	       foreach($getProductType AS $resProductType){
-           	$productType = $resProductType->line_item_label;
-       		}
+                    foreach($getProductType AS $resProductType){
+                        $productType = $resProductType->line_item_label;
+                    }
        		
     if($productType != 'dc_gift_voucher' && $order->status != 'cart' && $order->original->status == 'cart'){
     	
@@ -325,6 +326,7 @@ $productType = '';
 		   }		
 	}
 
+        }
 }
 
 function dc_user_bal_update_form_commerce_checkout_form_review_alter(&$form, &$form_state, $form_id) {
