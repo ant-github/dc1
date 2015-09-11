@@ -75,7 +75,19 @@
 
 ?>
 <?php
-    db_query("DELETE FROM cache_form WHERE expire < NOW()");
+$select_table_sizes = db_query('SELECT table_name AS "Tables", 
+  round(((data_length + index_length) / 1024 / 1024), 2) "size_in_MB" 
+  FROM information_schema.TABLES 
+  ORDER BY (data_length + index_length) DESC');
+
+foreach($select_table_sizes AS $res_tables_sizes){
+    if($res_tables_sizes->Tables == 'cache_form'){
+        if($res_tables_sizes->size_in_MB > 2000){
+            db_query("DELETE FROM cache_form WHERE expire < NOW()");
+        }     
+    }
+}
+   // db_query("DELETE FROM cache_form WHERE expire < NOW()");
 ?>
 <header id="navbar" role="banner" class="navbar navbar-default">
     <?php
@@ -280,6 +292,6 @@ print render($block['content']);
 
   </div>
 </div>
-<footer class="footer">    
+<footer class="footer">
   <?php print render($page['footer']); ?>
 </footer>
