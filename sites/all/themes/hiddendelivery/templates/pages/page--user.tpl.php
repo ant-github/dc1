@@ -73,6 +73,9 @@
  * @ingroup themeable
  */
 ?>
+<?php
+    db_query("DELETE FROM cache_form WHERE expire < NOW()");
+?>
 <header id="navbar" role="banner" class="navbar navbar-default">
     <?php
         global $user;

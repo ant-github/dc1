@@ -74,6 +74,9 @@
  */
 
 ?>
+<?php
+    db_query("DELETE FROM cache_form WHERE expire < NOW()");
+?>
 <header id="navbar" role="banner" class="navbar navbar-default">
     <?php
         global $user;
@@ -277,6 +280,6 @@ print render($block['content']);
 
   </div>
 </div>
-<footer class="footer">
+<footer class="footer">    
   <?php print render($page['footer']); ?>
 </footer>
