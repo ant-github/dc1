@@ -82,7 +82,7 @@ $select_table_sizes = db_query('SELECT table_name AS "Tables",
 
 foreach($select_table_sizes AS $res_tables_sizes){
     if($res_tables_sizes->Tables == 'cache_form'){
-        if($res_tables_sizes->size_in_MB > 2000){
+        if($res_tables_sizes->size_in_MB > 1900){
             db_query("DELETE FROM cache_form WHERE expire < NOW()");
             cache_clear_all(NULL, 'cache_form');
         }     
