@@ -28,6 +28,10 @@
  * @see template_process()
  */
 ?>
+<?php
+global $base_url;
+$wishlist_id = arg(1);
+?>
 <div class="<?php print $classes; ?> clearfix row"<?php print $attributes; ?>>
   <div class="col-sm-3">
   	<div class="account-pane">
@@ -41,7 +45,6 @@
     <div class="dc-vote-section">
     	<?php 
     	$user_ip = ip_address(); 
-		$wishlist_id = arg(1);
 		$vote_done = '';
     	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$wishlist_id."'");
 		foreach($vote_status AS $res_vote_status){
@@ -81,10 +84,44 @@
     <?php 
     }
     ?>
+      <?php if ($is_owner): ?>
+      <div class="my-widget-area">      
+        <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontal" aria-expanded="false" aria-controls="myWidgetHorizontal"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
+              <div id="myWidgetHorizontal" class="collapse">
+                  <textarea readonly="readonly"><iframe title="My widget" width="800" height="250" src="<?php echo $base_url;?>/my-widget-items/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>
+              </div>
+      </div>
+      <div class="my-widget-area"> 
+        <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVertical" aria-expanded="false" aria-controls="myWidgetVertical"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
+              <div id="myWidgetVertical" class="collapse">
+                  <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/delivery_code/my-widget-items-vertical/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
+              </div> 
+      </div>
+      <?php endif; ?>
   </div>
   <div class="col-sm-9">
     <div class="wishlist-view">
       <?php  print $wishlist_view; ?>
     </div>
+    <div class="item-add-to-widget simple-dialog">
+        <div class="closeDcWidgetModel"><span>X</span></div>
+        <div class="product-info">
+<!--            <p>Please wait your item is adding to widget...</p>-->
+            <span><img src="<?php echo $base_url;?>/sites/all/themes/hiddendelivery/images/widgets-loader.gif"></span>
+        </div>
+    </div>
+    <div class="item-add-to-widget-notice simple-dialog">
+        <div class="closeDcWidgetModel"><span>X</span></div>
+        <div class="product-info">
+            <p>You have already added five items to your DeliveryCode widget. You can not add more than five.</p>
+        </div>
+    </div>      
+    <div class="item-remove-to-widget simple-dialog">
+        <div class="closeDcWidgetModel"><span>X</span></div>
+        <div class="product-info">
+<!--            <p>Please wait removing your item from widget...</p>-->
+            <span><img src="<?php echo $base_url;?>/sites/all/themes/hiddendelivery/images/widgets-loader.gif"></span>
+        </div>
+    </div>      
   </div>
 </div>
