@@ -170,7 +170,6 @@ function _wishlist_resource_add_product($uid, $wishlist_id, $product_url) {
         $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
         $wiw->field_commerce_produc_ref = $product->product_id;
         $wiw->field_status = 'available';
-        $wiw->field_my_widget_value = '0';
         $wiw->save();
         // Add our wishlist item reference to the existing references.
         $current_items = $wlw->field_wishlist_items->value();

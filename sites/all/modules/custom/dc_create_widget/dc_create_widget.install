@@ -1,42 +1,46 @@
 <?php
+/*
+ * To install a new field to added wishlist item entity to add item to widget
+ * 
+ */
 
-function dc_create_widget_install() {
-$field = array(                                       
-    'field_name' => 'field_my_widget_value',    
-    'type' => 'list_boolean',       
-    'settings' => array(
-    'text_processing' => 0,
-        ),
-
-    'widget' => array('type' => 'options_onoff'), 
-  'settings' => array(
-        'allowed_values' => array(
-            '0' => 'No',
-            '1' => 'Yes',
-            ),
-        )   
-    );
-$field = field_create_field($field);
-
-
-$instance = array(
-    'field_name' => 'field_my_widget_value',
-    'required' => 'true', 
-    'label' => 'Add to widget',
-    'description' => st('Add wishlist item to widget'),
-    'entity_type' => 'wishlist_item',
-    'bundle' => 'wishlist_item',
-    'display' => array(
-        'teaser' => array(
-          'label' => 'hidden',
-          'type' => 'hidden',
-        ),
-        'default' => array(
-          'label' => 'hidden',
-          'type' => 'hidden',
-        ),
-    ),
-);
-    field_create_instance($instance);
-}
+//function dc_create_widget_install() {
+//$field = array(                                       
+//    'field_name' => 'field_my_widget_value',    
+//    'type' => 'list_boolean',       
+//    'settings' => array(
+//    'text_processing' => 0,
+//        ),
+//
+//    'widget' => array('type' => 'options_onoff'), 
+//  'settings' => array(
+//        'allowed_values' => array(
+//            '0' => 'No',
+//            '1' => 'Yes',
+//            ),
+//        )   
+//    );
+//$field = field_create_field($field);
+//
+//
+//$instance = array(
+//    'field_name' => 'field_my_widget_value',
+//    'required' => 'true', 
+//    'label' => 'Add to widget',
+//    'description' => st('Add wishlist item to widget'),
+//    'entity_type' => 'wishlist_item',
+//    'bundle' => 'wishlist_item',
+//    'display' => array(
+//        'teaser' => array(
+//          'label' => 'hidden',
+//          'type' => 'hidden',
+//        ),
+//        'default' => array(
+//          'label' => 'hidden',
+//          'type' => 'hidden',
+//        ),
+//    ),
+//);
+//    field_create_instance($instance);
+//}
 ?>
