@@ -94,7 +94,7 @@ $wishlist_id = arg(1);
       <div class="my-widget-area"> 
         <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVertical" aria-expanded="false" aria-controls="myWidgetVertical"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
               <div id="myWidgetVertical" class="collapse">
-                  <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/delivery_code/my-widget-items-vertical/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
+                  <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/my-widget-items-vertical/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
               </div> 
       </div>
       <?php endif; ?>
