@@ -914,6 +914,192 @@
 .page-wishlist .view-wishlist-page .product-info p a{
     display: none;
 }
+.page-wishlist .ui-dialog .ui-dialog-titlebar{
+    display: none;
+}
+.item-add-to-widget{
+    display: none;
+}
+.item-add-to-widget-notice{
+    display: none;
+}
+.item-remove-to-widget{
+    display: none;
+}
+.item-add-to-widget .product-info, .item-remove-to-widget .product-info{
+    text-align: center;
+}
+.item-add-to-widget .product-info img, .item-remove-to-widget .product-info img{
+    height: 42px
+}
+.closeDcWidgetModel{
+    color: #848484;
+    float: left;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: -11px;
+    position: relative;
+    right: -13px;
+    top: -8px;
+    width: 100%;    
+}
+.closeDcWidgetModel span{
+    cursor: pointer;
+    float: right;
+    padding: 5px;    
+}
+.page-my-widget-items #navbar, .page-my-widget-items-vertical #navbar{
+    display: none;
+}
+.page-my-widget-items .page-title-wrapper, .page-my-widget-items-vertical .page-title-wrapper{
+    display: none;
+}
+.page-my-widget-items #page-header, .page-my-widget-items-vertical #page-header{
+    display: none;
+}
+.page-my-widget-items .breadcrumb-wrapper, .page-my-widget-items-vertical .breadcrumb-wrapper{
+    display: none;
+}
+.page-my-widget-items .user-info-panel, .page-my-widget-items-vertical .user-info-panel{
+    display: none;
+}
+.page-my-widget-items .main-container, .page-my-widget-items-vertical .main-container{
+    margin: 0;
+    padding: 0;
+}
+.page-my-widget-items footer, .page-my-widget-items-vertical footer{
+    display: none;
+}
+.page-my-widget-items .view-wishlist-page .views-field-field-product-image, .page-my-widget-items-vertical .view-wishlist-page .views-field-field-product-image{
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #ececec;
+    float: left;
+    height: auto;
+    width: 90px;    
+}
+.page-my-widget-items .view-wishlist-page .views-field-field-product-image img, .page-my-widget-items-vertical .view-wishlist-page .views-field-field-product-image img{
+    width: 100%;    
+    height: 100%;    
+}
+.page-my-widget-items .view-wishlist-page .views-field-title{
+    background: none repeat scroll 0 0 #fff;
+    float: left;
+    height: auto;
+    min-height: 37px;
+    width: 100%;    
+}
+.page-my-widget-items-vertical .view-wishlist-page .views-field-title{
+    background: none repeat scroll 0 0 #fff;
+    float: left;
+    height: auto;
+    margin-left: 5px;
+    width: 133px;    
+}
+.page-my-widget-items .view-wishlist-page .views-field-title span, .page-my-widget-items-vertical .view-wishlist-page .views-field-title span{
+    color: #000000;
+    float: left;
+    font-family: "Open Sans",sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    width: 133px;
+}
+.page-my-widget-items .view-wishlist-page .views-field-commerce-price{
+    float: left;
+    font-family: "Open Sans",sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;   
+}
+.page-my-widget-items-vertical .view-wishlist-page .views-field-commerce-price{
+    float: left;
+    font-family: "Open Sans",sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.page-my-widget-items .view-wishlist-page .view-footer a, .page-my-widget-items-vertical .view-wishlist-page .view-footer a{
+    background: none repeat scroll 0 0 #000000;
+    box-sizing: border-box;
+    color: #fff;
+    float: left;
+    font-family: "Open Sans",sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    height: 39px;
+    line-height: 39px;
+    padding-right: 15px;
+    text-align: right;
+    text-decoration: none;
+    width: 100%;   
+}
+.page-my-widget-items .view-wishlist-page .views-field-php a, .page-my-widget-items-vertical .view-wishlist-page .views-field-php a{
+    background: none repeat scroll 0 0 #20b29b;
+    border-radius: 4px;
+    clear: both;
+    color: #fff;
+    float: left;
+    font-family: open sans;
+    font-size: 15px;
+    font-weight: normal;
+    height: 26px;
+    line-height: 24px;
+    margin: 6px 0 5px;
+    text-align: center;
+    text-decoration: none;
+    width: 66px;   
+}
+.page-my-widget-items .view-wishlist-page .views-field-php .purchased-item, .page-my-widget-items-vertical .view-wishlist-page .views-field-php .purchased-item{
+    background: none repeat scroll 0 0 red;
+    border-radius: 4px;
+    clear: both;
+    color: #fff;
+    float: left;
+    font-family: open sans;
+    font-size: 15px;
+    font-weight: normal;
+    height: 26px;
+    line-height: 24px;
+    margin: 6px 0 5px;
+    text-align: center;
+    text-decoration: none;
+    width: 90px;   
+}
+.page-my-widget-items .view-wishlist-page{
+    width: 800px;
+}
+.page-my-widget-items-vertical .view-wishlist-page{
+    width: 250px;
+}
+.my-widget-area{
+    background: #000;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.my-widget-area .my-widget-second{
+     color: #20b29b;
+     font-weight: 600;
+}
+.my-widget-area textarea{
+    width: 100%;
+    height: 125px;
+    resize: none;
+}
+.my-widget-button{
+    background: url("../images/arrow-up.png") no-repeat scroll 92% 48% rgba(0, 0, 0, 0) !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+    font-size: 16px !important;
+    height: 35px;
+    padding-top: 4px !important;
+}
+.my-widget-button.collapsed{
+    background: url("../images/arrow-down.png") no-repeat scroll 92% 48% rgba(0, 0, 0, 0) !important;
+}
+.page-wishlist form .remove-item{
+    z-index: 100;
+    position: relative;
+}
 
 @media(max-width: 1199px) {     
 .header-right-side .home-secondary-nav ul li {

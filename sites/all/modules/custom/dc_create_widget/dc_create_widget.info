@@ -1,0 +1,4 @@
+name = DC Create Widget
+description = Adding field to wishlist item to create a widget
+package = Delivery Code
+core = 7.x

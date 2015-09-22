@@ -50,7 +50,6 @@ $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizo
  $("#userProfileCurrency").change(function() {
  	
     var selectedValue = this.value;
-
     $.ajax({
         url: '../dc_gift_vouchers.php',
         type: 'POST',
@@ -60,6 +59,51 @@ $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizo
         }
     });
 });     
+ $(".addToDcWidgets").click(function() {
+    var widget_status;    
+    var wishlist_item_id;
+    var checkb  =   $(this);
+    
+    wishlist_item_id = this.value;
+     
+    if($(this).is(":checked")){
+         widget_status = '1';
+    }else{
+         widget_status = '0';
+    }
+//    $(modal).dialog()
+    $( ".item-add-to-widget" ).dialog({
+      resizable: false,
+      modal: true
+    });
+    $.ajax({
+        
+        url: '../dc_widgets_add_remove.php',
+        type: 'POST',
+        data: {widget_status : widget_status, wishlist_item_id : wishlist_item_id},
+        success: function(result) {
+            if(result == 'nomore'){
+                $('.item-add-to-widget').dialog('close');
+                checkb.removeAttr('checked');
+                $( ".item-add-to-widget-notice" ).dialog({
+                  resizable: false,
+                  modal: true,
+                  width: 300
+                });                
+            }else{
+                $('.item-add-to-widget').dialog('close');
+                console.log('Your action is successfully completed.');                
+            }
+        }
+    });    
+
+}); 
+$(".closeDcWidgetModel").click(function() {
+    $('.item-add-to-widget').dialog('close');
+    $('.item-add-to-widget-notice').dialog('close');
+});
+
+
 $(".manage-wishlist-display").click(function(e){
 $(this).css('display', 'none');
 $('#views-exposed-form-wishlist-page-default').css('display', 'none');

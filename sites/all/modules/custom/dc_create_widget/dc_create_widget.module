@@ -1,0 +1,53 @@
+<?php
+/******* user buy wishlist items via model's wishlist ********/
+function dc_create_widget_menu() {   
+  $items['buy-wishlist-item-widgets'] = array(
+    'page callback' => 'buy_wishlist_item_from_widgets',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+function buy_wishlist_item_from_widgets(){
+    global $user;
+    $uid = $user->uid;    
+        /************ Add product to cart ********************/
+        //$uid = $form['uid']['#value'];
+        $pid = arg(1);
+        $wishlist_id = arg(2);
+        $quantity = 1;
+        if ($product = commerce_product_load($pid) ) {
+          $line_item = commerce_product_line_item_new($product, $quantity);
+          //load wishlist
+          $wishlist = hd_wishlist_load($wishlist_id);
+          //set wishlist owner reference field
+          $line_item->field_wish_list_owner_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->uid;
+          //set custom wishlist id reference field
+          $line_item->field_wishlist_id_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->wishlist_id;
+          //query the wishlist item to get the id
+          $query = new EntityFieldQuery();
+          $query->entityCondition('entity_type', 'wishlist_item')
+              ->propertyCondition('uid', $wishlist->uid)
+          ->fieldCondition('field_commerce_produc_ref ', 'product_id', $pid, '=')
+          ->addMetaData('account', user_load(1)); // Run the query as user 1.
+          $result = $query->execute();
+          $wiw_id = key($result['wishlist_item']);
+          $wiw = entity_load_single('wishlist_item', $wiw_id);
+          //set custom wishlist item id reference field
+          $line_item->field_wishlist_item_id_ref[LANGUAGE_NONE][0]['target_id'] = $wiw_id;
+          //set custom store id reference field
+          $line_item->field_store_country_ref[LANGUAGE_NONE][0]['target_id'] =
+            $wiw->field_store_ref[LANGUAGE_NONE][0]['target_id'];
+          //additional product info
+          if(!empty($wiw->field_note[LANGUAGE_NONE][0]['value'])){
+            $line_item->field_additional_information[LANGUAGE_NONE][0]['value'] =
+              $wiw->field_note[LANGUAGE_NONE][0]['value'];
+          }
+          //add to cart
+          $line_item = commerce_cart_product_add($uid, $line_item, FALSE);
+          drupal_goto('cart');
+        }     
+}
+?>
