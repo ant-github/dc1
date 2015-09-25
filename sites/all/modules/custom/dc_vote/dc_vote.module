@@ -3,13 +3,8 @@
 global $user;
 
 function dc_vote_form_alter(&$form, &$form_state, $form_id) {
-    if($form['#id'] == 'views-exposed-form-new-wishlists-page-1'){
-        if (isset($form['name'])) {
-                $form['name']['#attributes'] = array('placeholder' => array(t('search wishlists...')));
-        }
-    }
-    
-   $user_ip = ip_address();
+
+    $user_ip = ip_address();
    if($form_id == 'dc_vote_node_form' && $form['nid']['#value'] == ''){  
        $userWishlistId = arg(1);
       	hide($form['title']);
@@ -25,14 +20,11 @@ function dc_vote_form_alter(&$form, &$form_state, $form_id) {
        }
        $form['receiver_user_id_vote']['und'][0]['value']['#default_value'] = $userId;
        $form['actions']['submit']['#value'] = 'Click here to <span class="vote-me-text">Vote</span> for me';
-       unset($form['actions']['preview']);
-       
-   }else if($form_id == 'user_profile_form'){
-   		$form['field_delivery_address']['und']['0']['phone_block']['phone_number']['phone_number']['#required'] = TRUE;
-   }else if($form_id == 'user_register_form'){
-   		$form['field_delivery_address']['und']['0']['phone_block']['phone_number']['phone_number']['#required'] = TRUE;
+       unset($form['actions']['preview']); 
+   
    }
 }
+
 function dc_vote_node_submit($node, $form, &$form_state) {
 	//print $form['#form_id']; die();
 	if($form['#form_id'] == 'dc_vote_node_form'){

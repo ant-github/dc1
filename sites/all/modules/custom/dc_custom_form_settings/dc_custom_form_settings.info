@@ -1,0 +1,4 @@
+name = DC Custom Form Settings
+description = To alter the form fields etc.
+package = Delivery Code
+core = 7.x

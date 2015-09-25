@@ -159,7 +159,7 @@ function dc_gift_vouchers_commerce_checkout_pane_info_alter(&$checkout_pane) {
            $productType = $resProductType->line_item_label;
        }
        if($productType == 'dc_gift_voucher'){ 
-            unset($checkout_pane['customer_profile_billing']);
+//            unset($checkout_pane['customer_profile_billing']);
             unset($checkout_pane['commerce_shipping']);
 			unset($checkout_pane['commerce_fieldgroup_pane__group_gift_message']);
 
