@@ -184,10 +184,11 @@ global $base_url;
 				
 		//print $order_type; die();		
 		if($order_type == 'dc_gift_voucher'){
-
-
 			
-			$select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
+                    
+                    
+                    
+                    $select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
 			foreach($select_gv_node AS $res_gv_node){
 				 $gv_node = $res_gv_node->entity_id;
 			}			
@@ -231,7 +232,7 @@ global $base_url;
 					$user_balance =  $amount_eur;
 					
 				}				
-				$user_balance = number_format(($user_balance), 2);
+				//$user_balance = number_format(($user_balance), 2);
 				db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
 				
 				
@@ -240,8 +241,9 @@ global $base_url;
 			}else{
 				
 				if($currency == 'USD'){
-					
-					$user_balance = number_format(($usd_balance + $amount), 2);			
+					                                       
+					$user_balance = $usd_balance + $amount;
+                        
 					
 				}else if($currency == 'GBP'){
 					
@@ -264,7 +266,7 @@ global $base_url;
 					$user_balance = $usd_balance + $amount_eur;
 					
 				}
-				$user_balance = number_format(($user_balance), 2);
+				 //$user_balance = number_format(($user_balance), 2); 
 				db_update('field_data_field_gift_balance_usd')
 				->fields(array('field_gift_balance_usd_value' => $user_balance))
 			    ->condition('entity_id', $user_id)
@@ -321,7 +323,7 @@ global $base_url;
 	The customer wrote the following gift message:<br/>'.$gift_message.'</span></p></td></tr><tr>
 	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
 	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">
-	Login to www.deliverycode.com to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
+	Login to <a href="'.$base_url.'" target="_blank">www.deliverycode.com</a> to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
 	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
 	<td align="center" style="border-collapse: collapse;" valign="top"><a alt="Open Site" href="'.$base_url.'">
 	<img align="middle" alt="Open Site" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/35798292-f9d9-4aff-a679-6f17c68d04c3.jpg" style="display: block;max-width: 398px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;" /></a></td>

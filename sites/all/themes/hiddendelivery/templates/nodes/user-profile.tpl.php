@@ -46,7 +46,7 @@
     	
     <?php
       if(isset($user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value']) && $user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value'] != ''){
-    			echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p>$'.$user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value'].'</p>';
+    			echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p>$'.number_format(($user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value']), 2).'</p>';
     		}else{
     			echo "$0";
     		}  

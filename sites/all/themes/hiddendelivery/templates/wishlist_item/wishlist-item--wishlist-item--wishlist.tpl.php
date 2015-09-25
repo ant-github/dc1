@@ -62,7 +62,7 @@
         <?php endif; ?>
         <?php if ($is_owner): ?>
             <?php //if ($status == 'available'): ?>
-                <div class="field" style="z-index: 100; margin-top: 15px; position: relative; float: right; width: 72%;">                                       
+                <div class="field" style="z-index: 100; margin-top: 15px; position: relative; float: left; width: 72%;">                                       
                     <?php
                     $check_status = db_query("SELECT field_my_widget_value_value FROM field_data_field_my_widget_value WHERE entity_id=" . $content['field_commerce_produc_ref']['#object']->wishlist_item_id);
                     

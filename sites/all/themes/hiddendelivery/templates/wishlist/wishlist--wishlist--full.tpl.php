@@ -85,18 +85,42 @@ $wishlist_id = arg(1);
     }
     ?>
       <?php if ($is_owner): ?>
-      <div class="my-widget-area">      
-        <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontal" aria-expanded="false" aria-controls="myWidgetHorizontal"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
-              <div id="myWidgetHorizontal" class="collapse">
-                  <textarea readonly="readonly"><iframe title="My widget" width="800" height="250" src="<?php echo $base_url;?>/my-widget-items/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>
-              </div>
+      <div id="widgetSelectBackground">
+          <div id="widgetSelectBackgroundLabel">
+            <h3>My Widgets</h3>
+          </div>
+          <div class="selectBgLable">Preferred Background Color:</div>
+          <input type="radio" id="widgetWhite" name="widget-color" checked="checked"/><span class="color-text">White</span><input type="radio" id="widgetBlack" name="widget-color"/><span class="color-text">Black</span>
       </div>
-      <div class="my-widget-area"> 
-        <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVertical" aria-expanded="false" aria-controls="myWidgetVertical"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
-              <div id="myWidgetVertical" class="collapse">
-                  <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/my-widget-items-vertical/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
-              </div> 
+          
+      <div id="my-widgets-white" style="display: none;">
+            <div class="my-widget-area">      
+              <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontal" aria-expanded="false" aria-controls="myWidgetHorizontal"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
+                    <div id="myWidgetHorizontal" class="collapse">
+                        <textarea readonly="readonly"><iframe title="My widget" width="800" height="250" src="<?php echo $base_url;?>/my-widget-items/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>
+                    </div>
+            </div>
+            <div class="my-widget-area"> 
+              <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVertical" aria-expanded="false" aria-controls="myWidgetVertical"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
+                    <div id="myWidgetVertical" class="collapse">
+                        <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/my-widget-items-vertical/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
+                    </div> 
+            </div>
       </div>
+      <div id="my-widgets-black" style="display: none">
+            <div class="my-widget-area">      
+              <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontalBlack" aria-expanded="false" aria-controls="myWidgetHorizontalBlack"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
+                    <div id="myWidgetHorizontalBlack" class="collapse">
+                        <textarea readonly="readonly"><iframe title="My widget" width="800" height="250" src="<?php echo $base_url;?>/my-widget-items-black/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>
+                    </div>
+            </div>
+            <div class="my-widget-area"> 
+              <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVerticalBlack" aria-expanded="false" aria-controls="myWidgetVerticalBlack"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
+                    <div id="myWidgetVerticalBlack" class="collapse">
+                        <textarea readonly="readonly"><iframe title="My new iframe" width="250" height="800" src="<?php echo $base_url;?>/my-widget-items-vertical-black/<?php echo $wishlist_id;?>" frameborder="0"></iframe></textarea>         
+                    </div> 
+            </div>
+      </div>      
       <?php endif; ?>
   </div>
   <div class="col-sm-9">

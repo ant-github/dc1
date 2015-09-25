@@ -98,6 +98,27 @@ $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizo
     });    
 
 }); 
+
+if( $('#widgetBlack').length ){
+    if(document.getElementById('widgetBlack').checked) {
+        $('#my-widgets-black').css('display', 'block');
+    }    
+}
+if( $('#widgetWhite').length ){
+    if(document.getElementById('widgetWhite').checked) {
+        $('#my-widgets-white').css('display', 'block');
+    }    
+}
+ 
+ 
+$("#widgetSelectBackground #widgetBlack").click(function() {
+    $('#my-widgets-white').css('display', 'none');
+    $('#my-widgets-black').css('display', 'block');
+});
+$("#widgetSelectBackground #widgetWhite").click(function() {
+    $('#my-widgets-white').css('display', 'block');
+    $('#my-widgets-black').css('display', 'none');
+});
 $(".closeDcWidgetModel").click(function() {
     $('.item-add-to-widget').dialog('close');
     $('.item-add-to-widget-notice').dialog('close');
