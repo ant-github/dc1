@@ -1,4 +1,4 @@
 name = DC Custom Form Settings
-description = To alter the form fields etc.
+description = To alter the form fields etc and also the purchased item email after complete checkout.
 package = Delivery Code
 core = 7.x
