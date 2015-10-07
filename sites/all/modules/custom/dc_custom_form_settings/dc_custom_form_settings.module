@@ -55,11 +55,12 @@ function dc_custom_form_settings_commerce_checkout_pane_info_alter(&$checkout_pa
   }
 }
 
-function dc_custom_form_settings_commerce_checkout_complete($order){
+function dc_custom_form_settings_commerce_payment_order_paid_in_full($order, $transaction){
     global $base_url;
-  
+//  print "<pre>"; print_r($order);
+//  print "<pre>"; print_r($transaction); die();
             
-    if(isset($order->commerce_line_items['und'][0]['line_item_id'])){
+    if(isset($order->commerce_line_items['und'][0]['line_item_id']) && $transaction->status == 'success'){
             $line_item_id = $order->commerce_line_items['und'][0]['line_item_id'];
             $line_items = commerce_line_item_load($line_item_id);        
         if($line_items->type == 'product'){
