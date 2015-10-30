@@ -40,14 +40,6 @@
         //print "<pre>"; print_r($content); die();
         global $user;
         global $base_url;
-        if (!isset($user->roles[5])) {
-            $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
-            if ($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD'):
-                ?>  
-                <div class="reserved-message"><p><?php print t('Admin Approval Required To Purchase'); ?></p></div>	
-                <?php
-            endif;
-        }
         ?>
         <?php print render($content['product:field_product_image']); ?>
         <?php print render($content['product:title']); ?>
@@ -91,7 +83,17 @@
     <div class="actions col-md-3">
         <div class="actions col-md-10">
             <?php if (!$is_owner): ?>
-                <?php print render($content['field_commerce_produc_ref']); ?>
+                <?php 
+                    $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
+            $product_price = $content['product:commerce_price']['#object']->commerce_price['und'][0]['amount'];
+            $prince_length = strlen($product_price);
+//                    print "<pre>"; print_r($product_price); die();            
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || $prince_length >= 6){
+                
+                    }else{
+                            print render($content['field_commerce_produc_ref']);  
+                    } 
+                ?>
                 <?php
                 global $user;
                 global $base_url;
@@ -109,10 +111,23 @@
                     <?php print $share_links['twitter']; ?>
                     <?php print $share_links['email']; ?>
                 </div>
-                <?php print render($remove_button); ?>
+                <?php print render($remove_button); 
+            
+            $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
+            $product_price = $content['product:commerce_price']['#object']->commerce_price['und'][0]['amount'];
+            $prince_length = strlen($product_price);
+//                    print "<pre>"; print_r($product_price); die();            
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || $prince_length >= 6){
+
+            }else{
+            ?>
                 <div class="buy-button-with-remove">
                     <?php print render($content['field_commerce_produc_ref']); ?>
-                </div>
+                </div>                
+            <?php    
+            }
+        ?>
+
             <?php endif; ?>
         </div>
         <div class="purchase-info">

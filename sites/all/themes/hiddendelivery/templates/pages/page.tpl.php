@@ -75,6 +75,8 @@
 
 ?>
 <?php
+global $base_url;
+global $user;
 $select_table_sizes = db_query('SELECT table_name AS "Tables", 
   round(((data_length + index_length) / 1024 / 1024), 2) "size_in_MB" 
   FROM information_schema.TABLES 
@@ -89,10 +91,60 @@ foreach($select_table_sizes AS $res_tables_sizes){
     }
 }
    // db_query("DELETE FROM cache_form WHERE expire < NOW()");
+/*
+ * 
+ * For event's special link on top of the page
+ * 
+ */
+//echo $_COOKIE['topBarGreetings'];
+if(!isset($_COOKIE['topBarGreetings']) && $_COOKIE['topBarGreetings'] != 1){
+$select_event_node = db_query("SELECT nid FROM node WHERE type='top_bar_greetings' AND status=1 ORDER BY nid desc limit 1");
+foreach($select_event_node AS $res_event_node){
+    $event_node_id = $res_event_node->nid;
+}
+
+if($event_node_id != ''){
+    $select_event_data = db_query("SELECT ed.field_event_date_value AS date, en.field_event_name_value AS name, te.field_text_after_event_name_value AS text FROM field_data_field_event_date AS ed LEFT JOIN field_data_field_event_name AS en ON en.entity_id = ed.entity_id LEFT JOIN field_data_field_text_after_event_name AS te ON te.entity_id = ed.entity_id WHERE ed.entity_id = $event_node_id");
+    foreach($select_event_data AS $res_event_data){
+        $event_date = date('Y-m-d', strtotime($res_event_data->date));
+        $event_name = $res_event_data->name;
+        $text_after_event_name = $res_event_data->text;
+    }
+    $current_date = date('Y-m-d');
+    $start_ts = strtotime($current_date);
+    $end_ts = strtotime($event_date);
+    $diff = $end_ts - $start_ts;
+    $days_left =  round($diff / 86400);
+  if($days_left >= 0){
+?>
+    <div id="topBarGreetings">
+        <div class="close-greetings">x</div>
+        <a class="link-to-allproducts" href="<?php echo $base_url;?>/all-shop-products">
+        <?php
+        if($days_left > 1){
+//            echo $_COOKIE['topBarGreetings'].'pp';
+        ?>       
+        <span class="event-date"><?php echo $days_left;?> DAYS</span> <span class="event-name"><?php echo $event_name;?></span> <span class="text-after-event-name"><?php echo $text_after_event_name;?></span>
+        <?php
+        }else if($days_left == 1){
+        ?>
+        <span class="event-date"><?php echo $days_left;?> DAY</span> <span class="event-name"><?php echo $event_name;?></span> <span class="text-after-event-name"><?php echo $text_after_event_name;?></span>
+        <?php
+        }else{
+        ?>
+        <span class="event-name"><?php echo $event_name;?></span> <span class="text-after-event-name"><?php echo $text_after_event_name;?></span>
+        <?php
+        }
+        ?> 
+        </a>
+    </div>
+<?php
+  }
+}
+}
 ?>
 <header id="navbar" role="banner" class="navbar navbar-default">
-    <?php
-        global $user;
+    <?php        
         if($user->uid == 0){
     ?>
         <div class="homepage-top-headertext">

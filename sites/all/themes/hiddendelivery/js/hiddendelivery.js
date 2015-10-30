@@ -32,7 +32,10 @@ var max  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-
 $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last').html('<span class="max-price-filter">'+max+'</span>'); 
 });
 
-
+$("#topBarGreetings .close-greetings").click(function(){
+   $("#topBarGreetings").css('display', 'none');
+   $.cookie('topBarGreetings', '1');
+});
 	$('#twitter-widget-0').contents().find('#widget').css({
 	    width: '55px'
 	});

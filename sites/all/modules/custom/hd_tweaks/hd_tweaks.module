@@ -138,6 +138,7 @@ function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
   // $product_url = valid_url($form_state['values']['product_url']);
   // if($product_url){
     global $user;
+    global $base_url;
     $product_url = $form_state['values']['product_url'];
     $uid = $user->uid;
     $wishlist_id = $form_state['wishlist_id'];
@@ -154,9 +155,41 @@ function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
 		
 	}else{
 				
-	    $add_item = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
-	    if($add_item){
-	      drupal_set_message(t('Your product has been added!'), 'status', FALSE);
+	    $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
+	    if($product_detail){
+                $product_detail_id = $product_detail['product_id'];
+                $product_detail_wishlist_id = $product_detail['wishlist_id'];
+                
+                $select_commerce_price = db_query("SELECT commerce_price_amount, commerce_price_currency_code FROM field_data_commerce_price WHERE entity_id=$product_detail_id");
+                foreach($select_commerce_price AS $res_commerce_price){
+                    $product_price = $res_commerce_price->commerce_price_amount;
+                    $product_currency = $res_commerce_price->commerce_price_currency_code;
+                    
+                }
+                if($product_currency == 'GBP' || $product_currency == 'EUR' || $product_currency == 'USD'){
+                    $prince_length = strlen($product_price);
+                    if($prince_length >= 6){
+                        $key = 'hd_tweaks_email';
+                        $to = 'support@deliverycode.com';
+                        $from = 'DeliveryCode <support@deliverycode.com>';
+                        $params = array(
+                                    'body' => 'Hello Admin,<br/><br/>An item added on whislist <a href="'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'">'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'</a>. The product item has might be incorrect price. Please check and fix it as soon as possible. Here is the product edit url:<br/><br/><a href="'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit">'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit</a><br/><br/>Thanks',
+                                    'subject' => 'ALERT - Incorrect Product Price',
+                                    ); 
+                        $mail = drupal_mail('hd_tweaks', $key, $to, language_default(), $params, $from);             
+                    }
+                    drupal_set_message(t('Your product has been added!'), 'status', FALSE);
+                }else{
+                    $key = 'hd_tweaks_email';
+                    $to = 'support@deliverycode.com';
+                    $from = 'DeliveryCode <support@deliverycode.com>';
+                    $params = array(
+                                'body' => 'Hello Admin,<br/><br/>An item added on whislist <a href="'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'">'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'</a>. The product item has no currency by default. Please check and fix it as soon as possible. Here is the product edit url:<br/><br/><a href="'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit">'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit</a><br/><br/>Thanks',
+                                'subject' => 'ALERT - No Currency on Product',
+                                ); 
+                    $mail = drupal_mail('hd_tweaks', $key, $to, language_default(), $params, $from);
+                    drupal_set_message(t('Your product has been added!'), 'status', FALSE);
+                }
 	    } else {
 	      drupal_set_message(t('This site is not currently compatible with the DeliveryCode system. The item could not be added.'), 'error', FALSE);
 	    }
@@ -510,4 +543,21 @@ if ($user->uid != 1) {
   unset($form['delete']);
 }
 
+}
+
+function hd_tweaks_mail($key, &$message, $params) {
+
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8;',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  $message['subject'] = $params['subject'];
+  $message['body'] = $params['body'];
 }

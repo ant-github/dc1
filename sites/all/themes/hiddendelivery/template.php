@@ -11,6 +11,9 @@ function hiddendelivery_preprocess(&$vars, $hook) {
 
 function hiddendelivery_preprocess_page(&$vars) {
   //upon client request hide breadcrumb
+    
+drupal_add_library('system', 'jquery.cookie');    
+    
 if(isset($vars['breadcrumb'])){
   $vars['breadcrumb'] = "";
 }
