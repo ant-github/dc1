@@ -272,7 +272,7 @@ if($event_node_id != ''){
         <?php if (!empty($breadcrumb)): print $breadcrumb; endif;?>
       </div>
       <div class="user-info-panel col-md-4 col-sm-6">
-        <?php if ($user_info_panel): print $user_info_panel; endif; ?>
+        <?php // if ($user_info_panel): print $user_info_panel; endif; ?>
       </div>
     </div>
 

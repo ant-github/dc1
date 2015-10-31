@@ -148,9 +148,13 @@
     margin-bottom: -20px;
     color: #000;
 }
-.home-secondary-nav{
+.not-logged-in .home-secondary-nav{
     float: left;
     padding: 29px 20px 26px;    
+}
+.logged-in .home-secondary-nav{
+    float: left;
+    padding: 29px 64px 26px;    
 }
 #search-block-form input[type="text"] {
   background: #fff url("../images/icon-search.jpg") no-repeat scroll 5px 50%;
@@ -1419,6 +1423,80 @@
 .header-left-side .header-primary-menu, .home-secondary-nav{
     padding-bottom: 20px;
 }
+.not-logged-in .home-secondary-nav{
+    float: left;
+    padding: 29px 20px 26px;    
+}
+.logged-in .home-secondary-nav{
+    float: left;
+    padding: 29px 20px 26px;    
+}
+ #search-block-form .input-group {
+  width: auto;
+}
+.header-center-side {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+.header-primary-menu .menu li, .home-secondary-nav .menu li {
+  margin-bottom: 8px;
+}
+.navbar .logo img {
+  height: auto;
+  margin-top: 16px;
+  width: 109px !important;
+}
+.home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
+  font-size: 52px;
+}
+.views-field.views-field-body-1 {
+  margin-top: 82px;
+}
+.views-field.views-field-body-1 iframe {
+  height: 191px;
+ }
+.header-primary-menu .menu {
+   margin: 0 40px;
+}
+.navbar .navbar-nav li a {
+  margin: 0 8px !important;
+}
+
+
+}
+@media(max-width: 767px){
+    .my-widget-button{
+        padding-left: 0 !important;
+        padding-top: 8px !important;
+        font-size: 12px !important;
+    }
+    .node-dc_vote-form button{
+        font-size: 12px !important;
+    }
+    .view-all-shop-products .view-header p{
+         width: 75%;
+    }   
+    .view-all-shop-products .view-filters{
+        width: 25%;
+    }
+    .view-all-shop-products .view-content{
+        width: 75%;
+    }
+.header-right-side .header-search-block form{
+  left: 5%;
+  width: 265px;
+}    
+.header-left-side .header-primary-menu, .home-secondary-nav{
+    padding-bottom: 20px;
+}
+.not-logged-in .home-secondary-nav{
+    float: left;
+    padding: 29px 20px 26px;    
+}
+.logged-in .home-secondary-nav{
+    float: left;
+    padding: 29px 20px 26px;    
+}
  #search-block-form .input-group {
   width: auto;
 }
@@ -1523,9 +1601,11 @@
 .header-left-side .header-primary-menu {
   padding: 13px 0 0;
 }
-.home-secondary-nav {
-  float: left;
+.not-logged-in .home-secondary-nav {
   padding: 15px 0 0;
+}
+.logged-in .home-secondary-nav {
+  padding: 15px 30px 4px 0px;
 }
 .home-slider-left-text .h-title, .home-slider-left-text .h-title:hover {
   font-size: 49px;

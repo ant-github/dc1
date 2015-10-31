@@ -173,7 +173,7 @@ function hd_tweaks_add_a_product_url_form_submit($form, &$form_state) {
                         $to = 'support@deliverycode.com';
                         $from = 'DeliveryCode <support@deliverycode.com>';
                         $params = array(
-                                    'body' => 'Hello Admin,<br/><br/>An item added on whislist <a href="'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'">'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'</a>. The product item has might be incorrect price. Please check and fix it as soon as possible. Here is the product edit url:<br/><br/><a href="'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit">'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit</a><br/><br/>Thanks',
+                                    'body' => 'Hello Admin,<br/><br/>An item added on whislist <a href="'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'">'.$base_url.'/wishlist/'.$product_detail_wishlist_id.'</a>. The product item has an incorrect price. Please check and approve it as soon as possible. Here is the product edit url:<br/><br/><a href="'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit">'.$base_url.'/admin/commerce/products/'.$product_detail_id.'/edit</a><br/><br/>Thanks',
                                     'subject' => 'ALERT - Incorrect Product Price',
                                     ); 
                         $mail = drupal_mail('hd_tweaks', $key, $to, language_default(), $params, $from);             
