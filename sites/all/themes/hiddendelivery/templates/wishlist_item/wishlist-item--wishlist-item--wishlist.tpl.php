@@ -86,9 +86,10 @@
                 <?php 
                     $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
             $product_price = $content['product:commerce_price']['#object']->commerce_price['und'][0]['amount'];
+            $product_price_approve_status = $content['product:commerce_price']['#object']->field_approve_price['und'][0]['value'];
             $prince_length = strlen($product_price);
 //                    print "<pre>"; print_r($product_price); die();            
-                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || $prince_length >= 6){
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 6 && $product_price_approve_status == '')){
                 
                     }else{
                             print render($content['field_commerce_produc_ref']);  
@@ -115,10 +116,11 @@
             
             $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
             $product_price = $content['product:commerce_price']['#object']->commerce_price['und'][0]['amount'];
+            $product_price_approve_status = $content['product:commerce_price']['#object']->field_approve_price['und'][0]['value'];
             $prince_length = strlen($product_price);
 //                    print "<pre>"; print_r($product_price); die();            
-                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || $prince_length >= 6){
-
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 6 && $product_price_approve_status == '')){
+                           // print "<pre>"; print_r($content); die();
             }else{
             ?>
                 <div class="buy-button-with-remove">
