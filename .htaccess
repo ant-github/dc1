@@ -81,9 +81,7 @@ DirectoryIndex index.php index.html index.htm
   # directories from your webroot or otherwise protect them from being
   # downloaded.
   RewriteRule "(^|/)\." - [F]
-RewriteCond %{HTTP_HOST} ^deliverycode.com$ [NC,OR]
-RewriteCond %{HTTP_HOST} ^www.deliverycode.com$ [NC]
-RewriteRule ^(.*)$ https://www.deliverycode.com/$1 [R=301,L]
+
   # If your site can be accessed both with and without the 'www.' prefix, you
   # can use one of the following settings to redirect users to your preferred
   # URL, either WITH or WITHOUT the 'www.' prefix. Choose ONLY one option:
