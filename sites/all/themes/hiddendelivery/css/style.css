@@ -1299,6 +1299,9 @@
     position: relative;
     top: -2px;
 }
+#commerce-checkout-form-review .addressfield-container-inline .form-type-select{
+    width: 100%;
+}
 
 @media(max-width: 1199px) {     
 .header-right-side .home-secondary-nav ul li {

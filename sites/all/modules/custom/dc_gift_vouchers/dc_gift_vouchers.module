@@ -60,7 +60,7 @@ function dc_gift_vouchers_node_submit($node, $form, &$form_state) {
 
 
 function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
-   // print "<pre>"; print_r($line_item->order_id); die();
+   // print "<pre>"; print_r($line_item); die();
     if ($line_item->line_item_label == 'dc_gift_voucher') {
     	
 			if(isset($_SESSION['gift_voucher_nid']) && $_SESSION['gift_voucher_nid'] != ''){
@@ -132,18 +132,30 @@ function dc_gift_vouchers_commerce_cart_line_item_refresh($line_item, $order_wra
 	           $giftRate = $resGiftVoucherRate->rate;
 	       }
 		   
-		$rate = $giftRate;        
-        $fee = ($gift_voucher_value * $rate) / 100;
-        $deliveryCodeFee = $fee * 100;
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['currency_code']=$gift_voucher_currency;
-        //alter the base_price component
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['amount']=$price;
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['currency_code']=$gift_voucher_currency;        
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$deliveryCodeFee;
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['currency_code']=$gift_voucher_currency;
-        
-        //unset($_SESSION['gift_voucher_value']);
+		$rate = $giftRate; 
+                
+        $dc_fee_status = db_query("SELECT field_dc_fee_status_value AS status FROM field_data_field_dc_fee_status WHERE entity_id='".$currency_rates_nid."'");
+        foreach($dc_fee_status AS $res_dc_fee_status){
+            $dcFeeStatus = $res_dc_fee_status->status;
+        }
+        if($dcFeeStatus == 1){
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['currency_code']=$gift_voucher_currency;
+            //alter the base_price component
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['amount']=$price;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['currency_code']=$gift_voucher_currency; 
+            unset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']);
+        }else{        
+            $fee = ($gift_voucher_value * $rate) / 100;
+            $deliveryCodeFee = $fee * 100;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['amount']=$price;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['currency_code']=$gift_voucher_currency;
+            //alter the base_price component
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['amount']=$price;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['currency_code']=$gift_voucher_currency;        
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$deliveryCodeFee;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['currency_code']=$gift_voucher_currency;
+        }
     }
 
 }
