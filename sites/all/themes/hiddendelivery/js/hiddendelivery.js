@@ -35,10 +35,15 @@ $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizo
 $("#topBarGreetings .close-greetings").click(function(){
    $("#topBarGreetings").css('display', 'none');
    $.cookie('topBarGreetings', '1');
+   console.log($.cookie('topBarGreetings'));
 });
-	$('#twitter-widget-0').contents().find('#widget').css({
-	    width: '55px'
-	});
+
+$('.share-wishlist-container button').click(function(){
+    $('#wishlist-share').css('visibility', 'visible');
+});
+$('#wishlist-share .modal-header .close').click(function(){
+    $('#wishlist-share').css('visibility', 'hidden');
+});
 
 // remove master card logo on checkout review page
 
