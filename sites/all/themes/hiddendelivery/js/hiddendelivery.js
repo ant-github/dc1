@@ -38,7 +38,7 @@ $("#topBarGreetings .close-greetings").click(function(){
    console.log($.cookie('topBarGreetings'));
 });
 
-$('.share-wishlist-container button').click(function(){
+$('.share-wishlist-container .wishlistShare').click(function(){
     $('#wishlist-share').css('visibility', 'visible');
 });
 $('#wishlist-share .modal-header .close').click(function(){
