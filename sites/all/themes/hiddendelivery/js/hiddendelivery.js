@@ -133,17 +133,17 @@ $(".closeDcWidgetModel").click(function() {
 });
 
 
-$(".manage-wishlist-display").click(function(e){
-$(this).css('display', 'none');
-$('#views-exposed-form-wishlist-page-default').css('display', 'none');
-$('.share-wishlist-container').css('display', 'none');
-$('.back-to-wishlist-items').css('display', 'block');  
-$('.view-wishlist-page.view-display-id-default .view-content').css('display', 'none'); 
-$('.view-wishlist-page.view-display-id-default .text-center').css('display', 'none');
-$('.view-id-wishlist_page.view-display-id-default .view-footer').css('display', 'block');  
-$('.view-wishlist-page.view-display-id-default .view-footer .view-content').css('display', 'block'); 
-$('.view-wishlist-page.view-display-id-default .view-footer .text-center').css('display', 'block');  
-});
+//$(".manage-wishlist-display").click(function(e){
+//$(this).css('display', 'none');
+//$('#views-exposed-form-wishlist-page-default').css('display', 'none');
+//$('.share-wishlist-container').css('display', 'none');
+//$('.back-to-wishlist-items').css('display', 'block');  
+//$('.view-wishlist-page.view-display-id-default .view-content').css('display', 'none'); 
+//$('.view-wishlist-page.view-display-id-default .text-center').css('display', 'none');
+//$('.view-id-wishlist_page.view-display-id-default .view-footer').css('display', 'block');  
+//$('.view-wishlist-page.view-display-id-default .view-footer .view-content').css('display', 'block'); 
+//$('.view-wishlist-page.view-display-id-default .view-footer .text-center').css('display', 'block');  
+//});
 
 $(".back-to-wishlist-items").click(function(e){
 	window.location.reload();

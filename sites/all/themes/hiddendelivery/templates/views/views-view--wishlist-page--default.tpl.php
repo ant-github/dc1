@@ -26,6 +26,7 @@
  *
  * @ingroup views_templates
  */
+global $base_url;
 ?>
 <div class="<?php print $classes; ?>">
   <?php print render($title_prefix); ?>
@@ -39,8 +40,7 @@
       <div class="view-filters col-md-7">
         <?php print $exposed; ?>
         <?php if ($is_owner): ?>
-        	<div class="manage-wishlist-display">Manage Wishlist Items Display</div>
-        	<div class="back-to-wishlist-items">Back To Wishlist</div>
+          <div class="manage-wishlist-display"><a href="<?php echo $base_url;?>/wishlist_manage/<?php echo arg(1);?>">Manage Wishlist Items Display</a></div>       	
         <?php endif; ?>
       </div>
       <div class="share-wishlist-container col-md-5">

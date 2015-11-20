@@ -97,6 +97,7 @@ foreach($select_table_sizes AS $res_tables_sizes){
  * 
  */
 //echo $_COOKIE['topBarGreetings'];
+$event_node_id = '';
 if(!isset($_COOKIE['topBarGreetings']) && $_COOKIE['topBarGreetings'] != 1){
 $select_event_node = db_query("SELECT nid FROM node WHERE type='top_bar_greetings' AND status=1 ORDER BY nid desc limit 1");
 foreach($select_event_node AS $res_event_node){
@@ -149,9 +150,9 @@ if($event_node_id != ''){
     ?>
         <div class="homepage-top-headertext">
             <?php
-                $block = block_load('block', '7');
-                $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
-                print $output;
+                $block_7 = block_load('block', '7');
+                $output_7 = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block_7))));
+                print $output_7;
             ?>
         </div>
     <?php
@@ -163,9 +164,9 @@ if($event_node_id != ''){
             
               <div class="app-store-link">
               <?php
-                $block = block_load('block', '2');
-                $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));
-                print $output;
+                $block_2 = block_load('block', '2');
+                $output_2 = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block_2))));
+                print $output_2;
               ?>
               </div>
               <?php
@@ -206,8 +207,8 @@ if($event_node_id != ''){
                     <?php
 //                           $block = module_invoke('search', 'block_view');
 //                           print render($block);  
-                             $block = module_invoke('views', 'block_view', '-exp-new_wishlists-page_1');
-                             print render($block['content']);
+                             $block_page_1 = module_invoke('views', 'block_view', '-exp-new_wishlists-page_1');
+                             print render($block_page_1['content']);
                     ?>
                 </div>
                <?php
