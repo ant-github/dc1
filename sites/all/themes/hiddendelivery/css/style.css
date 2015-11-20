@@ -20,6 +20,8 @@
 }
 .page-wishlist-manage .view-wishlist-page .view-footer{
     float: left;
+    width: 100%;
+    margin-top: 10px;
 }
 .page-wishlist-manage .view-wishlist-page .view-footer .view-content{
     display: block;
@@ -40,7 +42,7 @@
    color: #fff;  
    text-decoration: none;
 }
-.page-wishlist-manage .view-display-id-block_2 .view-content .views-form button{
+.page-wishlist-manage .view-display-id-block_2 .view-content .views-form #edit-actions button{
     margin-top: -30px;
 }
  
