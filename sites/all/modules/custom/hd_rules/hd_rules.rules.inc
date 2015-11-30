@@ -29,17 +29,25 @@ function hd_rules_check_wishlist_owner_address($commerce_order){
   if($line_item->type == 'product'){
     //load wishlist_owner
     $wish_list_owner = user_load(
-      $line_item->field_wish_list_owner_ref[LANGUAGE_NONE]['0']['target_id']);
+    $line_item->field_wish_list_owner_ref[LANGUAGE_NONE]['0']['target_id']);
     //get wishlist_owner country
     $wish_list_owner_country =
-      $wish_list_owner->field_delivery_address[LANGUAGE_NONE]['0']['country'];
+    $wish_list_owner->field_delivery_address[LANGUAGE_NONE]['0']['country'];
 
     //load store country
     $store = entity_load_single('store',
     $line_item->field_store_country_ref[LANGUAGE_NONE]['0']['target_id']);
     $store_country = $store->field_store_country[LANGUAGE_NONE]['0']['value'];
+    $store_url = $store->field_store_url[LANGUAGE_NONE]['0']['value'];
 
-    if($wish_list_owner_country == $store_country){
+    /**** if stores are from riverisland and amazon then always returns TRUE for domestic shipping ****/
+    $riverIsland = 'riverisland';
+    $amazon = 'amazon';
+    
+    $check_store_riverIsland = strpos($store_url, $riverIsland);
+    $check_store_amazon = strpos($store_url, $amazon);
+    
+    if($wish_list_owner_country == $store_country || $check_store_riverIsland !== FALSE || $check_store_amazon !== FALSE){
       return TRUE;
     }
   }
@@ -86,7 +94,7 @@ function hd_rules_create_purchase($commerce_order){
   if($line_item->type == 'product'){
     // Update the wishlist item status to purchased
     $wishlist_item = hd_wishlist_item_load(
-      $line_item->field_wishlist_item_id_ref['und'][0]['target_id']);
+    $line_item->field_wishlist_item_id_ref['und'][0]['target_id']);
     $wr = entity_metadata_wrapper('wishlist_item', $wishlist_item);
     $wr->field_reserving_user = $commerce_order->uid;
     $wr->field_status = 'purchased';
