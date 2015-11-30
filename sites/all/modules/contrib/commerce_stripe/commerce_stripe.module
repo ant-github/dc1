@@ -63,7 +63,7 @@ function commerce_stripe_commerce_payment_method_info() {
   $payment_methods['commerce_stripe'] = array(
     'title' => t('Stripe'),
     'short_title' => t('Stripe'),
-    'display_title' => t('Pay with stripe'),
+    'display_title' => t('Pay with Credit Card'),
     'description' => t('Stripe payment gateway'),
     'terminal' => FALSE,
     'offsite' => TRUE,

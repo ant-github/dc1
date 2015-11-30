@@ -967,7 +967,7 @@ a.twitter-share-button{
 .page-wishlist .wishlist-view{
     margin-top: -7px;
 }
-#commerce-checkout-form-review #edit-commerce-payment{
+/*#commerce-checkout-form-review #edit-commerce-payment{
     float: left;
     width: 500px;   
 }
@@ -979,11 +979,11 @@ a.twitter-share-button{
     float: left;
     margin-top: 38px;
     width: 500px;   
-}
-#commerce-checkout-form-review #edit-buttons{
+}*/
+/*#commerce-checkout-form-review #edit-buttons{
     float: left;
     width: 500px;  
-}
+}*/
 #commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label:after{
     background: url("../images/HomePage/payment-methods.jpg") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
     content: "";
@@ -1700,7 +1700,7 @@ a.twitter-share-button{
     width: 90% !important;
     left: 5% !important;
 }
-#commerce-checkout-form-review #edit-commerce-payment{
+/*#commerce-checkout-form-review #edit-commerce-payment{
     width: 400px;   
 }
 #commerce-checkout-form-review #edit-terms-conditions{
@@ -1708,7 +1708,7 @@ a.twitter-share-button{
 }
 #commerce-checkout-form-review #edit-buttons{
     width: 400px;    
-}
+}*/
 }
 @media(max-width: 480px) {
 .view-visit-our-shop{
@@ -1767,7 +1767,7 @@ a.twitter-share-button{
 .modeldialog-product-description{
     width: 100%;
 }
-#commerce-checkout-form-review #edit-commerce-payment{
+/*#commerce-checkout-form-review #edit-commerce-payment{
     width: 300px;   
 }
 #commerce-checkout-form-review #edit-terms-conditions{
@@ -1775,7 +1775,7 @@ a.twitter-share-button{
 }
 #commerce-checkout-form-review #edit-buttons{
     width: 300px;    
-}
+}*/
 }
 @media(max-width: 375px) {
 section{
