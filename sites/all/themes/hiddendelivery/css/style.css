@@ -989,15 +989,15 @@ a.twitter-share-button{
     content: "";
     display: inline-block;
     height: 36px;
-    left: 79px;
+    left: 180px;
     margin-bottom: -10px;
     position: relative;
     top: -26px;
-    width: 265px;    
+    width: 320px;    
 }
 #commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label {
     display: inline-block;
-    width: 75px;
+    width: 185px;
 }
 .page-wishlist .view-wishlist-page .product-info p a{
     display: none;
