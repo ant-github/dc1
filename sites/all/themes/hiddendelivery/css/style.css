@@ -998,6 +998,7 @@ a.twitter-share-button{
 #commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label {
     display: inline-block;
     width: 185px;
+    margin-top: 2px;
 }
 .page-wishlist .view-wishlist-page .product-info p a{
     display: none;
