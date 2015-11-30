@@ -29,7 +29,7 @@ function dc_custom_form_settings_form_alter(&$form, &$form_state, $form_id){
         if(isset($form['customer_profile_billing'])){
             $form['customer_profile_billing']['commerce_customer_address']['und'][0]['locality_block']['postal_code']['#title'] = 'Postcode / ZIP Code';
         }
-        $form['buttons']['continue']['#value'] = 'Complete order';
+       // $form['buttons']['continue']['#value'] = 'Complete order';
     }
     
     if($form['#id'] == 'commerce-checkout-form-checkout'){
