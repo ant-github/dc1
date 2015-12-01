@@ -94,7 +94,8 @@ if($page['content']['system_main']['#form_id'] == 'commerce_checkout_form_paymen
     $page['content']['system_main']['help']['#markup'] = 'Use the button below to complete your payment process.';
     $page['content']['system_main']['#suffix']= '<form action="'.$base_url.'/stripe/'.$order->order_id.'/payment_status" method="POST"><script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-email="'.$order->mail.'" '
       . 'data-key="'.$settings['public_key'].'" data-label="Pay '.$desc_amount.'" '
-      . 'data-image="'.$base_url.'/sites/all/themes/hiddendelivery/images/logo_dc.png" data-name="deliverycode.com" data-bitcoin="true"  '
+      . 'data-image="'.$base_url.'/sites/all/themes/hiddendelivery/images/logo_dc.png" data-name="deliverycode.com" data-bitcoin="true" '
+            . 'data-zip-code="true" data-billing-address="true" '
       . 'data-description="('.$desc_amount.')" data-amount="'.$order->commerce_order_total['und'][0]['amount'].'" '
       . 'data-currency="'.$order->commerce_order_total['und'][0]['currency_code'].'"></script></form>';
 }
