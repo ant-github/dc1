@@ -43,11 +43,13 @@ function hd_rules_check_wishlist_owner_address($commerce_order){
     /**** if stores are from riverisland and amazon then always returns TRUE for domestic shipping ****/
     $riverIsland = 'riverisland';
     $amazon = 'amazon';
+    $urbanoutfitters = 'urbanoutfitters';
     
     $check_store_riverIsland = strpos($store_url, $riverIsland);
     $check_store_amazon = strpos($store_url, $amazon);
+    $check_store_urbanoutfitters = strpos($store_url, $urbanoutfitters);
     
-    if($wish_list_owner_country == $store_country || $check_store_riverIsland !== FALSE || $check_store_amazon !== FALSE){
+    if($wish_list_owner_country == $store_country || $check_store_riverIsland !== FALSE || $check_store_amazon !== FALSE || $check_store_urbanoutfitters !==FALSE){
       return TRUE;
     }
   }
