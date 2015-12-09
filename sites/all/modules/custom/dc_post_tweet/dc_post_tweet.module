@@ -1,0 +1,61 @@
+<?php
+function dc_post_tweet_commerce_payment_order_paid_in_full($order, $transaction){
+global $base_url;
+    if(isset($order->commerce_line_items['und'][0]['line_item_id']) && $transaction->status == 'success'){
+            $line_item_id = $order->commerce_line_items['und'][0]['line_item_id'];
+            $line_items = commerce_line_item_load($line_item_id);        
+        if($line_items->line_item_label != 'dc_gift_voucher'){
+            
+                $wishlist_id = $line_items->field_wishlist_id_ref['und'][0]['target_id'];
+                $user_id = $line_items->field_wish_list_owner_ref['und'][0]['target_id'];
+                $product_id = $line_items->commerce_product['und'][0]['product_id'];
+                
+                $product_details = commerce_product_load($product_id);
+                $get_product_title = $product_details->title;
+                $product_title_len = strlen($get_product_title);
+                if($product_title_len > 20){
+                    $product_title = substr($get_product_title, 0, 18).'..';
+                }else{
+                    $product_title = $get_product_title;
+                }
+                
+                $select_user_twitter_accounts = db_query('SELECT twitter_uid FROM twitter_account WHERE uid ='.$user_id);
+                foreach($select_user_twitter_accounts AS $res_twitter_accounts){
+                        $user_twitter_account = $res_twitter_accounts->twitter_uid;
+                        if($user_twitter_account){
+                           $twitter_account = twitter_account_load($user_twitter_account);
+                           $message= 'Somebody just bought "'.$product_title.'" off my #deliverycode #wishlist! Check out my list here: '.$base_url.'/wishlist/'.$wishlist_id.' @delivery_code';                           
+                           $abc = twitter_set_status($twitter_account, $message);
+                           
+                        }                             
+                }       
+        }else{
+            
+                $select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
+                foreach($select_gv_node AS $res_gv_node){
+                         $gv_node = $res_gv_node->entity_id;
+                }			
+                $node = node_load($gv_node);
+                //print "<pre>"; print_r($node); die('hi');
+
+                $sender_name = $node->title;
+                $gift_message = $node->your_message_gift_voucher['und'][0]['value'];
+                $user_id = $node->receiver_user_id_gift_voucher['und'][0]['value'];  
+                
+                $user_details = user_load($user_id);
+                $select_user_twitter_accounts = db_query('SELECT twitter_uid FROM twitter_account WHERE uid ='.$user_id);
+                foreach($select_user_twitter_accounts AS $res_twitter_accounts){
+                        $user_twitter_account = $res_twitter_accounts->twitter_uid;
+
+                    if($user_twitter_account){
+                        $twitter_account = twitter_account_load($user_twitter_account);
+                        $message= 'Somebody just sent me a #deliverycode #giftvoucher! To send me a gift, click here: '.$user_details->field_profile_wishlist_url['und'][0]['value'].' @delivery_code';
+                       
+                        twitter_set_status($twitter_account, $message);
+                    }                             
+                }             
+        }
+    }    
+   
+}
+?>

@@ -1,0 +1,4 @@
+name = DC Post Tweets
+description = Auto Post tweets on model's twitter accounts.
+package = Delivery Code
+core = 7.x

@@ -29,7 +29,7 @@ function dc_custom_form_settings_form_alter(&$form, &$form_state, $form_id){
         if(isset($form['customer_profile_billing'])){
             $form['customer_profile_billing']['commerce_customer_address']['und'][0]['locality_block']['postal_code']['#title'] = 'Postcode / ZIP Code';
         }
-       // $form['buttons']['continue']['#value'] = 'Complete order';
+        //$form['buttons']['continue']['#value'] = 'Complete order';
     }
     
     if($form['#id'] == 'commerce-checkout-form-checkout'){
@@ -63,7 +63,7 @@ function dc_custom_form_settings_commerce_payment_order_paid_in_full($order, $tr
     if(isset($order->commerce_line_items['und'][0]['line_item_id']) && $transaction->status == 'success'){
             $line_item_id = $order->commerce_line_items['und'][0]['line_item_id'];
             $line_items = commerce_line_item_load($line_item_id);        
-        if($line_items->type == 'product'){
+        if($line_items->line_item_label != 'dc_gift_voucher'){
             $order_id = $order->order_id;
             $user_id = $line_items->field_wish_list_owner_ref['und'][0]['target_id'];  
             $user_details = user_load($user_id);
