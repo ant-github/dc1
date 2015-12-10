@@ -14,7 +14,26 @@
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
 
+.page-create-a-wishlist #block-block-13{
+    color: #666;
+    float: right;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-top: 10px;
+    width: 48%;
+} 
  
+#block-block-13{
+    color: #666;
+    float: right;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 25px;
+    margin-top: 10px;
+    width: 50%;    
+} 
+
 .page-wishlist-manage .view-wishlist-page .view-content{
     display: none;
 }
