@@ -32,6 +32,9 @@ var max  = $('.view-all-shop-products #edit-commerce-price-amount-wrapper #edit-
 $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizontal a:last').html('<span class="max-price-filter">'+max+'</span>'); 
 });
 
+$(".page-checkout .component-type-taxcustom-sales-tax-for-particular-stores .component-title").attr('title', 'This third party store charges a sales tax on all purchases.');
+
+
 $("#topBarGreetings .close-greetings").click(function(){
    $("#topBarGreetings").css('display', 'none');
    $.cookie('topBarGreetings', '1');
