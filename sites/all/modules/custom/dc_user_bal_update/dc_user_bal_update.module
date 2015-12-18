@@ -116,7 +116,7 @@ function dc_user_bal_update_commerce_payment_transaction_insert($transaction) {
 }
 function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_wrapper){
 	global $user;
-
+//print "<pre>"; print_r(); die();
     if ($line_item->line_item_label != 'dc_gift_voucher' && $line_item->type != 'shipping') {
         $product_price = $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['0']['price']['amount'];
      
@@ -127,22 +127,14 @@ function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_w
 			$currency_rates_nid = $res_currency_rates->nid;
 		}
         
-        if($product_value < 25){
-        	
-        	$productRate = db_query("SELECT field_dc_fee_25_value AS rate FROM field_data_field_dc_fee_25 WHERE entity_id='".$currency_rates_nid."'");
-			
-        }elseif($product_value >= 25 && $product_value < 50){
-        	
+        if($product_value < 25){        	
+        	$productRate = db_query("SELECT field_dc_fee_25_value AS rate FROM field_data_field_dc_fee_25 WHERE entity_id='".$currency_rates_nid."'");			
+        }elseif($product_value >= 25 && $product_value < 50){        	
         	$productRate = db_query("SELECT field_dc_fee_25_00_49_99_value AS rate FROM field_data_field_dc_fee_25_00_49_99 WHERE entity_id='".$currency_rates_nid."'");
-
-        }elseif($product_value >= 50 && $product_value < 100){
-        	
+        }elseif($product_value >= 50 && $product_value < 100){        	
         	$productRate = db_query("SELECT field_dc_fee_50_00_99_99_value AS rate FROM field_data_field_dc_fee_50_00_99_99 WHERE entity_id='".$currency_rates_nid."'");
-
-        }elseif($product_value >= 100){
-        	
+        }elseif($product_value >= 100){        	
         	$productRate = db_query("SELECT field_dc_fee_100__value AS rate FROM field_data_field_dc_fee_100_ WHERE entity_id='".$currency_rates_nid."'");
-
         }
     	
 	       foreach($productRate AS $resProductRate){
@@ -152,9 +144,59 @@ function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_w
 		$rate = $dcFee; 
 		$rate_value =  $rate / 100; 
         $fee = ($product_price * $rate) / 100; 
-       
-        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$fee;
-		$line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['rate'] = $rate_value;
+
+        $select_custom_sales_tax_nid = db_query("SELECT nid FROM node WHERE type ='dc_custom_sales_tax' AND status=1 ORDER BY nid ASC LIMIT 1");
+        foreach($select_custom_sales_tax_nid AS $res_custom_sales_tax_nid){
+                $custom_sales_tax_nid = $res_custom_sales_tax_nid->nid;
+        }       
+        if($custom_sales_tax_nid){
+            $salesTaxRate = db_query("SELECT field_sales_tax_amount_in_percen_value AS rate FROM field_data_field_sales_tax_amount_in_percen WHERE entity_id='".$custom_sales_tax_nid."'");
+                
+            foreach($salesTaxRate AS $resSalesTaxRate){
+                $sales_tax = $resSalesTaxRate->rate;
+            }
+            $checkout_store_id = $line_item->field_store_country_ref['und'][0]['target_id'];
+            
+            $get_tax_stores = db_query("SELECT entity_id AS total FROM field_data_field_sales_tax_store WHERE field_sales_tax_store_value = 1 AND entity_id=".$checkout_store_id);
+            foreach($get_tax_stores AS $res_get_tax_stores){
+                $tax_stores = $res_get_tax_stores->total;
+            }    
+            if($tax_stores){
+                if($sales_tax > 0){
+                        $st_rate = $sales_tax; 
+                        $st_rate_value =  $st_rate / 100; 
+                        $custom_sales_tax = ($product_price * $st_rate) / 100;        
+
+
+
+
+                    if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['name']=='custom_sales_tax_for_particular_stores'){
+                        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$custom_sales_tax;
+                        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['rate'] = $st_rate_value;            
+                    }
+                    if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['data']['tax_rate']['name']=='custom_sales_tax_for_particular_stores'){
+                        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['amount']=$custom_sales_tax;
+                        $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['data']['tax_rate']['rate'] = $st_rate_value;             
+                    }
+                }
+            }else{
+                if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['name']=='custom_sales_tax_for_particular_stores'){
+                    unset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']);            
+                }
+                if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['data']['tax_rate']['name']=='custom_sales_tax_for_particular_stores'){
+                    unset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']);             
+                }            
+            }
+        }
+        if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['name']=='deliverycode_fee'){
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['amount']=$fee;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['1']['price']['data']['tax_rate']['rate'] = $rate_value;            
+        }        
+        if(isset($line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']) && $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['data']['tax_rate']['name']=='deliverycode_fee'){
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['amount']=$fee;
+            $line_item->commerce_unit_price[LANGUAGE_NONE]['0']['data']['components']['2']['price']['data']['tax_rate']['rate'] = $rate_value;            
+        }        
+
 
     }
     //print "<pre>"; print_r($line_item); die();
