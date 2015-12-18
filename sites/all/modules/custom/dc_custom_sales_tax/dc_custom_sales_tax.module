@@ -1,0 +1,24 @@
+<?php
+
+//function dc_custom_sales_tax_commerce_cart_line_item_refresh($line_item, $order_wrapper){ 
+//    global $base_url;
+//    if ($line_item->line_item_label != 'dc_gift_voucher') {
+//        
+//        $select_sales_tax_nid = db_query("SELECT nid FROM node WHERE type ='dc_custom_sales_tax' ORDER BY nid ASC LIMIT 1");
+//        foreach($select_sales_tax_nid AS $res_sales_tax_nid){
+//                $dc_sales_tax_nid = $res_sales_tax_nid->nid;
+//        }
+//        if($dc_sales_tax_nid){
+//            $sales_tax_in_percentage = db_query("SELECT field_sales_tax_amount_in_percen_value FROM field_data_field_sales_tax_amount_in_percen WHERE entity_id ='".$dc_sales_tax_nid."'");
+//            foreach($sales_tax_in_percentage AS $res_sales_tax_in_percentage){
+//                    $sales_tax_percentage = $res_sales_tax_in_percentage->field_sales_tax_amount_in_percen_value;
+//            }
+//            if($sales_tax_percentage > 0){
+////                print "<pre>"; print_r($line_item); print "<br/>"; print " sss";
+////                print "<pre>"; print_r($order_wrapper); print "<br/>"; die();
+//            }
+//        }
+//        
+//    }
+//}
+?>

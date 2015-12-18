@@ -1,0 +1,41 @@
+<?php
+function dc_custom_sales_tax_install() {
+    $field = array(                                       
+        'field_name' => 'field_sales_tax_store',    
+        'type' => 'list_boolean',       
+        'settings' => array(
+            'text_processing' => 0,
+        ),
+
+        'widget' => array('type' => 'options_onoff'), 
+        'settings' => array(
+              'allowed_values' => array(
+                  '0' => 'No',
+                  '1' => 'Yes',
+              ),
+         )   
+    );
+    $field = field_create_field($field);
+
+
+    $instance = array(
+        'field_name' => 'field_sales_tax_store',
+        'required' => 'true', 
+        'label' => 'Add to sales tax',
+        'description' => st('Add store as sales tax store'),
+        'entity_type' => 'store',
+        'bundle' => 'store',
+        'display' => array(
+            'teaser' => array(
+              'label' => 'hidden',
+              'type' => 'hidden',
+            ),
+            'default' => array(
+              'label' => 'hidden',
+              'type' => 'hidden',
+            ),
+        ),
+    );
+    field_create_instance($instance);
+}
+?>

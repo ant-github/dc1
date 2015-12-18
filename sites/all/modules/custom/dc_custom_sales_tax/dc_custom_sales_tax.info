@@ -1,0 +1,4 @@
+name = DC Custom Sales Tax
+description = Adding sales tax amount(added by admin for particular store) to order amount.
+package = Delivery Code
+core = 7.x
