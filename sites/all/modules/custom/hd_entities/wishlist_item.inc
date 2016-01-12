@@ -28,15 +28,27 @@ function hd_wishlist_item_page_add() {
  * - Call on the Field API to pull in the form elements
  *   for fields attached to the entity.
  */
-function hd_wishlist_item_form($form, &$form_state, $entity) {
+function hd_wishlist_item_form($form, &$form_state, $entity) {  
+    
+//    $form['wishlist_item']['add_to_widget'] = array(
+//     '#type' => 'checkbox',
+//     '#options' => t('1'),
+//     '#title' => t('Add to widget'),
+//     '#description' => t('Description'),
+//    );
+    
+    $form['wishlist_item'] = array(
+      '#type' => 'value',
+      '#value' => $entity,
+    );
 
-  $form['wishlist_item'] = array(
-    '#type' => 'value',
-    '#value' => $entity,
-  );
+// print "<pre>"; print_r($form); die();
 
   field_attach_form('wishlist_item', $entity, $form, $form_state);
-
+   
+  
+  
+   
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -68,7 +80,9 @@ function hd_wishlist_item_form_validate($form, &$form_state) {
  * Form submit handler: submits hd_wishlist_item_form information
  */
 function hd_wishlist_item_form_submit($form, &$form_state) {
+   
   $entity = $form_state['values']['wishlist_item'];
+  
   field_attach_submit('wishlist_item', $entity, $form, $form_state);
   // Set a unique item code for new wishlist items.
   if (isset($entity->is_new)) {
@@ -227,21 +241,41 @@ function hd_wishlist_item_remove_form($form, &$form_state, $wishlist_item_id, $w
 }
 
 function hd_wishlist_item_remove_form_submit($form, &$form_state) {
-  // Load the wishlist and remove the reference.
-  $wishlist = hd_wishlist_load($form_state['values']['wishlist_id']);
-  $ww = entity_metadata_wrapper('wishlist', $wishlist);
+/*
+ *  Temporary remove wishlist item from model's wishlist
+ */    
+  $wishlist_item = hd_wishlist_item_load($form_state['values']['wishlist_item_id'], TRUE);
+  $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
 
-  foreach ($ww->field_wishlist_items->getIterator() as $delta => $wiw) {
-    if ($wiw->wishlist_item_id->value() == $form_state['values']['wishlist_item_id']) {
-      // Delete the wishlist item.
-      $wiw->delete();
 
-      // Remove the reference.
-      $ww->field_wishlist_items[$delta]->set(NULL);
-      $ww->save();
+  $wiw->field_delete_wishlist_item = 1;
 
-    }
-  }
+  $wiw->save();
+  
+/*
+ * 
+ * To remove wishlist item permanantly from model's wishlist
+ * 
+ */
+//  $wishlist = hd_wishlist_load($form_state['values']['wishlist_id']);
+//  $ww = entity_metadata_wrapper('wishlist', $wishlist);  
+//  foreach ($ww->field_wishlist_items->getIterator() as $delta => $wiw) {
+//    if ($wiw->wishlist_item_id->value() == $form_state['values']['wishlist_item_id']) {
+//      // Delete the wishlist item.
+//      $wiw->delete();
+//
+//      // Remove the reference.
+//      $ww->field_wishlist_items[$delta]->set(NULL);
+//      $ww->save();
+//
+//    }
+//  }
+  
+/*
+ * end permanantly remove wishlist item
+ * 
+ */
+  
   drupal_set_message(t('The item was removed from your wishlist.'));
 }
 

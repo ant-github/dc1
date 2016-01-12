@@ -1,7 +1,7 @@
 <?php
 function dc_custom_sales_tax_install() {
     $field = array(                                       
-        'field_name' => 'field_sales_tax_store',    
+        'field_name' => 'field_delete_wishlist_item',    
         'type' => 'list_boolean',       
         'settings' => array(
             'text_processing' => 0,
@@ -19,12 +19,12 @@ function dc_custom_sales_tax_install() {
 
 
     $instance = array(
-        'field_name' => 'field_sales_tax_store',
-        'required' => 'true', 
-        'label' => 'Add to sales tax',
-        'description' => st('Add store as sales tax store'),
-        'entity_type' => 'store',
-        'bundle' => 'store',
+        'field_name' => 'field_delete_wishlist_item',
+        'required' => 'false', 
+        'label' => 'Deleted',
+        'description' => st('Status of wishlist item on model wishlist page'),
+        'entity_type' => 'wishlist_item',
+        'bundle' => 'wishlist_item',
         'display' => array(
             'teaser' => array(
               'label' => 'hidden',
