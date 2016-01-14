@@ -48,6 +48,14 @@ $('#wishlist-share .modal-header .close').click(function(){
     $('#wishlist-share').css('visibility', 'hidden');
 });
 
+/*
+ * User's profile image preview while uploading new image
+ */
+
+$("#edit-picture-upload").attr("onChange", "showpreviewimage(this)");
+
+
+
 // remove master card logo on checkout review page
 
       $(".commerce-paypal-icons img").each(function () {

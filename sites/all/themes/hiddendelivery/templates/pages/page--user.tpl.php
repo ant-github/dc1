@@ -313,6 +313,21 @@ if($event_node_id != ''){
 
   </div>
 </div>
+<script type="text/javascript">
+    function showpreviewimage(input) {
+       jQuery(".user-picture img").attr("width", "100");
+       jQuery(".user-picture img").attr("height", "70");
+        if (input.files && input.files[0]) {
+            jQuery('.file1_proofformError').css('display', 'none');
+
+                var ImageDir = new FileReader();
+                ImageDir.onload = function (e) {
+                         jQuery('.user-picture img').attr('src', e.target.result);
+                }
+                ImageDir.readAsDataURL(input.files[0]);  
+        }
+    }
+</script>
 <footer class="footer">
   <?php print render($page['footer']); ?>
 </footer>
