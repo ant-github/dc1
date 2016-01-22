@@ -13,7 +13,12 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
-
+#block-addtoany-addtoany-button{
+   margin-bottom: -30px;
+   position: relative;
+   text-align: center;
+   top: -50px;     
+}
 .page-wishlist-manage .view-wishlist-page .view-content{
     display: none;
 }
@@ -1795,6 +1800,12 @@ section{
   left: 5%;
 }
 
+}
+@media(max-width: 346px) {
+#block-addtoany-addtoany-button{
+   top: -30px;  
+   left: -10px;
+}
 }
 @media(max-width: 320px) {
 .header-right-side .header-search-block form{
