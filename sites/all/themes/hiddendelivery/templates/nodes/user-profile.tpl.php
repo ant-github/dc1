@@ -41,7 +41,7 @@
 <?php print render($user_profile['group_personal_information']);?>
 </div>
 <div class="col-md-6">
-    <h3 class="profile-header">Gift Balance</h3> 
+    <h3 class="profile-header">Gift Voucher Balance</h3> 
     <div class="gift-balance-user">
     	
     <?php
