@@ -1524,7 +1524,8 @@ a.twitter-share-button{
     margin-top: 20px;
 }
 }
-@media(max-width: 767px){
+@media screen and (min-device-width: 668px) and (max-device-width: 767px)  {
+/*@media(max-width: 767px)*/
     .my-widget-button{
         padding-left: 0 !important;
         padding-top: 8px !important;
@@ -1587,7 +1588,8 @@ a.twitter-share-button{
 
 
 }
-@media(max-width: 667px) {
+@media screen and (min-device-width: 601px) and (max-device-width: 667px)  {
+/*@media(max-width: 667px)*/ 
     .my-widget-button{
         padding-left: 0 !important;
         padding-top: 8px !important;
@@ -1706,7 +1708,8 @@ a.twitter-share-button{
 }
 
 }
-@media(max-width: 600px) {
+@media screen and (min-device-width: 481px) and (max-device-width: 600px)  {
+/*@media(max-width: 600px) */
 .page-visit-our-shop .ui-dialog, .page-all-shop-products .ui-dialog{
     width: 90% !important;
     left: 5% !important;
@@ -1721,7 +1724,8 @@ a.twitter-share-button{
     width: 400px;    
 }*/
 }
-@media(max-width: 480px) {     
+@media screen and (min-device-width: 376px) and (max-device-width: 480px)  {
+/*@media(max-width: 480px)     */
 .view-visit-our-shop{
     text-align: center;
 }
@@ -1788,7 +1792,11 @@ a.twitter-share-button{
     width: 300px;    
 }*/
 }
-@media(max-width: 375px) {
+@media screen and (min-device-width: 347px) and (max-device-width: 375px)  {
+/*@media(max-width: 375px) */
+.navbar .logo img {
+  width: 109px !important;
+}
 section{
     padding-left: 0px !important;
 }
@@ -1806,15 +1814,23 @@ section{
   left: 5%;
 }
 }
-@media(max-width: 346px) {
+@media screen and (min-device-width: 321px) and (max-device-width: 346px)  {
+/*@media(max-width: 346px) */
 #block-addtoany-addtoany-button{
    top: -30px;  
    left: -10px;
 }
+.navbar .logo img {
+  width: 109px !important;
 }
-@media(max-width: 320px) {   
+}
+@media screen and (min-device-width: 0px) and (max-device-width: 320px)  {
+/*@media(max-width: 320px)    */
 .header-right-side .header-search-block form{
   left: 0%;
+}
+.navbar .logo img {
+  width: 109px !important;
 }
 }
 
