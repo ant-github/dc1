@@ -1812,7 +1812,7 @@ section{
    left: -10px;
 }
 }
-@media screen and (min-device-width: 0px) and (max-device-width: 360px)  {
+@media screen and (min-device-width: 0px) and (max-device-width: 380px)  {
 /*@media(max-width: 320px)*/   
 .navbar .logo img {
   width: 109px !important;
