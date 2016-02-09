@@ -1813,10 +1813,11 @@ section{
 }
 }
 @media screen and (min-device-width: 0px) and (max-device-width: 380px)  {
-/*@media(max-width: 320px)*/   
-.navbar .logo img {
-  width: 109px !important;
-} 
+    .navbar .logo img {
+      width: 109px !important;
+    }     
+}
+@media(max-width: 320px){   
 .header-right-side .header-search-block form{
   left: 0%;
 }
