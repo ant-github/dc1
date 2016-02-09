@@ -1513,13 +1513,21 @@ a.twitter-share-button{
 
 
 }
+
+@media screen and (min-device-width: 320px) and (max-device-width: 990px)  {
+    .node-dc_vote-form button{
+        font-size: 12px !important;
+    }
+}
+@media screen and (min-device-width: 320px) and (max-device-width: 767px)  {
+.view-wishlist-page .view-content .views-row .actions .field-name-field-commerce-produc-ref{
+    margin-top: 20px;
+}
+}
 @media(max-width: 767px){
     .my-widget-button{
         padding-left: 0 !important;
         padding-top: 8px !important;
-        font-size: 12px !important;
-    }
-    .node-dc_vote-form button{
         font-size: 12px !important;
     }
     .view-all-shop-products .view-header p{
@@ -1585,9 +1593,7 @@ a.twitter-share-button{
         padding-top: 8px !important;
         font-size: 12px !important;
     }
-    .node-dc_vote-form button{
-        font-size: 12px !important;
-    }    
+  
 .view-all-shop-products .view-header p{
     border-left: none;
     float: left;
@@ -1715,7 +1721,7 @@ a.twitter-share-button{
     width: 400px;    
 }*/
 }
-@media(max-width: 480px) {
+@media(max-width: 480px) {     
 .view-visit-our-shop{
     text-align: center;
 }
@@ -1799,7 +1805,6 @@ section{
 .header-right-side .header-search-block form{
   left: 5%;
 }
-
 }
 @media(max-width: 346px) {
 #block-addtoany-addtoany-button{
@@ -1807,7 +1812,7 @@ section{
    left: -10px;
 }
 }
-@media(max-width: 320px) {
+@media(max-width: 320px) {   
 .header-right-side .header-search-block form{
   left: 0%;
 }
