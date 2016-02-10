@@ -1513,6 +1513,14 @@ a.twitter-share-button{
 
 
 }
+@media screen and (min-device-width: 0px) and (max-device-width: 767px)  {
+.page-wishlist h1.page-header{
+    font-size: 25px;
+}
+.page-wishlist .header-right-side .header-search-block form{
+  left: 0%;
+}
+}
 
 @media screen and (min-device-width: 320px) and (max-device-width: 990px)  {
     .node-dc_vote-form button{
