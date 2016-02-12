@@ -99,7 +99,7 @@
                 global $user;
                 global $base_url;
                 if (isset($user->roles[5])) {
-                    print "<div class='admin-edit-link-product'><a href='" . $base_url . "/admin/commerce/products/" . render($content['field_commerce_produc_ref']['#items'][0]['product_id']) . "/edit' target='_blank'>Edit</a></div>";
+                    print "<div class='admin-edit-link-product'><a href='" . $base_url . "/admin/commerce/products/" . render($content['field_commerce_produc_ref']['#items'][0]['product_id']) . "/edit' target='_blank'>Edit</a></div><br/><br/>";
                    print render($remove_button); 
                 }
                 ?>
