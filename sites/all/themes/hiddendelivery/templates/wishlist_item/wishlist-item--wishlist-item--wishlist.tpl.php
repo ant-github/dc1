@@ -119,7 +119,7 @@
             $product_price_approve_status = $content['product:commerce_price']['#object']->field_approve_price['und'][0]['value'];
             $prince_length = strlen($product_price);
 //                    print "<pre>"; print_r($product_price); die();            
-                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 6 && $product_price_approve_status == '')){
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 8 && $product_price_approve_status == '')){
                            // print "<pre>"; print_r($content); die();
             }else{
             ?>
