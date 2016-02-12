@@ -92,7 +92,7 @@
                     if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 8 && $product_price_approve_status == '')){
                 
                     }else{
-                            print render($content['field_commerce_produc_ref']);  print render($remove_button); 
+                            print render($content['field_commerce_produc_ref']);  
                     } 
                 ?>
                 <?php
@@ -100,7 +100,7 @@
                 global $base_url;
                 if (isset($user->roles[5])) {
                     print "<div class='admin-edit-link-product'><a href='" . $base_url . "/admin/commerce/products/" . render($content['field_commerce_produc_ref']['#items'][0]['product_id']) . "/edit' target='_blank'>Edit</a></div>";
-                   
+                   print render($remove_button); 
                 }
                 ?>
 
