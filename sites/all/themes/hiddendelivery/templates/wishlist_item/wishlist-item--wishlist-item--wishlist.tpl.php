@@ -84,15 +84,15 @@
         <div class="actions col-md-10">
             <?php if (!$is_owner): ?>
                 <?php 
-                    $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
+            $product_price_unit = $content['product:commerce_price']['#object']->commerce_price['und'][0]['currency_code'];
             $product_price = $content['product:commerce_price']['#object']->commerce_price['und'][0]['amount'];
             $product_price_approve_status = $content['product:commerce_price']['#object']->field_approve_price['und'][0]['value'];
             $prince_length = strlen($product_price);
 //                    print "<pre>"; print_r($product_price); die();            
-                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 6 && $product_price_approve_status == '')){
+                    if (($product_price_unit != 'EUR' && $product_price_unit != 'GBP' && $product_price_unit != 'USD') || ($prince_length >= 8 && $product_price_approve_status == '')){
                 
                     }else{
-                            print render($content['field_commerce_produc_ref']);  
+                            print render($content['field_commerce_produc_ref']);  print render($remove_button); 
                     } 
                 ?>
                 <?php
@@ -100,6 +100,7 @@
                 global $base_url;
                 if (isset($user->roles[5])) {
                     print "<div class='admin-edit-link-product'><a href='" . $base_url . "/admin/commerce/products/" . render($content['field_commerce_produc_ref']['#items'][0]['product_id']) . "/edit' target='_blank'>Edit</a></div>";
+                   
                 }
                 ?>
 

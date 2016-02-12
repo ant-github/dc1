@@ -140,6 +140,8 @@ function hiddendelivery_preprocess_entity(&$vars) {
       }
 
       if (!$vars['is_owner']) {
+        $vars['remove_button'] = drupal_get_form('hd_wishlist_item_remove_form_' . $vars['wishlist_item']->wishlist_item_id, $vars['wishlist_item']->wishlist_item_id, arg(1));  
+          
         // Add the full display of a wishlist item to show in the buy popup.
         $wishlist_item_popup_id = 'wishlist-item-buy-' . $vars['wishlist_item']->wishlist_item_id;
         $modal_options = array(
