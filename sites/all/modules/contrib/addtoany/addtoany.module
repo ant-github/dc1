@@ -343,6 +343,7 @@ function addtoany_create_buttons($url = NULL, $title = NULL) {
     }
     else {
       $title = module_exists('page_title') ? page_title_page_get_title() : drupal_get_title();
+      $title = str_replace("&#039;", "'", $title);
     }
   }
 
