@@ -1,0 +1,4 @@
+name = DC Import Amazon Wishlists
+description = Provides users to import their products from amazon wishlist.
+package = Delivery Code
+core = 7.x

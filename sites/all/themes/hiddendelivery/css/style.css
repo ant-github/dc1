@@ -13,6 +13,16 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ 
+ .page-wishlist-3957 .amazon-wishlist-import-button{
+     display: block !important;
+ }
+ .page-wishlist-1059 .amazon-wishlist-import-button{
+     display: block !important;
+ }
+ .amazon-wishlist-import-button{
+     display: none !important;
+ }
 #block-addtoany-addtoany-button{
    margin-bottom: -30px;
    position: relative;

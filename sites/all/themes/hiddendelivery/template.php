@@ -213,6 +213,20 @@ function hiddendelivery_preprocess_views_view(&$vars) {
       );
       $vars['add_an_item_to_wishlist_popup'] = theme('bootstrap_modal', $modal_options);
       $vars['add_an_item_to_wishlist_popup_id'] = $add_an_item_to_wishlist_markup_id;
+      
+      // NEW Add a products from amazon wishlist url button
+      $vars['add_items_from_amazon_wishlist'] = '<button class="col-md-12 col-sm-12 white-button amazon-wishlist-import-button btn btn-primary btn-lg" data-toggle="modal" data-target="#add-items-from-amazon-wishlist"><span class="glyphicon glyphicon-plus"></span> Add Products </button>';
+
+      // Add the full display of a wishlist item to show in the buy popup.
+      $add_items_from_amazon_wishlist_markup_id = 'add-items-from-amazon-wishlist';
+      $add_items_from_amazon_wishlist_form = drupal_get_form('dc_import_amazon_wl_add_amazon_wishlist_url_form');
+      $modal_options1 = array(
+        'attributes' => array('id' => $add_items_from_amazon_wishlist_markup_id, 'class' => array('wishlist-modal')),
+        'heading' => t('Add a products from your amazon wishlist:'),
+        'body' => drupal_render($add_items_from_amazon_wishlist_form),
+      );
+      $vars['add_items_from_amazon_wishlist_popup'] = theme('bootstrap_modal', $modal_options1);
+      $vars['add_items_from_amazon_wishlist_popup_id'] = $add_items_from_amazon_wishlist_markup_id;
     }else{
         module_load_include('inc', 'node', 'node.pages');
         $form = node_add('dc_gift_vouchers');

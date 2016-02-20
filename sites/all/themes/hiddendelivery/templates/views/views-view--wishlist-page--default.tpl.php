@@ -50,6 +50,8 @@ global $base_url;
           </button>
       <?php print $add_an_item_to_wishlist; ?>
       <?php print $add_an_item_to_wishlist_popup; ?>
+      <?php print $add_items_from_amazon_wishlist; ?>
+      <?php print $add_items_from_amazon_wishlist_popup; ?>
           <?php print render($share_links_popup); ?>
         <?php }else{ print $send_a_gift_voucher;  } ?>  
           
