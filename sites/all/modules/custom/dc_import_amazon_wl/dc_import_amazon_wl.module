@@ -50,7 +50,7 @@ function dc_import_amazon_wl_add_amazon_wishlist_url_form_submit($form, &$form_s
                             $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
                             $count++;
                             if($count==$max_loop){
-                                sleep(10);
+                                sleep(500);
                             }
                 }
         }else{
