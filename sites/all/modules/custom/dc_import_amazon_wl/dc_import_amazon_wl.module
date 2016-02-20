@@ -41,16 +41,16 @@ function dc_import_amazon_wl_add_amazon_wishlist_url_form_submit($form, &$form_s
                         $product_url_amazon[] = 'http://www.amazon.com'.$element->href;                     
                 }    
             }
-                $max_loop=5; //This is the desired value of Looping
+                $max_loop=5; //desired value of Looping
 
-                $count = 0; //First we set the count to be zeo            
+                $count = 0; //setting the count to be zeo            
                 foreach($product_url_amazon AS $product_url){
                             $uid = $user->uid;
                             $wishlist_id = $form_state['wishlist_id'];
                             $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
                             $count++;
                             if($count==$max_loop){
-                                sleep(3);
+                                sleep(10);
                             }
                 }
         }else{
