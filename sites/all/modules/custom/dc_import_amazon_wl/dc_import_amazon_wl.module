@@ -38,50 +38,23 @@ function dc_import_amazon_wl_add_amazon_wishlist_url_form_submit($form, &$form_s
                 $url = $amazon_wishlist_url.'?ie=UTF8&page='.$i;
                 $html2 = file_get_html($url);
                 foreach($html2->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]') as $element){
-                        $product_url = 'http://www.amazon.com'.$element->href; 
-                        $uid = $user->uid;
-                        $wishlist_id = $form_state['wishlist_id'];
-
-                        $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
-//                        print "<pre>"; print_r($product_detail); die('hikiki');
-                        if($product_detail){
-                            $product_detail_id = $product_detail['product_id'];
-                            $product_detail_wishlist_id = $product_detail['wishlist_id'];
-
-                            $select_commerce_price = db_query("SELECT commerce_price_amount, commerce_price_currency_code FROM field_data_commerce_price WHERE entity_id=$product_detail_id");
-                            foreach($select_commerce_price AS $res_commerce_price){
-                                $product_price = $res_commerce_price->commerce_price_amount;
-                                $product_currency = $res_commerce_price->commerce_price_currency_code;
-                                $prince_length = strlen($product_price);
-                            }
-
-                        } else {
-                          drupal_set_message(t('This site is not currently compatible with the DeliveryCode system. The item could not be added.'), 'error', FALSE);
-                        }                       
+                        $product_url_amazon[] = 'http://www.amazon.com'.$element->href;                     
                 }    
             }
+                foreach($product_url_amazon AS $product_url){
+                            $uid = $user->uid;
+                            $wishlist_id = $form_state['wishlist_id'];
+                            $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);        
+                }
         }else{
             foreach($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]') as $element){
-                        $product_url = 'http://www.amazon.com'.$element->href; 
+                        $product_url_amazon[] = 'http://www.amazon.com'.$element->href; 
+
+            }            
+            foreach($product_url_amazon AS $product_url){
                         $uid = $user->uid;
                         $wishlist_id = $form_state['wishlist_id'];
-
-                        $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
-                        if($product_detail){
-                            $product_detail_id = $product_detail['product_id'];
-                            $product_detail_wishlist_id = $product_detail['wishlist_id'];
-
-                            $select_commerce_price = db_query("SELECT commerce_price_amount, commerce_price_currency_code FROM field_data_commerce_price WHERE entity_id=$product_detail_id");
-                            foreach($select_commerce_price AS $res_commerce_price){
-                                $product_price = $res_commerce_price->commerce_price_amount;
-                                $product_currency = $res_commerce_price->commerce_price_currency_code;
-                                $prince_length = strlen($product_price);
-                            }
-
-                        } 
-//                        else {
-//                          drupal_set_message(t('This site is not currently compatible with the DeliveryCode system. The item could not be added.'), 'error', FALSE);
-//                        }
+                        $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);        
             }
         }
     }else{
