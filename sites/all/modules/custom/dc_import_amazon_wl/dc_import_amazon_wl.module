@@ -75,7 +75,7 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
         $pagination_count = count($html->find('div[id="wishlistPagination"] ul li'));
         $pagination = $pagination_count - 2;
         for ($i = 1; $i <= $pagination; $i++) {
-            $url2 = $url . '?ie=UTF8&page=' . $i;
+            $url2 = $amazon_wishlist_url . '?ie=UTF8&page=' . $i;
             $html2 = file_get_html($url2);
   
             foreach ($html2->find('div[class="a-spacing-none"] div[class="a-fixed-left-grid-inner"]') as $element) {
