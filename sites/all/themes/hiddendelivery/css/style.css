@@ -13,20 +13,8 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
- #block-block-4{
-     background: #000 none repeat scroll 0 0;
- }
- #block-block-4 .logged-in-social-icons{
-     padding: 14px 0 !important;
-     display: inline-block;
- }
- #block-block-4 .logged-in-social-icons span.intro{
-     margin-right: 0px !important;
- }
- #block-block-4 .join-customs4u{
-    display: inline-block;
-    margin-left: 45px;
-    padding: 10px 0;
+ .join-customs4u-footer-link{
+     margin-top: 10px;
  }
  .page-wishlist-3957 .amazon-wishlist-import-button{
      display: block !important;
