@@ -25,6 +25,11 @@
  .amazon-wishlist-import-button{
      display: none !important;
  }
+ #dc-import-amazon-wl-add-amazon-wishlist-url-form #add-item-url{
+    margin-top: 0;
+    padding: 10px 12px;
+    width: auto;     
+ }
 #block-addtoany-addtoany-button{
    margin-bottom: -30px;
    position: relative;
