@@ -85,7 +85,13 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $p_image_url = $article11->src;
                 }
                 foreach ($htmlElement->find('div[class="g-item-details"] h5 a[class="a-link-normal"]') as $article) {
-                    $p_title = $article->innertext;
+                    $p_title_l = $article->innertext;
+                    $titleLength = strlen($p_title_l); 
+                    if($titleLength > 196){
+                        $p_title = substr($p_title_l, 0, 196).'...';      
+                    }else{
+                        $p_title = $p_title_l;         
+                    }
                     $product_link = 'http://www.amazon.com'.$article->href;
                     $title_link = $article->href;
                     $get_sku = explode('/', $title_link);
