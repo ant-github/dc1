@@ -198,6 +198,14 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     commerce_product_save($product);
                 }
                 
+                //check wishlist item existed or not
+		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
+                			
+                foreach($check_wishlist_item AS $res_wishlist_item){
+                            $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
+                } 
+                        //create a new wishlist item if it does not exist
+                if (empty($wishlist_item_id_res)) {
                 // Load the users wishlist
                 $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
 
@@ -253,7 +261,10 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $store_id = key($result['store']);
                     $wiw->field_store_ref = $store_id;
                     $wiw->save();
-                }            
+                }
+            }else{
+
+            }
         }
         }
         
@@ -376,7 +387,15 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_res['product_link'];
                     commerce_product_save($product);
                 }
-                
+                //check wishlist item existed or not
+		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
+                			
+                foreach($check_wishlist_item AS $res_wishlist_item){
+                            $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
+                } 
+                        //create a new wishlist item if it does not exist
+                if (empty($wishlist_item_id_res)) {
+
                 // Load the users wishlist
                 $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
 
@@ -432,7 +451,10 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $store_id = key($result['store']);
                     $wiw->field_store_ref = $store_id;
                     $wiw->save();
-                }            
+                }
+            }else{
+
+            }
         }
         }            
     }
