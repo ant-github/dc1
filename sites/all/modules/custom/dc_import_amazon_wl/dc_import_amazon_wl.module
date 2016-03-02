@@ -199,6 +199,7 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                 }
                 
                 //check wishlist item existed or not
+                $wishlist_item_id_res = '';
 		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
                 			
                 foreach($check_wishlist_item AS $res_wishlist_item){
@@ -263,6 +264,75 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $wiw->save();
                 }
             }else{
+                // if wishlist item existed
+                
+                //check wishlist item deleted or not
+                $wishlist_item_id_status_res = '';
+		$check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
+                			
+                foreach($check_wishlist_item_status AS $res_wishlist_item_status){
+                            $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
+                } 
+                        //create a new wishlist item if it does not exist
+                if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
+                // Load the users wishlist
+                    $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                    // Create the wishlist item.
+                    $values['user'] = $uid;
+                    $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                    $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                    $wiw->field_commerce_produc_ref = $product->product_id;
+                    $wiw->field_status = 'available';
+                    $wiw->save();
+                    // Add our wishlist item reference to the existing references.
+                    $current_items = $wlw->field_wishlist_items->value();
+                    if (!$current_items) {
+                        $current_items = array();
+                    }
+                    $current_items[] = $wiw->value();
+                    $wlw->field_wishlist_items = $current_items;
+                    $wlw->save();
+                    //add site url
+                    $site_url = parse_url($amazon_wishlist_url);
+                    $country_code = explode('/', $site_url['path']);
+                    $country_code = $country_code[1];
+                    //check country_code lengh to see if has a country in it. e.g gb
+                    if (strlen($country_code) == 2) {
+                        $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+                    } else {
+                        $store_name = 'http://' . $site_url['host'];
+                    }
+                    //check if store exists to get the id
+                    $query = new EntityFieldQuery();
+                    $query->entityCondition('entity_type', 'store')
+                            ->propertyCondition('name', $store_name, '=')
+                            ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                    $result = $query->execute();
+                    //create a new store if it does not exist
+                    if (empty($result)) {
+                        //create store entity and save its reference to the new $wishlist_item
+                        $store = entity_create('store', array('type' => 'store'));
+                        $store->name = $store_name;
+                        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                        //load wishlist user object to get its country
+                        $wishlist_user = user_load($uid);
+                        $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                        $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+            //save store
+                        $store->save();
+                        //save store ref id into the wishlist item
+                        $wiw->field_store_ref = $store->store_id;
+                        $wiw->save();
+                    } else {
+                        //set store id to existing store
+                        $store_id = key($result['store']);
+                        $wiw->field_store_ref = $store_id;
+                        $wiw->save();
+                    }                    
+                    
+                }                
 
             }
         }
@@ -388,6 +458,7 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     commerce_product_save($product);
                 }
                 //check wishlist item existed or not
+                $wishlist_item_id_res = '';
 		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
                 			
                 foreach($check_wishlist_item AS $res_wishlist_item){
@@ -453,6 +524,73 @@ if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 
                     $wiw->save();
                 }
             }else{
+                                //check wishlist item deleted or not
+                $wishlist_item_id_status_res = '';
+		$check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
+                			
+                foreach($check_wishlist_item_status AS $res_wishlist_item_status){
+                            $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
+                } 
+                        //create a new wishlist item if it does not exist
+                if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
+                // Load the users wishlist
+                    $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                    // Create the wishlist item.
+                    $values['user'] = $uid;
+                    $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                    $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                    $wiw->field_commerce_produc_ref = $product->product_id;
+                    $wiw->field_status = 'available';
+                    $wiw->save();
+                    // Add our wishlist item reference to the existing references.
+                    $current_items = $wlw->field_wishlist_items->value();
+                    if (!$current_items) {
+                        $current_items = array();
+                    }
+                    $current_items[] = $wiw->value();
+                    $wlw->field_wishlist_items = $current_items;
+                    $wlw->save();
+                    //add site url
+                    $site_url = parse_url($amazon_wishlist_url);
+                    $country_code = explode('/', $site_url['path']);
+                    $country_code = $country_code[1];
+                    //check country_code lengh to see if has a country in it. e.g gb
+                    if (strlen($country_code) == 2) {
+                        $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+                    } else {
+                        $store_name = 'http://' . $site_url['host'];
+                    }
+                    //check if store exists to get the id
+                    $query = new EntityFieldQuery();
+                    $query->entityCondition('entity_type', 'store')
+                            ->propertyCondition('name', $store_name, '=')
+                            ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                    $result = $query->execute();
+                    //create a new store if it does not exist
+                    if (empty($result)) {
+                        //create store entity and save its reference to the new $wishlist_item
+                        $store = entity_create('store', array('type' => 'store'));
+                        $store->name = $store_name;
+                        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                        //load wishlist user object to get its country
+                        $wishlist_user = user_load($uid);
+                        $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                        $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+            //save store
+                        $store->save();
+                        //save store ref id into the wishlist item
+                        $wiw->field_store_ref = $store->store_id;
+                        $wiw->save();
+                    } else {
+                        //set store id to existing store
+                        $store_id = key($result['store']);
+                        $wiw->field_store_ref = $store_id;
+                        $wiw->save();
+                    }                    
+                    
+                }
 
             }
         }
