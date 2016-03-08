@@ -34,6 +34,23 @@ $('.view-all-shop-products #edit-commerce-price-amount-wrapper .ui-slider-horizo
 
 $(".page-checkout .component-type-taxcustom-sales-tax-for-particular-stores .component-title").attr('title', 'This third party store charges a sales tax on all purchases.');
 
+$(".view-wishlist-page .view-header .share-wishlist-container .send-a-Gift-button").click(function(){
+   $(".view-wishlist-page .view-content").css('display', 'none');
+   $(".view-wishlist-page .text-center").css('display', 'none');
+   $(".view-wishlist-page .send-a-gift-section").css('display', 'block');
+});
+$(".send-a-gift-section .send-a-gift-header .send-a-gift-close-button").click(function(){
+   $(".view-wishlist-page .view-content").css('display', 'block');
+   $(".view-wishlist-page .text-center").css('display', 'block');
+   $(".view-wishlist-page .send-a-gift-section").css('display', 'none');
+});
+
+$("#add-items-from-amazon-wishlist .modal-header button.close").click(function(){
+  $("#add-items-from-amazon-wishlist #dc-import-amazon-wl-add-amazon-wishlist-url-form #edit-amazon-wishlist-url").val('');
+});
+$("#add-item-to-wishlist .modal-header button.close").click(function(){
+  $("#add-item-to-wishlist #hd-tweaks-add-a-product-url-form #edit-product-url").val('');
+});
 
 $("#topBarGreetings .close-greetings").click(function(){
    $("#topBarGreetings").css('display', 'none');

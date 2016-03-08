@@ -31,575 +31,550 @@ function dc_import_amazon_wl_add_amazon_wishlist_url_form_submit($form, &$form_s
     $wishlist_id =  arg(1); 
     $amazon_wishlist_url = $form_state['values']['amazon_wishlist_url']; 
     $html = file_get_html($amazon_wishlist_url);
-
-//    if($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]')){ 
-//        if($html->find('div[id="wishlistPagination"] ul li')){
-//            $pagination_count = count($html->find('div[id="wishlistPagination"] ul li'));
-//            $pagination = $pagination_count-2;
-//            for($i=1; $i<=$pagination; $i++){
-//                $url = $amazon_wishlist_url.'?ie=UTF8&page='.$i;
-//                $html2 = file_get_html($url);
-//                foreach($html2->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]') as $element){
-//                        $product_url_amazon[] = 'http://www.amazon.com'.$element->href;                     
-//                }    
-//            }
-//                $max_loop=5; //desired value of Looping
-//
-//                $count = 0; //setting the count to be zeo            
-//                foreach($product_url_amazon AS $product_url){
-//                            $uid = $user->uid;
-//                            $wishlist_id = $form_state['wishlist_id'];
-//                            $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);
-//                            $count++;
-//                            if($count==$max_loop){
-//                                sleep(500);
-//                            }
-//                }
-//        }else{
-//            foreach($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]') as $element){
-//                        $product_url_amazon[] = 'http://www.amazon.com'.$element->href; 
-//            }            
-//            foreach($product_url_amazon AS $product_url){
-//                        $uid = $user->uid;
-//                        $wishlist_id = $form_state['wishlist_id'];
-//                        $product_detail = _wishlist_resource_add_product($uid,$wishlist_id,$product_url);                       
-//            }
-//        }
-//    }else{
-//        drupal_set_message(t('No Product found, Might be your list is in private mode.'), 'error', FALSE);
-//    }    
-
+ 
+if($amazon_wishlist_url != ''){
 $product_array = array();    
-if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]')) {
-    if ($html->find('div[id="wishlistPagination"] ul li')) {
-        $pagination_count = count($html->find('div[id="wishlistPagination"] ul li'));
-        $pagination = $pagination_count - 2;
-        
-        $k= 0;
-        for ($i = 1; $i <= $pagination; $i++) {
-            $url2 = $amazon_wishlist_url . '?ie=UTF8&page=' . $i;
-            $html2 = file_get_html($url2);
-  
-            foreach ($html2->find('div[class="a-spacing-none"] div[class="a-fixed-left-grid-inner"]') as $element) {
-                $htmlElement = str_get_html($element->innertext);
-            
-                foreach ($htmlElement->find('div[class="g-itemImage"] a img') as $article11) {
-                    $p_image_url = $article11->src; 
-                }
-                foreach ($htmlElement->find('div[class="g-item-details"] h5 a[class="a-link-normal"]') as $article) {
-                    $p_title_l = $article->innertext; 
-                    $titleLength = strlen($p_title_l); 
-                    if($titleLength > 196){
-                        $p_title = substr($p_title_l, 0, 196).'...';    
-                    }else{
-                        $p_title = $p_title_l;         
-                    }
-                    $product_link = 'http://www.amazon.com'.$article->href;
-                    $title_link = $article->href;
-                    $get_sku = explode('/', $title_link);
-                    $sku = 'amazon_'.$get_sku[2]; 
-                }
-                foreach ($htmlElement->find('div[class="g-item-details"] div[class="price-section"] span[class="a-size-base"]') as $article1) {
-                      $p_price = $article1->innertext; 
-                      $price = str_replace('-', '', $p_price);
-                      $price = str_replace(' ', '', $price);
-                      $price = str_replace('.', '', $price);
-                      $price = str_replace('$', '', $price);
-                      $check_for_usd =  strpos($p_price, "$");
-                      $check_for_gbp =  strpos($p_price, "£");
-                      $check_for_eur =  strpos($p_price, "€");
-                      if($check_for_usd !== false){
-                           $currency_code = 'USD';
-                      }else if($check_for_gbp !== false){
-                           $currency_code = 'GBP';
-                      }else if($check_for_eur !== false){
-                           $currency_code = 'EUR';
-                      }else{
-                           $currency_code = 'AUD';
-                      }
-                }
-                $product_array[$k]['p_image_url'] = $p_image_url;
-                $product_array[$k]['p_title'] = $p_title;
-                $product_array[$k]['sku'] = $sku;
-                $product_array[$k]['price'] = $price;
-                $product_array[$k]['currency_code'] = $currency_code;
-                $product_array[$k]['product_link'] = $product_link;
-                $k++;                
-            }
-        } 
-//        print "<pre>"; print_r($product_array); die();
-        if(isset($product_array) && count($product_array) > 0){
-        foreach($product_array AS $product_res){
-                $product = commerce_product_load_by_sku($product_res['sku']);
-                if (empty($product)) {
-                    // Build the product
-                    $product = commerce_product_new('product');
-                    $product->sku = $product_res['sku'];
-                    $product->title = $product_res['p_title'];
-                    $product->language = LANGUAGE_NONE;
-                    $product->uid = 1;
+        if ($html->find('div[class="g-item-details"] div[class="a-row a-size-small"] h5 a[class="a-link-normal"]')) {
+            if ($html->find('div[id="wishlistPagination"] ul li')) {
+                $pagination_count = count($html->find('div[id="wishlistPagination"] ul li'));
+                $pagination = $pagination_count - 2;
 
-                    // image stuff - check to see if it does exists..
-                    $i = 0;
+                $k= 0;
+                for ($i = 1; $i <= $pagination; $i++) {
+                    $url2 = $amazon_wishlist_url . '?ie=UTF8&page=' . $i;
+                    $html2 = file_get_html($url2);
 
-                    if (isset($product_res['p_image_url']) && $product_res['p_image_url'] != '') {
-                        // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
-                        $product_url = $product_res['p_image_url'];
-                        $http_exists = strpos($product_url, 'http:');
-                        //review this!!!
-                        if ($http_exists === 0) {
-                            $image_data = file_get_contents($product_url);
-                        } else {
-                            $image_data = '';
+                    foreach ($html2->find('div[class="a-spacing-none"] div[class="a-fixed-left-grid-inner"]') as $element) {
+                        $htmlElement = str_get_html($element->innertext);
+
+                        foreach ($htmlElement->find('div[class="g-itemImage"] a img') as $article11) {
+                            $p_image_url = $article11->src; 
                         }
-                        
-                        if (!empty($image_data)) {
-                            // Check size of the array - looks like we need another image..
-                            if (count($product_data['objects'][0]['images']) > 1) {
-                                // Break when we have a valid image
-                                for ($i = 1; $i <= count($product_data['objects'][0]['images']); $i++) {
-                                    $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
-                                    if ($image_data)
-                                        break;
+                        foreach ($htmlElement->find('div[class="g-item-details"] h5 a[class="a-link-normal"]') as $article) {
+                            $p_title_l = $article->innertext; 
+                            $titleLength = strlen($p_title_l); 
+                            if($titleLength > 196){
+                                $p_title = substr($p_title_l, 0, 196).'...';    
+                                $p_title = str_replace('&#8203;', ',', $p_title); 
+                                $p_title = wordwrap($p_title, 20, "\n", true);
+                            }else{
+                                $p_title = $p_title_l;   
+                                $p_title = str_replace('&#8203;', ',', $p_title);
+                                $p_title = wordwrap($p_title, 20, "\n", true);
+                            }
+                            $product_link = 'http://www.amazon.com'.$article->href;
+                            $title_link = $article->href;
+                            $get_sku = explode('/', $title_link);
+                            $sku = 'amazon_'.$get_sku[2]; 
+                        }
+                        foreach ($htmlElement->find('div[class="g-item-details"] div[class="price-section"] span[class="a-size-base"]') as $article1) {
+                              $p_price = $article1->innertext; 
+                              $price = str_replace('-', '', $p_price);
+                              $price = str_replace(' ', '', $price);
+                              $price = str_replace('.', '', $price);
+                              $price = str_replace('$', '', $price);
+                              $check_for_usd =  strpos($p_price, "$");
+                              $check_for_gbp =  strpos($p_price, "£");
+                              $check_for_eur =  strpos($p_price, "€");
+                              if($check_for_usd !== false){
+                                   $currency_code = 'USD';
+                              }else if($check_for_gbp !== false){
+                                   $currency_code = 'GBP';
+                              }else if($check_for_eur !== false){
+                                   $currency_code = 'EUR';
+                              }else{
+                                   $currency_code = 'AUD';
+                              }
+                        }
+                        $product_array[$k]['p_image_url'] = $p_image_url;
+                        $product_array[$k]['p_title'] = $p_title;
+                        $product_array[$k]['sku'] = $sku;
+                        $product_array[$k]['price'] = $price;
+                        $product_array[$k]['currency_code'] = $currency_code;
+                        $product_array[$k]['product_link'] = $product_link;
+                        $k++;                
+                    }
+                } 
+        //        print "<pre>"; print_r($product_array); die();
+                if(isset($product_array) && count($product_array) > 0){
+                foreach($product_array AS $product_res){
+                        $product = commerce_product_load_by_sku($product_res['sku']);
+                        if (empty($product)) {
+                            // Build the product
+                            $product = commerce_product_new('product');
+                            $product->sku = $product_res['sku'];
+                            $product->title = $product_res['p_title'];
+                            $product->language = LANGUAGE_NONE;
+                            $product->uid = 1;
+
+                            // image stuff - check to see if it does exists..
+                            $i = 0;
+
+                            if (isset($product_res['p_image_url']) && $product_res['p_image_url'] != '') {
+                                // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
+                                $product_url = $product_res['p_image_url'];
+                                $http_exists = strpos($product_url, 'http:');
+                                //review this!!!
+                                if ($http_exists === 0) {
+                                    $image_data = file_get_contents($product_url);
+                                } else {
+                                    $image_data = '';
+                                }
+
+                                if (!empty($image_data)) {
+                                    // Check size of the array - looks like we need another image..
+                                    if (count($product_data['objects'][0]['images']) > 1) {
+                                        // Break when we have a valid image
+                                        for ($i = 1; $i <= count($product_data['objects'][0]['images']); $i++) {
+                                            $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+                                            if ($image_data)
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
+                                if ($image_data) {
+                                    $img = file_get_contents($product_res['p_image_url']);
+                                    if (isset($image_data['mime'])) {
+                                        $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
+                                        $img_name = $product_res['sku'] . '.' . $img_type[1];
+                                    } else {
+                                        $img_name = $product_res['sku'] . 'jpg';
+                                    }
+                                    $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
+                                    $product->field_product_image[LANGUAGE_NONE][0] = array(
+                                        'fid' => $file->fid,
+                                        'filename' => $file->filename,
+                                        'filemime' => $file->filemime,
+                                        'uid' => 1,
+                                        'uri' => $file->uri,
+                                        'status' => 1,
+                                        'display' => 1
+                                    );
                                 }
                             }
+
+                            // Check the price is numeric - if not skip this for now? :/
+                            if (is_numeric($product_res['price'])) {
+                                $product->commerce_price[LANGUAGE_NONE][0] = array(
+                                    'amount' => $product_res['price'],
+                                    'currency_code' => $product_res['currency_code'],
+                                );
+                            } 
+                            $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_res['product_link'];
+                            commerce_product_save($product);
                         }
-                        
-                        // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
-                        if ($image_data) {
-                            $img = file_get_contents($product_res['p_image_url']);
-                            if (isset($image_data['mime'])) {
-                                $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
-                                $img_name = $product_res['sku'] . '.' . $img_type[1];
-                            } else {
-                                $img_name = $product_res['sku'] . 'jpg';
-                            }
-                            $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
-                            $product->field_product_image[LANGUAGE_NONE][0] = array(
-                                'fid' => $file->fid,
-                                'filename' => $file->filename,
-                                'filemime' => $file->filemime,
-                                'uid' => 1,
-                                'uri' => $file->uri,
-                                'status' => 1,
-                                'display' => 1
-                            );
+
+                        //check wishlist item existed or not
+                        $wishlist_item_id_res = '';
+                        $check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
+
+                        foreach($check_wishlist_item AS $res_wishlist_item){
+                                    $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
+                        } 
+                                //create a new wishlist item if it does not exist
+                        if (empty($wishlist_item_id_res)) {
+                        // Load the users wishlist
+                        $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                        // Create the wishlist item.
+                        $values['user'] = $uid;
+                        $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                        $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                        $wiw->field_commerce_produc_ref = $product->product_id;
+                        $wiw->field_status = 'available';
+                        $wiw->save();
+                        // Add our wishlist item reference to the existing references.
+                        $current_items = $wlw->field_wishlist_items->value();
+                        if (!$current_items) {
+                            $current_items = array();
                         }
-                    }
-
-                    // Check the price is numeric - if not skip this for now? :/
-                    if (is_numeric($product_res['price'])) {
-                        $product->commerce_price[LANGUAGE_NONE][0] = array(
-                            'amount' => $product_res['price'],
-                            'currency_code' => $product_res['currency_code'],
-                        );
-                    } 
-                    $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_res['product_link'];
-                    commerce_product_save($product);
-                }
-                
-                //check wishlist item existed or not
-                $wishlist_item_id_res = '';
-		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
-                			
-                foreach($check_wishlist_item AS $res_wishlist_item){
-                            $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
-                } 
-                        //create a new wishlist item if it does not exist
-                if (empty($wishlist_item_id_res)) {
-                // Load the users wishlist
-                $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
-
-                // Create the wishlist item.
-                $values['user'] = $uid;
-                $wishlist_item = entity_get_controller('wishlist_item')->create($values);
-
-                $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
-                $wiw->field_commerce_produc_ref = $product->product_id;
-                $wiw->field_status = 'available';
-                $wiw->save();
-                // Add our wishlist item reference to the existing references.
-                $current_items = $wlw->field_wishlist_items->value();
-                if (!$current_items) {
-                    $current_items = array();
-                }
-                $current_items[] = $wiw->value();
-                $wlw->field_wishlist_items = $current_items;
-                $wlw->save();
-                //add site url
-                $site_url = parse_url($amazon_wishlist_url);
-                $country_code = explode('/', $site_url['path']);
-                $country_code = $country_code[1];
-                //check country_code lengh to see if has a country in it. e.g gb
-                if (strlen($country_code) == 2) {
-                    $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
-                } else {
-                    $store_name = 'http://' . $site_url['host'];
-                }
-                //check if store exists to get the id
-                $query = new EntityFieldQuery();
-                $query->entityCondition('entity_type', 'store')
-                        ->propertyCondition('name', $store_name, '=')
-                        ->addMetaData('account', user_load(1)); // Run the query as user 1.
-                $result = $query->execute();
-                //create a new store if it does not exist
-                if (empty($result)) {
-                    //create store entity and save its reference to the new $wishlist_item
-                    $store = entity_create('store', array('type' => 'store'));
-                    $store->name = $store_name;
-                    $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
-                    //load wishlist user object to get its country
-                    $wishlist_user = user_load($uid);
-                    $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
-                    $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
-        //save store
-                    $store->save();
-                    //save store ref id into the wishlist item
-                    $wiw->field_store_ref = $store->store_id;
-                    $wiw->save();
-                } else {
-                    //set store id to existing store
-                    $store_id = key($result['store']);
-                    $wiw->field_store_ref = $store_id;
-                    $wiw->save();
-                }
-            }else{
-                // if wishlist item existed
-                
-                //check wishlist item deleted or not
-                $wishlist_item_id_status_res = '';
-		$check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
-                			
-                foreach($check_wishlist_item_status AS $res_wishlist_item_status){
-                            $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
-                } 
-                        //create a new wishlist item if it does not exist
-                if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
-                // Load the users wishlist
-                    $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
-
-                    // Create the wishlist item.
-                    $values['user'] = $uid;
-                    $wishlist_item = entity_get_controller('wishlist_item')->create($values);
-
-                    $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
-                    $wiw->field_commerce_produc_ref = $product->product_id;
-                    $wiw->field_status = 'available';
-                    $wiw->save();
-                    // Add our wishlist item reference to the existing references.
-                    $current_items = $wlw->field_wishlist_items->value();
-                    if (!$current_items) {
-                        $current_items = array();
-                    }
-                    $current_items[] = $wiw->value();
-                    $wlw->field_wishlist_items = $current_items;
-                    $wlw->save();
-                    //add site url
-                    $site_url = parse_url($amazon_wishlist_url);
-                    $country_code = explode('/', $site_url['path']);
-                    $country_code = $country_code[1];
-                    //check country_code lengh to see if has a country in it. e.g gb
-                    if (strlen($country_code) == 2) {
-                        $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
-                    } else {
-                        $store_name = 'http://' . $site_url['host'];
-                    }
-                    //check if store exists to get the id
-                    $query = new EntityFieldQuery();
-                    $query->entityCondition('entity_type', 'store')
-                            ->propertyCondition('name', $store_name, '=')
-                            ->addMetaData('account', user_load(1)); // Run the query as user 1.
-                    $result = $query->execute();
-                    //create a new store if it does not exist
-                    if (empty($result)) {
-                        //create store entity and save its reference to the new $wishlist_item
-                        $store = entity_create('store', array('type' => 'store'));
-                        $store->name = $store_name;
-                        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
-                        //load wishlist user object to get its country
-                        $wishlist_user = user_load($uid);
-                        $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
-                        $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
-            //save store
-                        $store->save();
-                        //save store ref id into the wishlist item
-                        $wiw->field_store_ref = $store->store_id;
-                        $wiw->save();
-                    } else {
-                        //set store id to existing store
-                        $store_id = key($result['store']);
-                        $wiw->field_store_ref = $store_id;
-                        $wiw->save();
-                    }                    
-                    
-                }                
-
-            }
-        }
-        }
-        
-//        print "<pre>"; print_r($product_array); die('hii');
-    } else { 
-        $k=0;
-        foreach($html->find('div[class="a-spacing-none"] div[class="a-fixed-left-grid-inner"]') as $element){
-                $htmlElement = str_get_html($element->innertext);
-            
-                foreach ($htmlElement->find('div[class="g-itemImage"] a img') as $article11) {
-                    $p_image_url = $article11->src; 
-                }
-                foreach ($htmlElement->find('div[class="g-item-details"] h5 a[class="a-link-normal"]') as $article) {
-                    $p_title_l = $article->innertext; 
-                    $titleLength = strlen($p_title_l); 
-                    if($titleLength > 196){
-                        $p_title = substr($p_title_l, 0, 196).'...';    
-                    }else{
-                        $p_title = $p_title_l;         
-                    }
-                    $product_link = 'http://www.amazon.com'.$article->href;
-                    $title_link = $article->href;
-                    $get_sku = explode('/', $title_link);
-                    $sku = 'amazon_'.$get_sku[2]; 
-                }
-                foreach ($htmlElement->find('div[class="g-item-details"] div[class="price-section"] span[class="a-size-base"]') as $article1) {
-                      $p_price = $article1->innertext; 
-                      $price = str_replace('-', '', $p_price);
-                      $price = str_replace(' ', '', $price);
-                      $price = str_replace('.', '', $price);
-                      $price = str_replace('$', '', $price);
-                      $check_for_usd =  strpos($p_price, "$");
-                      $check_for_gbp =  strpos($p_price, "£");
-                      $check_for_eur =  strpos($p_price, "€");
-                      if($check_for_usd !== false){
-                           $currency_code = 'USD';
-                      }else if($check_for_gbp !== false){
-                           $currency_code = 'GBP';
-                      }else if($check_for_eur !== false){
-                           $currency_code = 'EUR';
-                      }else{
-                           $currency_code = 'AUD';
-                      }
-                }
-                $product_array[$k]['p_image_url'] = $p_image_url;
-                $product_array[$k]['p_title'] = $p_title;
-                $product_array[$k]['sku'] = $sku;
-                $product_array[$k]['price'] = $price;
-                $product_array[$k]['currency_code'] = $currency_code;
-                $product_array[$k]['product_link'] = $product_link;
-                $k++;                       
-            }
-//        print "<pre>"; print_r($product_array); die();
-        if(isset($product_array) && count($product_array) > 0){
-        foreach($product_array AS $product_res){
-                $product = commerce_product_load_by_sku($product_res['sku']);
-                if (empty($product)) {
-                    // Build the product
-                    $product = commerce_product_new('product');
-                    $product->sku = $product_res['sku'];
-                    $product->title = $product_res['p_title'];
-                    $product->language = LANGUAGE_NONE;
-                    $product->uid = 1;
-
-                    // image stuff - check to see if it does exists..
-                    $i = 0;
-
-                    if (isset($product_res['p_image_url']) && $product_res['p_image_url'] != '') {
-                        // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
-                        $product_url = $product_res['p_image_url'];
-                        $http_exists = strpos($product_url, 'http:');
-                        //review this!!!
-                        if ($http_exists === 0) {
-                            $image_data = file_get_contents($product_url);
+                        $current_items[] = $wiw->value();
+                        $wlw->field_wishlist_items = $current_items;
+                        $wlw->save();
+                        //add site url
+                        $site_url = parse_url($amazon_wishlist_url);
+                        $country_code = explode('/', $site_url['path']);
+                        $country_code = $country_code[1];
+                        //check country_code lengh to see if has a country in it. e.g gb
+                        if (strlen($country_code) == 2) {
+                            $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
                         } else {
-                            $image_data = '';
+                            $store_name = 'http://' . $site_url['host'];
                         }
-                        
-                        if (!empty($image_data)) {
-                            // Check size of the array - looks like we need another image..
-                            if (count($product_data['objects'][0]['images']) > 1) {
-                                // Break when we have a valid image
-                                for ($i = 1; $i <= count($product_data['objects'][0]['images']); $i++) {
-                                    $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
-                                    if ($image_data)
-                                        break;
+                        //check if store exists to get the id
+                        $query = new EntityFieldQuery();
+                        $query->entityCondition('entity_type', 'store')
+                                ->propertyCondition('name', $store_name, '=')
+                                ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                        $result = $query->execute();
+                        //create a new store if it does not exist
+                        if (empty($result)) {
+                            //create store entity and save its reference to the new $wishlist_item
+                            $store = entity_create('store', array('type' => 'store'));
+                            $store->name = $store_name;
+                            $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                            //load wishlist user object to get its country
+                            $wishlist_user = user_load($uid);
+                            $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                            $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+                //save store
+                            $store->save();
+                            //save store ref id into the wishlist item
+                            $wiw->field_store_ref = $store->store_id;
+                            $wiw->save();
+                        } else {
+                            //set store id to existing store
+                            $store_id = key($result['store']);
+                            $wiw->field_store_ref = $store_id;
+                            $wiw->save();
+                        }
+                    }else{
+                        // if wishlist item existed
+
+                        //check wishlist item deleted or not
+                        $wishlist_item_id_status_res = '';
+                        $check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
+
+                        foreach($check_wishlist_item_status AS $res_wishlist_item_status){
+                                    $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
+                        } 
+                                //create a new wishlist item if it does not exist
+                        if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
+                        // Load the users wishlist
+                            $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                            // Create the wishlist item.
+                            $values['user'] = $uid;
+                            $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                            $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                            $wiw->field_commerce_produc_ref = $product->product_id;
+                            $wiw->field_status = 'available';
+                            $wiw->save();
+                            // Add our wishlist item reference to the existing references.
+                            $current_items = $wlw->field_wishlist_items->value();
+                            if (!$current_items) {
+                                $current_items = array();
+                            }
+                            $current_items[] = $wiw->value();
+                            $wlw->field_wishlist_items = $current_items;
+                            $wlw->save();
+                            //add site url
+                            $site_url = parse_url($amazon_wishlist_url);
+                            $country_code = explode('/', $site_url['path']);
+                            $country_code = $country_code[1];
+                            //check country_code lengh to see if has a country in it. e.g gb
+                            if (strlen($country_code) == 2) {
+                                $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+                            } else {
+                                $store_name = 'http://' . $site_url['host'];
+                            }
+                            //check if store exists to get the id
+                            $query = new EntityFieldQuery();
+                            $query->entityCondition('entity_type', 'store')
+                                    ->propertyCondition('name', $store_name, '=')
+                                    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                            $result = $query->execute();
+                            //create a new store if it does not exist
+                            if (empty($result)) {
+                                //create store entity and save its reference to the new $wishlist_item
+                                $store = entity_create('store', array('type' => 'store'));
+                                $store->name = $store_name;
+                                $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                                //load wishlist user object to get its country
+                                $wishlist_user = user_load($uid);
+                                $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                                $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+                    //save store
+                                $store->save();
+                                //save store ref id into the wishlist item
+                                $wiw->field_store_ref = $store->store_id;
+                                $wiw->save();
+                            } else {
+                                //set store id to existing store
+                                $store_id = key($result['store']);
+                                $wiw->field_store_ref = $store_id;
+                                $wiw->save();
+                            }                    
+
+                        }                
+
+                    }
+                }
+                }
+
+        //        print "<pre>"; print_r($product_array); die('hii');
+            } else { 
+                $k=0;
+                foreach($html->find('div[class="a-spacing-none"] div[class="a-fixed-left-grid-inner"]') as $element){
+                        $htmlElement = str_get_html($element->innertext);
+
+                        foreach ($htmlElement->find('div[class="g-itemImage"] a img') as $article11) {
+                            $p_image_url = $article11->src; 
+                        }
+                        foreach ($htmlElement->find('div[class="g-item-details"] h5 a[class="a-link-normal"]') as $article) {
+                            $p_title_l = $article->innertext; 
+                            $titleLength = strlen($p_title_l); 
+                            if($titleLength > 196){
+                                $p_title = substr($p_title_l, 0, 196).'...'; 
+                                $p_title = str_replace('&#8203;', ',', $p_title);
+                                $p_title = wordwrap($p_title, 20, "\n", true);
+                            }else{
+                                $p_title = $p_title_l; 
+                                $p_title = str_replace('&#8203;', ',', $p_title);
+                                $p_title = wordwrap($p_title, 20, "\n", true);
+                            }
+                            $product_link = 'http://www.amazon.com'.$article->href;
+                            $title_link = $article->href;
+                            $get_sku = explode('/', $title_link);
+                            $sku = 'amazon_'.$get_sku[2]; 
+                        }
+                        foreach ($htmlElement->find('div[class="g-item-details"] div[class="price-section"] span[class="a-size-base"]') as $article1) {
+                              $p_price = $article1->innertext; 
+                              $price = str_replace('-', '', $p_price);
+                              $price = str_replace(' ', '', $price);
+                              $price = str_replace('.', '', $price);
+                              $price = str_replace('$', '', $price);
+                              $check_for_usd =  strpos($p_price, "$");
+                              $check_for_gbp =  strpos($p_price, "£");
+                              $check_for_eur =  strpos($p_price, "€");
+                              if($check_for_usd !== false){
+                                   $currency_code = 'USD';
+                              }else if($check_for_gbp !== false){
+                                   $currency_code = 'GBP';
+                              }else if($check_for_eur !== false){
+                                   $currency_code = 'EUR';
+                              }else{
+                                   $currency_code = 'AUD';
+                              }
+                        }
+                        $product_array[$k]['p_image_url'] = $p_image_url;
+                        $product_array[$k]['p_title'] = $p_title;
+                        $product_array[$k]['sku'] = $sku;
+                        $product_array[$k]['price'] = $price;
+                        $product_array[$k]['currency_code'] = $currency_code;
+                        $product_array[$k]['product_link'] = $product_link;
+                        $k++;                       
+                    }
+        //        print "<pre>"; print_r($product_array); die();
+                if(isset($product_array) && count($product_array) > 0){
+                foreach($product_array AS $product_res){
+                        $product = commerce_product_load_by_sku($product_res['sku']);
+                        if (empty($product)) {
+                            // Build the product
+                            $product = commerce_product_new('product');
+                            $product->sku = $product_res['sku'];
+                            $product->title = $product_res['p_title'];
+                            $product->language = LANGUAGE_NONE;
+                            $product->uid = 1;
+
+                            // image stuff - check to see if it does exists..
+                            $i = 0;
+
+                            if (isset($product_res['p_image_url']) && $product_res['p_image_url'] != '') {
+                                // Check if the first image - is actually a valid image.  Sometimes with diffbot, it just give a plain url - no image..
+                                $product_url = $product_res['p_image_url'];
+                                $http_exists = strpos($product_url, 'http:');
+                                //review this!!!
+                                if ($http_exists === 0) {
+                                    $image_data = file_get_contents($product_url);
+                                } else {
+                                    $image_data = '';
+                                }
+
+                                if (!empty($image_data)) {
+                                    // Check size of the array - looks like we need another image..
+                                    if (count($product_data['objects'][0]['images']) > 1) {
+                                        // Break when we have a valid image
+                                        for ($i = 1; $i <= count($product_data['objects'][0]['images']); $i++) {
+                                            $image_data = getimagesize($product_data['objects'][0]['images'][$i]['url']);
+                                            if ($image_data)
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
+                                if ($image_data) {
+                                    $img = file_get_contents($product_res['p_image_url']);
+                                    if (isset($image_data['mime'])) {
+                                        $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
+                                        $img_name = $product_res['sku'] . '.' . $img_type[1];
+                                    } else {
+                                        $img_name = $product_res['sku'] . 'jpg';
+                                    }
+                                    $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
+                                    $product->field_product_image[LANGUAGE_NONE][0] = array(
+                                        'fid' => $file->fid,
+                                        'filename' => $file->filename,
+                                        'filemime' => $file->filemime,
+                                        'uid' => 1,
+                                        'uri' => $file->uri,
+                                        'status' => 1,
+                                        'display' => 1
+                                    );
                                 }
                             }
+
+                            // Check the price is numeric - if not skip this for now? :/
+                            if (is_numeric($product_res['price'])) {
+                                $product->commerce_price[LANGUAGE_NONE][0] = array(
+                                    'amount' => $product_res['price'],
+                                    'currency_code' => $product_res['currency_code'],
+                                );
+                            } 
+                            $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_res['product_link'];
+                            commerce_product_save($product);
                         }
-                        
-                        // If there is actually an image available, proceed to add this to the product - else, add a default? Place holder?
-                        if ($image_data) {
-                            $img = file_get_contents($product_res['p_image_url']);
-                            if (isset($image_data['mime'])) {
-                                $img_type = explode('/', $image_data['mime']); // [1] will give us the mime type
-                                $img_name = $product_res['sku'] . '.' . $img_type[1];
-                            } else {
-                                $img_name = $product_res['sku'] . 'jpg';
+                        //check wishlist item existed or not
+                        $wishlist_item_id_res = '';
+                        $check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
+
+                        foreach($check_wishlist_item AS $res_wishlist_item){
+                                    $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
+                        } 
+                                //create a new wishlist item if it does not exist
+                        if (empty($wishlist_item_id_res)) {
+
+                        // Load the users wishlist
+                        $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                        // Create the wishlist item.
+                        $values['user'] = $uid;
+                        $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                        $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                        $wiw->field_commerce_produc_ref = $product->product_id;
+                        $wiw->field_status = 'available';
+                        $wiw->save();
+                        // Add our wishlist item reference to the existing references.
+                        $current_items = $wlw->field_wishlist_items->value();
+                        if (!$current_items) {
+                            $current_items = array();
+                        }
+                        $current_items[] = $wiw->value();
+                        $wlw->field_wishlist_items = $current_items;
+                        $wlw->save();
+                        //add site url
+                        $site_url = parse_url($amazon_wishlist_url);
+                        $country_code = explode('/', $site_url['path']);
+                        $country_code = $country_code[1];
+                        //check country_code lengh to see if has a country in it. e.g gb
+                        if (strlen($country_code) == 2) {
+                            $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+                        } else {
+                            $store_name = 'http://' . $site_url['host'];
+                        }
+                        //check if store exists to get the id
+                        $query = new EntityFieldQuery();
+                        $query->entityCondition('entity_type', 'store')
+                                ->propertyCondition('name', $store_name, '=')
+                                ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                        $result = $query->execute();
+                        //create a new store if it does not exist
+                        if (empty($result)) {
+                            //create store entity and save its reference to the new $wishlist_item
+                            $store = entity_create('store', array('type' => 'store'));
+                            $store->name = $store_name;
+                            $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                            //load wishlist user object to get its country
+                            $wishlist_user = user_load($uid);
+                            $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                            $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+                //save store
+                            $store->save();
+                            //save store ref id into the wishlist item
+                            $wiw->field_store_ref = $store->store_id;
+                            $wiw->save();
+                        } else {
+                            //set store id to existing store
+                            $store_id = key($result['store']);
+                            $wiw->field_store_ref = $store_id;
+                            $wiw->save();
+                        }
+                    }else{
+                                        //check wishlist item deleted or not
+                        $wishlist_item_id_status_res = '';
+                        $check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
+
+                        foreach($check_wishlist_item_status AS $res_wishlist_item_status){
+                                    $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
+                        } 
+                                //create a new wishlist item if it does not exist
+                        if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
+                        // Load the users wishlist
+                            $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
+
+                            // Create the wishlist item.
+                            $values['user'] = $uid;
+                            $wishlist_item = entity_get_controller('wishlist_item')->create($values);
+
+                            $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
+                            $wiw->field_commerce_produc_ref = $product->product_id;
+                            $wiw->field_status = 'available';
+                            $wiw->save();
+                            // Add our wishlist item reference to the existing references.
+                            $current_items = $wlw->field_wishlist_items->value();
+                            if (!$current_items) {
+                                $current_items = array();
                             }
-                            $file = file_save_data($img, 'public://' . $img_name, FILE_EXISTS_RENAME);
-                            $product->field_product_image[LANGUAGE_NONE][0] = array(
-                                'fid' => $file->fid,
-                                'filename' => $file->filename,
-                                'filemime' => $file->filemime,
-                                'uid' => 1,
-                                'uri' => $file->uri,
-                                'status' => 1,
-                                'display' => 1
-                            );
+                            $current_items[] = $wiw->value();
+                            $wlw->field_wishlist_items = $current_items;
+                            $wlw->save();
+                            //add site url
+                            $site_url = parse_url($amazon_wishlist_url);
+                            $country_code = explode('/', $site_url['path']);
+                            $country_code = $country_code[1];
+                            //check country_code lengh to see if has a country in it. e.g gb
+                            if (strlen($country_code) == 2) {
+                                $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
+                            } else {
+                                $store_name = 'http://' . $site_url['host'];
+                            }
+                            //check if store exists to get the id
+                            $query = new EntityFieldQuery();
+                            $query->entityCondition('entity_type', 'store')
+                                    ->propertyCondition('name', $store_name, '=')
+                                    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+                            $result = $query->execute();
+                            //create a new store if it does not exist
+                            if (empty($result)) {
+                                //create store entity and save its reference to the new $wishlist_item
+                                $store = entity_create('store', array('type' => 'store'));
+                                $store->name = $store_name;
+                                $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
+                                //load wishlist user object to get its country
+                                $wishlist_user = user_load($uid);
+                                $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
+                                $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
+                    //save store
+                                $store->save();
+                                //save store ref id into the wishlist item
+                                $wiw->field_store_ref = $store->store_id;
+                                $wiw->save();
+                            } else {
+                                //set store id to existing store
+                                $store_id = key($result['store']);
+                                $wiw->field_store_ref = $store_id;
+                                $wiw->save();
+                            }                    
+
                         }
+
                     }
-
-                    // Check the price is numeric - if not skip this for now? :/
-                    if (is_numeric($product_res['price'])) {
-                        $product->commerce_price[LANGUAGE_NONE][0] = array(
-                            'amount' => $product_res['price'],
-                            'currency_code' => $product_res['currency_code'],
-                        );
-                    } 
-                    $product->field_product_url[LANGUAGE_NONE][0]['value'] = $product_res['product_link'];
-                    commerce_product_save($product);
                 }
-                //check wishlist item existed or not
-                $wishlist_item_id_res = '';
-		$check_wishlist_item = db_query("SELECT w.wishlist_item_id FROM wishlist_item AS w LEFT JOIN field_data_field_commerce_produc_ref AS rf ON rf.entity_id = w.wishlist_item_id WHERE rf.field_commerce_produc_ref_product_id =".$product->product_id." and w.uid=".$uid);
-                			
-                foreach($check_wishlist_item AS $res_wishlist_item){
-                            $wishlist_item_id_res = $res_wishlist_item->wishlist_item_id;                                 
-                } 
-                        //create a new wishlist item if it does not exist
-                if (empty($wishlist_item_id_res)) {
-
-                // Load the users wishlist
-                $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
-
-                // Create the wishlist item.
-                $values['user'] = $uid;
-                $wishlist_item = entity_get_controller('wishlist_item')->create($values);
-
-                $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
-                $wiw->field_commerce_produc_ref = $product->product_id;
-                $wiw->field_status = 'available';
-                $wiw->save();
-                // Add our wishlist item reference to the existing references.
-                $current_items = $wlw->field_wishlist_items->value();
-                if (!$current_items) {
-                    $current_items = array();
-                }
-                $current_items[] = $wiw->value();
-                $wlw->field_wishlist_items = $current_items;
-                $wlw->save();
-                //add site url
-                $site_url = parse_url($amazon_wishlist_url);
-                $country_code = explode('/', $site_url['path']);
-                $country_code = $country_code[1];
-                //check country_code lengh to see if has a country in it. e.g gb
-                if (strlen($country_code) == 2) {
-                    $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
-                } else {
-                    $store_name = 'http://' . $site_url['host'];
-                }
-                //check if store exists to get the id
-                $query = new EntityFieldQuery();
-                $query->entityCondition('entity_type', 'store')
-                        ->propertyCondition('name', $store_name, '=')
-                        ->addMetaData('account', user_load(1)); // Run the query as user 1.
-                $result = $query->execute();
-                //create a new store if it does not exist
-                if (empty($result)) {
-                    //create store entity and save its reference to the new $wishlist_item
-                    $store = entity_create('store', array('type' => 'store'));
-                    $store->name = $store_name;
-                    $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
-                    //load wishlist user object to get its country
-                    $wishlist_user = user_load($uid);
-                    $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
-                    $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
-        //save store
-                    $store->save();
-                    //save store ref id into the wishlist item
-                    $wiw->field_store_ref = $store->store_id;
-                    $wiw->save();
-                } else {
-                    //set store id to existing store
-                    $store_id = key($result['store']);
-                    $wiw->field_store_ref = $store_id;
-                    $wiw->save();
-                }
-            }else{
-                                //check wishlist item deleted or not
-                $wishlist_item_id_status_res = '';
-		$check_wishlist_item_status = db_query("SELECT field_delete_wishlist_item_value FROM field_data_field_delete_wishlist_item WHERE entity_id =".$wishlist_item_id_res);
-                			
-                foreach($check_wishlist_item_status AS $res_wishlist_item_status){
-                            $wishlist_item_id_status_res = $res_wishlist_item_status->field_delete_wishlist_item_value;                                 
-                } 
-                        //create a new wishlist item if it does not exist
-                if ($wishlist_item_id_status_res != '' && $wishlist_item_id_status_res==1) {
-                // Load the users wishlist
-                    $wlw = entity_metadata_wrapper('wishlist', $wishlist_id);
-
-                    // Create the wishlist item.
-                    $values['user'] = $uid;
-                    $wishlist_item = entity_get_controller('wishlist_item')->create($values);
-
-                    $wiw = entity_metadata_wrapper('wishlist_item', $wishlist_item);
-                    $wiw->field_commerce_produc_ref = $product->product_id;
-                    $wiw->field_status = 'available';
-                    $wiw->save();
-                    // Add our wishlist item reference to the existing references.
-                    $current_items = $wlw->field_wishlist_items->value();
-                    if (!$current_items) {
-                        $current_items = array();
-                    }
-                    $current_items[] = $wiw->value();
-                    $wlw->field_wishlist_items = $current_items;
-                    $wlw->save();
-                    //add site url
-                    $site_url = parse_url($amazon_wishlist_url);
-                    $country_code = explode('/', $site_url['path']);
-                    $country_code = $country_code[1];
-                    //check country_code lengh to see if has a country in it. e.g gb
-                    if (strlen($country_code) == 2) {
-                        $store_name = 'http://' . $site_url['host'] . '/' . $country_code;
-                    } else {
-                        $store_name = 'http://' . $site_url['host'];
-                    }
-                    //check if store exists to get the id
-                    $query = new EntityFieldQuery();
-                    $query->entityCondition('entity_type', 'store')
-                            ->propertyCondition('name', $store_name, '=')
-                            ->addMetaData('account', user_load(1)); // Run the query as user 1.
-                    $result = $query->execute();
-                    //create a new store if it does not exist
-                    if (empty($result)) {
-                        //create store entity and save its reference to the new $wishlist_item
-                        $store = entity_create('store', array('type' => 'store'));
-                        $store->name = $store_name;
-                        $store->field_store_url = array(LANGUAGE_NONE => array(0 => array('value' => $store_name)));
-                        //load wishlist user object to get its country
-                        $wishlist_user = user_load($uid);
-                        $wishlist_user_country = $wishlist_user->field_delivery_address[LANGUAGE_NONE][0]['country'];
-                        $store->field_store_country = array(LANGUAGE_NONE => array(0 => array('value' => $wishlist_user_country)));
-            //save store
-                        $store->save();
-                        //save store ref id into the wishlist item
-                        $wiw->field_store_ref = $store->store_id;
-                        $wiw->save();
-                    } else {
-                        //set store id to existing store
-                        $store_id = key($result['store']);
-                        $wiw->field_store_ref = $store_id;
-                        $wiw->save();
-                    }                    
-                    
-                }
-
+                }            
             }
+        } else {
+            drupal_set_message(t('No Product found, Might be your list is in private mode.'), 'error', FALSE);
+
         }
-        }            
-    }
-} else {
-    drupal_set_message(t('No Product found, Might be your list is in private mode.'), 'error', FALSE);
-    
-}    
+}else{
+    drupal_set_message(t('The url you submitted is not compatible with the DeliveryCode system. The items could not be added.'), 'error', FALSE);
+}
 
 }
 
