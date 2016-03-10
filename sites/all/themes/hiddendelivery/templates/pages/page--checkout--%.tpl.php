@@ -77,33 +77,33 @@
 global $base_url;
 global $user;
 /***  Changes made due to stripe custom payment method *******/
-if($page['content']['system_main']['#form_id'] == 'commerce_checkout_form_payment' && $page['content']['system_main']['#id'] == 'commerce-stripe-redirect-form'){
-    $order_id = arg(1);
-    $settings = _commerce_stripe_load_settings();
-    $order    = commerce_order_load($order_id);
-    
-    if($order->commerce_order_total['und'][0]['currency_code'] == 'USD'){
-        $currency = '$';
-    }else if($order->commerce_order_total['und'][0]['currency_code'] == 'EUR'){
-        $currency = '€';     
-    }else if($order->commerce_order_total['und'][0]['currency_code'] == 'GBP'){
-        $currency = '£';     
-    }
-    $desc_amount = $currency.($order->commerce_order_total['und'][0]['amount']/100);
-
-    $page['content']['system_main']['help']['#markup'] = 'Use the button below to complete your payment process.';
-    $page['content']['system_main']['#suffix']= '<form action="'.$base_url.'/stripe/'.$order->order_id.'/payment_status" method="POST"><script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-email="'.$order->mail.'" '
-      . 'data-key="'.$settings['public_key'].'" data-label="Pay '.$desc_amount.'" '
-      . 'data-image="'.$base_url.'/sites/all/themes/hiddendelivery/images/logo_dc.png" data-name="deliverycode.com" data-bitcoin="true" '
-            . 'data-zip-code="true" data-billing-address="true" '
-      . 'data-description="('.$desc_amount.')" data-amount="'.$order->commerce_order_total['und'][0]['amount'].'" '
-      . 'data-currency="'.$order->commerce_order_total['und'][0]['currency_code'].'"></script></form>';
-}
-if($page['content']['system_main']['#form_id'] == 'commerce_checkout_form_complete'){
-    $order_id = arg(1);
-    $order    = commerce_order_load($order_id);
-    $page['content']['system_main']['checkout_completion_message']['message']['#markup'] = 'Your order has been completed. Your order number is '.$order_id.'. <a href="'.$base_url.'">Return to the front page</a>.';
-}
+//if($page['content']['system_main']['#form_id'] == 'commerce_checkout_form_payment' && $page['content']['system_main']['#id'] == 'commerce-stripe-redirect-form'){
+//    $order_id = arg(1);
+//    $settings = _commerce_stripe_load_settings();
+//    $order    = commerce_order_load($order_id);
+//    
+//    if($order->commerce_order_total['und'][0]['currency_code'] == 'USD'){
+//        $currency = '$';
+//    }else if($order->commerce_order_total['und'][0]['currency_code'] == 'EUR'){
+//        $currency = '€';     
+//    }else if($order->commerce_order_total['und'][0]['currency_code'] == 'GBP'){
+//        $currency = '£';     
+//    }
+//    $desc_amount = $currency.($order->commerce_order_total['und'][0]['amount']/100);
+//
+//    $page['content']['system_main']['help']['#markup'] = 'Use the button below to complete your payment process.';
+//    $page['content']['system_main']['#suffix']= '<form action="'.$base_url.'/stripe/'.$order->order_id.'/payment_status" method="POST"><script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-email="'.$order->mail.'" '
+//      . 'data-key="'.$settings['public_key'].'" data-label="Pay '.$desc_amount.'" '
+//      . 'data-image="'.$base_url.'/sites/all/themes/hiddendelivery/images/logo_dc.png" data-name="deliverycode.com" data-bitcoin="true" '
+//            . 'data-zip-code="true" data-billing-address="true" '
+//      . 'data-description="('.$desc_amount.')" data-amount="'.$order->commerce_order_total['und'][0]['amount'].'" '
+//      . 'data-currency="'.$order->commerce_order_total['und'][0]['currency_code'].'"></script></form>';
+//}
+//if($page['content']['system_main']['#form_id'] == 'commerce_checkout_form_complete'){
+//    $order_id = arg(1);
+//    $order    = commerce_order_load($order_id);
+//    $page['content']['system_main']['checkout_completion_message']['message']['#markup'] = 'Your order has been completed. Your order number is '.$order_id.'. <a href="'.$base_url.'">Return to the front page</a>.';
+//}
 /***** End of stripe custom ******/
 $select_table_sizes = db_query('SELECT table_name AS "Tables", 
   round(((data_length + index_length) / 1024 / 1024), 2) "size_in_MB" 
@@ -231,12 +231,12 @@ if($event_node_id != ''){
           </div>
       
             <div class="header-right-side">
-                <div class="header-search-block">
+                <div class="header-search-block" style="min-height: 64px;">
                     <?php
 //                           $block = module_invoke('search', 'block_view');
 //                           print render($block);  
                              $block_page_1 = module_invoke('views', 'block_view', '-exp-new_wishlists-page_1');
-                             print render($block_page_1['content']);                    
+                             //print render($block_page_1['content']);                    
                     ?>
                 </div>
                <?php
