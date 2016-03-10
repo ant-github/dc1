@@ -1171,7 +1171,7 @@ a.twitter-share-button{
   display:block;
 }
 #commerce-checkout-form-review #edit-commerce-payment-payment-method .form-item-commerce-payment-payment-method label::after {
-  background: rgba(0, 0, 0, 0) url("/delivery_code/sites/all/themes/hiddendelivery/images/HomePage/payment-cards.png") no-repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) url("../images/HomePage/payment-cards.png") no-repeat scroll 0 0;
   content: "";
   display: inline-block;
   float: right;
@@ -1194,11 +1194,11 @@ a.twitter-share-button{
   color:#000000;
 }
 #commerce-checkout-form-review input[type="text"]{
-	background: rgba(0, 0, 0, 0) url("/delivery_code/sites/all/themes/hiddendelivery/images/HomePage/icon-card.png") no-repeat scroll 0 50%;
+	background: rgba(0, 0, 0, 0) url("../images/HomePage/icon-card.png") no-repeat scroll 0 50%;
 	padding-left:42px;
 }
 #commerce-checkout-form-review select{
-	background: rgba(0, 0, 0, 0) url("/delivery_code/sites/all/themes/hiddendelivery/images/HomePage/icon-select.png") no-repeat scroll 0 50%;
+	background: rgba(0, 0, 0, 0) url("../images/HomePage/icon-select.png") no-repeat scroll 0 50%;
 	padding-left:42px;
 }
 #commerce-checkout-form-review .form-item-commerce-payment-payment-details-credit-card-exp-year select{
