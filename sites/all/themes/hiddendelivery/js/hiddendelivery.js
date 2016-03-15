@@ -28,8 +28,8 @@ if($('.page-checkout-review').length ){
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .first-name').attr("placeholder", "First name *");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .last-name').attr("placeholder", "Last name *");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-thoroughfare').attr("placeholder", "Address 1 *");
-    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-premise').attr("placeholder", "Address 2");
-    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-locality').attr("placeholder", "Town/City *");
+//    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-premise').attr("placeholder", "Address 2");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-locality').attr("placeholder", "Town / City *");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address input.state.commerce-stripe-administrative-area').attr("placeholder", "County / State");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-postal-code').attr("placeholder", "Postcode / ZIP Code *");
 
