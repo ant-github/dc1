@@ -36,7 +36,7 @@ if($('.page-checkout-review').length ){
     $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:selected").each(function () {
            $(this).removeAttr('selected'); 
     });     
-    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address select.state.commerce-stripe-administrative-area option:selected").text('State *');
+    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address select.state.commerce-stripe-administrative-area option:selected").text('County / State *');
     $('<option value="" selected="selected">Country *</option>').insertBefore('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:first-child');            
 
     if($('.page-checkout-review #commerce-checkout-form-review .messages.error').length){
