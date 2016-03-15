@@ -15,15 +15,15 @@ if($('.page-checkout-review').length ){
     $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-number').attr("placeholder", "Your card number *");
     $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-code').attr("placeholder", "Security code / CVC *");
     
-    $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:selected").each(function () {
-           $(this).removeAttr('selected'); 
-    });
-    $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:selected").each(function () {
-           $(this).removeAttr('selected'); 
-    });               
-    $('<option value="00" selected="selected">MM *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:first-child');
-    $('<option value="00" selected="selected">YY *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:first-child');
-    
+//    $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:selected").each(function () {
+//           $(this).removeAttr('selected'); 
+//    });
+//    $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:selected").each(function () {
+//           $(this).removeAttr('selected'); 
+//    });               
+//    $('<option value="00" selected="selected">MM *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:first-child');
+//    $('<option value="00" selected="selected">YY *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:first-child');
+//    
     
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .first-name').attr("placeholder", "First name *");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .last-name').attr("placeholder", "Last name *");
@@ -33,11 +33,11 @@ if($('.page-checkout-review').length ){
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address input.state.commerce-stripe-administrative-area').attr("placeholder", "County / State");
     $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-postal-code').attr("placeholder", "Postcode / ZIP Code *");
 
-    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:selected").each(function () {
-           $(this).removeAttr('selected'); 
-    });     
+//    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:selected").each(function () {
+//           $(this).removeAttr('selected'); 
+//    });     
     $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address select.state.commerce-stripe-administrative-area option:selected").text('County / State *');
-    $('<option value="" selected="selected">Country *</option>').insertBefore('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:first-child');            
+//    $('<option value="" selected="selected">Country *</option>').insertBefore('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:first-child');            
 
     if($('.page-checkout-review #commerce-checkout-form-review .messages.error').length){
         $( '<div id="payment-details-heading">Enter Your Card Details</div>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #payment-details" );
