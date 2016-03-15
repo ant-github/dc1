@@ -13,6 +13,23 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ 
+ #edit-commerce-payment{
+     margin-bottom: 0px;
+ } 
+ #edit-customer-profile-billing{
+     margin-bottom: 0px;
+ } 
+ #edit-customer-profile-billing #edit-customer-profile-billing-commerce-customer-address-und-0{
+     margin-bottom: 0px;
+ } 
+ #edit-customer-profile-billing #edit-customer-profile-billing-commerce-customer-address{
+     margin-bottom: 0px;
+ } 
+ #edit-customer-profile-billing .panel-heading{
+     margin-top: 0px;
+     margin-bottom: 0px;
+ } 
 .page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-heading .panel-title{ 
     background: #00ab94; /* Old browsers */
     background: -moz-linear-gradient(top,  #00ab94 0%, #00ae97 99%, #38cbb8 100%); /* FF3.6-15 */
