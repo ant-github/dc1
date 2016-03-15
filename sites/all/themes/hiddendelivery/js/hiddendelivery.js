@@ -5,27 +5,81 @@ Drupal.behaviors.globalScript = {
  * Payment form desgin changes and hide the review form
  */
 if($('.page-checkout-review').length ){
-    $( '<a href="#" id="edit-continue-to-payment" class="checkout-continue btn btn-default form-submit">Continue to pay</a>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue" );        
-    $( '<div id="payment-details-heading">Enter Your Card Details</div>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #payment-details" );        
+         
     var order_total_value = $('.page-checkout-review #commerce-checkout-form-review #edit-checkout-review .view-commerce-cart-summary .view-footer .field-name-commerce-order-total .component-type-commerce-price-formatted-amount .component-total').html();
     $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-heading .panel-title').html(order_total_value);
     $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').html('Pay '+order_total_value);
 
-    $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #edit-commerce-payment-payment-method label').html("Choose Your Credit Card");
+    
     $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-owner').attr("placeholder", "Your name on card");
-    $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-number').attr("placeholder", "Your card number");
-    $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-code').attr("placeholder", "Security code / CVC");
+    $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-number').attr("placeholder", "Your card number *");
+    $('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-code').attr("placeholder", "Security code / CVC *");
+    
     $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:selected").each(function () {
            $(this).removeAttr('selected'); 
     });
     $("#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:selected").each(function () {
            $(this).removeAttr('selected'); 
     });               
-    $('<option value="00" selected="selected">MM</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:first-child');
-    $('<option value="00" selected="selected">YY</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:first-child');
+    $('<option value="00" selected="selected">MM *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-month option:first-child');
+    $('<option value="00" selected="selected">YY *</option>').insertBefore('#commerce-checkout-form-review #edit-commerce-payment-payment-details-credit-card-exp-year option:first-child');
     
+    
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .first-name').attr("placeholder", "First name *");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .last-name').attr("placeholder", "Last name *");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-thoroughfare').attr("placeholder", "Address 1 *");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-premise').attr("placeholder", "Address 2");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-locality').attr("placeholder", "Town/City *");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address input.state.commerce-stripe-administrative-area').attr("placeholder", "County");
+    $('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address .commerce-stripe-postal-code').attr("placeholder", "Postcode / ZIP Code *");
+
+    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:selected").each(function () {
+           $(this).removeAttr('selected'); 
+    });     
+    $("#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address select.state.commerce-stripe-administrative-area option:selected").text('State *');
+    $('<option value="" selected="selected">Country *</option>').insertBefore('#commerce-checkout-form-review #edit-customer-profile-billing-commerce-customer-address-und-0-country option:first-child');            
+
+    if($('.page-checkout-review #commerce-checkout-form-review .messages.error').length){
+        $( '<div id="payment-details-heading">Enter Your Card Details</div>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #payment-details" );
+        $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #edit-commerce-payment-payment-method label').html("Pay with Credit Card");
+        $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing .panel-heading .panel-title').html("Billing Address");        
+            $('.page-checkout-review .page-title-wrapper h1.page-header').html('Payment');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-continue-to-payment').css('display', 'none');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons .button-operator').css('display', 'none');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-back').css('display', 'none');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-checkout-review').css('display', 'none');
+            $('.page-checkout-review #commerce-checkout-form-review .checkout-help').css('display', 'none');      
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('display', 'block');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css('display', 'block');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css('display', 'block');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css('display', 'block');
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('float', 'left');
+            $('.page-checkout-review #commerce-checkout-form-review').css("background", "rgba(0, 0, 0, 0) linear-gradient(to bottom, #00bea4 0%, #00c1a7 30%, #00b29a 100%, #a3e3da 100%) repeat scroll 0 0");
+            $('.page-checkout-review #commerce-checkout-form-review').css("padding-bottom", "10px");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css("background", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css("box-shadow", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("background", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("box-shadow", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-heading').css("margin-top", "0px");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css("background", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css("box-shadow", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions .form-type-checkbox label a').css("color", "#000");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("background", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("box-shadow", "none");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css("background", "#000");
+            $('.page-checkout-review #block-commerce-checkout-progress-indication li.payment').css("color", "#20b29b");
+            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("padding", "0 60px");
+    }
+    if($('.page-checkout-review #commerce-checkout-form-review #edit-continue-to-payment').length){
+        
+    }else{
+        $( '<a href="#" id="edit-continue-to-payment" class="checkout-continue btn btn-default form-submit">Continue to pay</a>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue" );
+    }
 
     $('.page-checkout-review #commerce-checkout-form-review #edit-continue-to-payment').click(function() {
+        $( '<div id="payment-details-heading">Enter Your Card Details</div>' ).insertBefore( ".page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #payment-details" );
+        $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment #edit-commerce-payment-payment-method label').html("Pay with Credit Card");
+        $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing .panel-heading .panel-title').html("Billing Address");
         $('.page-checkout-review .page-title-wrapper h1.page-header').html('Payment');
         $('.page-checkout-review #commerce-checkout-form-review #edit-continue-to-payment').css('display', 'none');
         $('.page-checkout-review #commerce-checkout-form-review #edit-buttons .button-operator').css('display', 'none');
@@ -35,9 +89,12 @@ if($('.page-checkout-review').length ){
         $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('display', 'block');
         $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css('display', 'block');
         $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css('display', 'block');
+        $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css('display', 'block');
         $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('float', 'left');
         $('.page-checkout-review #commerce-checkout-form-review').css("background", "rgba(0, 0, 0, 0) linear-gradient(to bottom, #00bea4 0%, #00c1a7 30%, #00b29a 100%, #a3e3da 100%) repeat scroll 0 0");
         $('.page-checkout-review #commerce-checkout-form-review').css("padding-bottom", "10px");
+        $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css("background", "none");
+        $('.page-checkout-review #commerce-checkout-form-review #edit-customer-profile-billing').css("box-shadow", "none");        
         $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("background", "none");
         $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("box-shadow", "none");
         $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-heading').css("margin-top", "0px");
@@ -51,31 +108,7 @@ if($('.page-checkout-review').length ){
         $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("padding", "0 60px");
     }); 
 
-    if($('.page-checkout-review #commerce-checkout-form-review .messages.error').length){
-            $('.page-checkout-review .page-title-wrapper h1.page-header').html('Payment');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-continue-to-payment').css('display', 'none');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons .button-operator').css('display', 'none');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-back').css('display', 'none');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-checkout-review').css('display', 'none');
-            $('.page-checkout-review #commerce-checkout-form-review .checkout-help').css('display', 'none');      
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('display', 'block');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css('display', 'block');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css('display', 'block');
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css('float', 'left');
-            $('.page-checkout-review #commerce-checkout-form-review').css("background", "rgba(0, 0, 0, 0) linear-gradient(to bottom, #00bea4 0%, #00c1a7 30%, #00b29a 100%, #a3e3da 100%) repeat scroll 0 0");
-            $('.page-checkout-review #commerce-checkout-form-review').css("padding-bottom", "10px");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("background", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment').css("box-shadow", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-heading').css("margin-top", "0px");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css("background", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions').css("box-shadow", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-terms-conditions .form-type-checkbox label a').css("color", "#000");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("background", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("box-shadow", "none");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons #edit-continue').css("background", "#000");
-            $('.page-checkout-review #block-commerce-checkout-progress-indication li.payment').css("color", "#20b29b");
-            $('.page-checkout-review #commerce-checkout-form-review #edit-buttons').css("padding", "0 60px");
-    }
+
 }
 /*
  * End of Payment form desgin and review form
