@@ -39,6 +39,9 @@
 .page-checkout-review #commerce-checkout-form-review #edit-terms-conditions{ 
     padding: 10px 60px; 
 }
+#edit-commerce-payment-payment-method label{
+    cursor: default;
+}
 /*.page-checkout-review #commerce-checkout-form-review #edit-commerce-payment .panel-body{ 
      Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00bea4+0,00c1a7+30,00b29a+100,a3e3da+100 
     background: #00bea4;  Old browsers 
