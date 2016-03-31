@@ -104,7 +104,8 @@ function commerce_stripe_gift_charge($wishlist_id){
       $error = '';
       $success = '';
       try {
-        Stripe::setApiKey($settings['secret_key']);
+//        Stripe::setApiKey($settings['secret_key']);
+        Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');
         if (isset($_POST['stripeToken'])){
             $charge = \Stripe\Charge::create(array(
               "amount" => $amount, // amount in cents, again
@@ -376,7 +377,8 @@ function send_cash_user_bank_account($nid){
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
             try{    
-                Stripe::setApiKey($settings['secret_key']);  
+//                Stripe::setApiKey($settings['secret_key']);  
+                Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');  
                 $check_bal = Balance::retrieve();
                 $current_bal = $check_bal->available[0]->amount; 
                 $merchant_bal = ($current_bal/100); 
@@ -459,7 +461,8 @@ function send_user_bank_details_to_stripe(){
             $user_ip = $_SERVER['REMOTE_ADDR'];  
 
             try{
-                Stripe::setApiKey($settings['secret_key']);   
+//                Stripe::setApiKey($settings['secret_key']);   
+                Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');   
                 
                 $user_email = $user->mail; 
                 
