@@ -23,11 +23,11 @@ if(isset($vars['breadcrumb'])){
     /*
      * Check model's gifts, that model not redeem and change the menu item title, showing the number of pending gifts
      */
-    if(isset($vars['page']['sidebar_first']['menu_block_1']['#content']['3587'])){
+    if(isset($vars['page']['sidebar_first']['menu_block_1']['#content']['3622'])){
 //        print "<pre>"; print_r($vars['page']['sidebar_first']['menu_block_1']['#content']['3587']); die();
         $pending_gifts = db_query("SELECT * FROM field_data_field_model_redeem AS r LEFT JOIN field_data_field_model_id AS m ON m.entity_id = r.entity_id WHERE r.field_model_redeem_value = 0 AND m.field_model_id_value = $user->uid")->rowCount(); 
         if($pending_gifts > 0){
-            $vars['page']['sidebar_first']['menu_block_1']['#content']['3587']['#title'] = 'Gifts (Received) <span>'.$pending_gifts.'</span>';
+            $vars['page']['sidebar_first']['menu_block_1']['#content']['3622']['#title'] = 'Gifts (Received) <span>'.$pending_gifts.'</span>';
         }
     }   
   }
