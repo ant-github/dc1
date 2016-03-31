@@ -31,10 +31,12 @@
 <?php
 global $base_url;
 global $user;
+
 $user_details = user_load($user->uid);
 if(isset($_GET['gift_id'])){
    $nid = $_GET['gift_id'];
    $node = node_load($nid);
+if($user->uid == $node->field_model_id['und'][0]['value']){   
 //   print "<pre>"; print_r($node); die();
    $currency = $node->field_gift_currency['und'][0]['value'];
    if($currency == 'usd'){
@@ -196,6 +198,7 @@ if(isset($_GET['gift_id'])){
 
 </div><?php /* class view */ ?>
 <?php
+}
 }else{
 ?>
 <div class="<?php print $classes; ?>">
