@@ -372,7 +372,7 @@ function send_cash_user_bank_account($nid){
     if(isset($user_fields->field_bank_payout_account_id['und'][0]['value']) && $user_fields->field_bank_payout_account_id['und'][0]['value'] != '')  {   
         $node = node_load($nid);
 //        $currency = $node->field_gift_currency['und'][0]['value'];
-     print   $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value']; print "<br>";
+        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value']; print "<br>";
         $amount = number_format(($amount_get), 2); 
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
@@ -380,8 +380,8 @@ function send_cash_user_bank_account($nid){
 //                Stripe::setApiKey($settings['secret_key']);  
                 Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');  
                 $check_bal = Balance::retrieve();
-                $current_bal = $check_bal->available[0]->amount; print "<br/>";
-                $merchant_bal = ($current_bal/100); die();
+                $current_bal = $check_bal->available[0]->amount; 
+                $merchant_bal = ($current_bal/100); 
 //                if($merchant_bal > $amount_get){
                     $desc = "Transfer for ".$user->mail;
 
