@@ -2165,7 +2165,7 @@ select#userProfileCurrency{
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: #fff url("/delivery_code/sites/all/themes/hiddendelivery/images/icon-select-black.png") no-repeat scroll 89% 50%;
+  background: #fff url("../images/icon-select-black.png") no-repeat scroll 89% 50%;
     border: 0 none;
     border-radius: 6px;
     height: 41px;
@@ -2200,7 +2200,7 @@ select.bank-currency-iban{
 	-webkit-appearance: none;
   	-moz-appearance: none;
   	appearance: none;
-  	background: #fff url("/delivery_code/sites/all/themes/hiddendelivery/images/icon-select-black.png") no-repeat scroll 97% 50%;
+  	background: #fff url("../images/icon-select-black.png") no-repeat scroll 97% 50%;
     border: 0 none;
     border-radius: 6px;
     height: 41px;
