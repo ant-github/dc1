@@ -392,7 +392,7 @@ function send_cash_user_bank_account($nid){
                       "description" => $desc
                     )); 
                 }else{     
-                    drupal_set_message('Some error occured while transferring amount to your bank account. Please try after some time','error');
+                    drupal_set_message('Merchant has low balance to transfer. Please try after some time OR contact to administrator.','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
                 }
             }
@@ -495,9 +495,9 @@ function send_user_bank_details_to_stripe(){
                    
                     $user_stripe_account_id = $newAcc->id;  
                     
-//                    $user_details->field_bank_payout_account_id['und'][0]['value'] = $user_stripe_account_id;
-//                    $user_details->field_stripe_account_country['und'][0]['value'] = $user_details->field_delivery_address['und'][0]['country'];
-//                    user_save($user_details);
+                    $user_details->field_bank_payout_account_id['und'][0]['value'] = $user_stripe_account_id;
+                    $user_details->field_stripe_account_country['und'][0]['value'] = $user_details->field_delivery_address['und'][0]['country'];
+                    user_save($user_details);
                     
                     $account = Account::retrieve($user_stripe_account_id);
                     
@@ -523,7 +523,6 @@ function send_user_bank_details_to_stripe(){
                     $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];
 
                     $account->save();     
-                    print "<pre>"; print_r($account); die();
                     $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
                     $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);
