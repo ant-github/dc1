@@ -174,7 +174,7 @@ function commerce_stripe_gift_charge($wishlist_id){
  */
 
         $key = 'dc_send_a_gift_mail';
-	$to = $user->mail;
+	$to = $user_wishlist->mail;
 	$from = 'DeliveryCode <support@deliverycode.com>';
 	$params = array(
     'body' => '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
