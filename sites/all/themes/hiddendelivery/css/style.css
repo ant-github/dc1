@@ -13,6 +13,12 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ .page-wishlist-3957 .send-a-Gift-button{
+     display: block !Important;
+ }
+ .send-a-Gift-button{
+     display: none;
+ }
  .menu-name-user-menu .model-gift-received span{
     background: #20b29b none repeat scroll 0 0;
     border-radius: 50%;
@@ -37,11 +43,9 @@
     padding: 8px 12px;     
  }
  .bank-account-detail .bank-account-details-text{
-    background: #00b29a none repeat scroll 0 0;
-    color: #fff;
     font-weight: 600;
     margin-bottom: 18px;
-    padding: 5px 10px;     
+    padding: 10px 0px;     
  }
  
  .not-front.logged-in.page-user .tabs--primary.nav-tabs{
