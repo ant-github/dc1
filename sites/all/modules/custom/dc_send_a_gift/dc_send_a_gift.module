@@ -372,7 +372,7 @@ function send_cash_user_bank_account($nid){
     if(isset($user_fields->field_bank_payout_account_id['und'][0]['value']) && $user_fields->field_bank_payout_account_id['und'][0]['value'] != '')  {   
         $node = node_load($nid);
 //        $currency = $node->field_gift_currency['und'][0]['value'];
-        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
+     print   $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value']; print "<br>";
         $amount = number_format(($amount_get), 2); 
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
@@ -380,8 +380,8 @@ function send_cash_user_bank_account($nid){
 //                Stripe::setApiKey($settings['secret_key']);  
                 Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');  
                 $check_bal = Balance::retrieve();
-                $current_bal = $check_bal->available[0]->amount; 
-                $merchant_bal = ($current_bal/100); 
+             print   $current_bal = $check_bal->available[0]->amount; print "<br/>";
+            print    $merchant_bal = ($current_bal/100); die();
                 if($merchant_bal > $amount_get){
                     $desc = "Transfer for ".$user->mail;
 
@@ -495,9 +495,9 @@ function send_user_bank_details_to_stripe(){
                    
                     $user_stripe_account_id = $newAcc->id;  
                     
-                    $user_details->field_bank_payout_account_id['und'][0]['value'] = $user_stripe_account_id;
-                    $user_details->field_stripe_account_country['und'][0]['value'] = $user_details->field_delivery_address['und'][0]['country'];
-                    user_save($user_details);
+//                    $user_details->field_bank_payout_account_id['und'][0]['value'] = $user_stripe_account_id;
+//                    $user_details->field_stripe_account_country['und'][0]['value'] = $user_details->field_delivery_address['und'][0]['country'];
+//                    user_save($user_details);
                     
                     $account = Account::retrieve($user_stripe_account_id);
                     
@@ -522,7 +522,8 @@ function send_user_bank_details_to_stripe(){
                     $account->legal_entity->personal_address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
                     $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];
 
-                    $account->save();                    
+                    $account->save();     
+                    print "<pre>"; print_r($account); die();
                     $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
                     $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);
@@ -545,7 +546,7 @@ function send_user_legel_details_to_stripe(){
     global $user;
     global $base_url;
         $user_details = user_load($user->uid);
-        print "<pre>"; print_r($user_details); die('hii');
+//        print "<pre>"; print_r($user_details); die('hii');
         $settings = _load_payment_settings();
         $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
             $date = date('Y-m-d');
