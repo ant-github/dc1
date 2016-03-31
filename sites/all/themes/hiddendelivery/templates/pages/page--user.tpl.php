@@ -293,6 +293,27 @@ if($event_node_id != ''){
       <a id="main-content"></a>
       <?php print render($title_suffix); ?>
       <?php print $messages; ?>
+    <?php
+    if($user->uid != 0){
+        if($page['content']['system_main']['#theme'] == 'user_profile'){
+            $userDetails = user_load($user->uid);
+    ?>
+    <div class="user-balance-on-profile-page">
+        <div class="gift-balance-user-profile-page-section">
+            <h3 class="profile-header">Gift Voucher Balance</h3> 
+            <div class="gift-balance-user">
+
+            <?php
+              if(isset($userDetails->field_gift_balance_usd['und'][0]['value']) && $userDetails->field_gift_balance_usd['und'][0]['value'] != ''){
+                   echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p class="user-balance">$'.number_format(($userDetails->field_gift_balance_usd['und'][0]['value']), 2).'</p>';
+              }else{
+                    echo "$0";
+              }  
+            ?> 
+            </div>
+        </div> 
+    </div>
+        <?php  } } ?>      
       <?php if (!empty($tabs)): ?>
         <?php print render($tabs); ?>
       <?php endif; ?>

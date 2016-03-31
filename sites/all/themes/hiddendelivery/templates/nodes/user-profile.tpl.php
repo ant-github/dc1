@@ -41,19 +41,7 @@
 <?php print render($user_profile['group_personal_information']);?>
 </div>
 <div class="col-md-6">
-    <h3 class="profile-header">Gift Voucher Balance</h3> 
-    <div class="gift-balance-user">
-    	
-    <?php
-      if(isset($user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value']) && $user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value'] != ''){
-    			echo '<div class="change-currency-user"><select id="userProfileCurrency"><option value="usd" selected="selected">USD</option><option value="gbp">GBP</option><option value="eur">EUR</option></select></div><p>$'.number_format(($user_profile['group_personal_information']['field_name']['#object']->field_gift_balance_usd['und'][0]['value']), 2).'</p>';
-    		}else{
-    			echo "$0";
-    		}  
-    ?> 
-    </div>
 <?php print render($user_profile['user_picture']);?>
 <?php print render($user_profile['group_profile_information']);?>
 <?php print render($user_profile['group_size_guide']);?>
-<div>
 </div>
