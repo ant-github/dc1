@@ -17,7 +17,7 @@
      display: block !Important;
  }
  .send-a-Gift-button{
-     display: none;
+     display: none !important;
  }
  .menu-name-user-menu .model-gift-received span{
     background: #20b29b none repeat scroll 0 0;
