@@ -380,9 +380,9 @@ function send_cash_user_bank_account($nid){
 //                Stripe::setApiKey($settings['secret_key']);  
                 Stripe::setApiKey('sk_test_6UsHMDvajUtZIV6BDLeP1wX4');  
                 $check_bal = Balance::retrieve();
-             print   $current_bal = $check_bal->available[0]->amount; print "<br/>";
-            print    $merchant_bal = ($current_bal/100); die();
-                if($merchant_bal > $amount_get){
+                $current_bal = $check_bal->available[0]->amount; print "<br/>";
+                $merchant_bal = ($current_bal/100); die();
+//                if($merchant_bal > $amount_get){
                     $desc = "Transfer for ".$user->mail;
 
                     $transfer =  Transfer::create(array(
@@ -391,10 +391,10 @@ function send_cash_user_bank_account($nid){
                       "destination" => $user_fields->field_bank_payout_account_id['und'][0]['value'],
                       "description" => $desc
                     )); 
-                }else{     
-                    drupal_set_message('Merchant has low balance to transfer. Please try after some time OR contact to administrator.','error');
-                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
-                }
+//                }else{     
+//                    drupal_set_message('Merchant has low balance to transfer. Please try after some time OR contact to administrator.','error');
+//                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
+//                }
             }
             catch (Exception $e) {
                     $error = $e->getMessage();
