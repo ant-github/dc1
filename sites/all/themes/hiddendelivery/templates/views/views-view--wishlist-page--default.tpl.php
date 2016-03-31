@@ -36,7 +36,7 @@ if($user->uid == 0){
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript">
             // this identifies your website in the createToken call below
-            Stripe.setPublishableKey('pk_test_G8SCpA40VC7QPMiDdL5zlDcI');
+            Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
 //            Stripe.setPublishableKey('pk_test_4S8XotFis6j7VWvhD0nWT2Jd');
             function stripeResponseHandler(status, response) {
                 if (response.error) {

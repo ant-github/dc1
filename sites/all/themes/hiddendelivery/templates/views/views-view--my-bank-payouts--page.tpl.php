@@ -40,7 +40,7 @@ if (array_key_exists($user_details->field_delivery_address['und'][0]['country'],
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript">
         // this identifies your website in the createToken call below
-        Stripe.setPublishableKey('pk_test_G8SCpA40VC7QPMiDdL5zlDcI');
+        Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
     </script>
     <div class="user-bank-payout-forms">
         <noscript>
@@ -473,7 +473,8 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
             <span>Payouts</span>
         </div>
         <?php echo views_embed_view('model_s_payout_view', 'block'); ?>
-    </div>        
+    </div>  
+    </div>
     <?php
 }else{
 ?>
