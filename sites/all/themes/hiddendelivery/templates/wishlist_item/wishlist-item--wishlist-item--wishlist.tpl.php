@@ -26,9 +26,16 @@
  * @see template_preprocess_entity()
  * @see template_process()
  */
+global $user;
 ?>
 <div class="<?php print $classes . ' ' . $status_class; ?> clearfix row"<?php print $attributes; ?>>
-    <div class="product-info col-md-9">
+         <?php if ($user->uid !=0){ ?>
+        <div class="product-info col-md-9">
+         <?php }else{
+         ?>
+        <div class="product-info col-md-10">
+        <?php }?>    
+    
         <?php if ($status == 'reserved'): ?>
             <div class="reserved-message"><p><?php print t('Product Purchased'); ?></p></div>
         <?php endif; ?>
@@ -79,8 +86,13 @@
 
 
     </div>
-
-    <div class="actions col-md-3">
+         <?php if ($user->uid !=0){ ?>
+        <div class="actions col-md-3">
+         <?php }else{
+         ?>
+        <div class="actions col-md-2">
+        <?php }?> 
+    
         <div class="actions col-md-10">
             <?php if (!$is_owner): ?>
                 <?php 

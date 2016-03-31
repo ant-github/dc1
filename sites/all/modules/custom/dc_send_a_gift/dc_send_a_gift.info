@@ -1,0 +1,4 @@
+name = DC Send A Gift
+description = Provides users to send a gift amount to models.
+package = Delivery Code
+core = 7.x

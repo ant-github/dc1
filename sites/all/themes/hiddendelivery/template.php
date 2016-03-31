@@ -11,9 +11,7 @@ function hiddendelivery_preprocess(&$vars, $hook) {
 
 function hiddendelivery_preprocess_page(&$vars) {
   //upon client request hide breadcrumb
-    
-drupal_add_library('system', 'jquery.cookie');    
-    
+drupal_add_library('system', 'jquery.cookie');       
 if(isset($vars['breadcrumb'])){
   $vars['breadcrumb'] = "";
 }
@@ -22,6 +20,16 @@ if(isset($vars['breadcrumb'])){
     $account_link = l(t('You are logged in as @username', array('@username' => $user->name)), 'user');
     $logout_link = l(t('Logout'), 'user/logout', array('attributes' => array('class' => array('logout-link'))));
     $vars['user_info_panel'] = $account_link . ' / ' . $logout_link;
+    /*
+     * Check model's gifts, that model not redeem and change the menu item title, showing the number of pending gifts
+     */
+    if(isset($vars['page']['sidebar_first']['menu_block_1']['#content']['3587'])){
+//        print "<pre>"; print_r($vars['page']['sidebar_first']['menu_block_1']['#content']['3587']); die();
+        $pending_gifts = db_query("SELECT * FROM field_data_field_model_redeem AS r LEFT JOIN field_data_field_model_id AS m ON m.entity_id = r.entity_id WHERE r.field_model_redeem_value = 0 AND m.field_model_id_value = $user->uid")->rowCount(); 
+        if($pending_gifts > 0){
+            $vars['page']['sidebar_first']['menu_block_1']['#content']['3587']['#title'] = 'Gifts (Received) <span>'.$pending_gifts.'</span>';
+        }
+    }   
   }
   else {
     $vars['user_info_panel'] = FALSE;
@@ -228,12 +236,23 @@ function hiddendelivery_preprocess_views_view(&$vars) {
       $vars['add_items_from_amazon_wishlist_popup'] = theme('bootstrap_modal', $modal_options1);
       $vars['add_items_from_amazon_wishlist_popup_id'] = $add_items_from_amazon_wishlist_markup_id;
     }else{
-        module_load_include('inc', 'node', 'node.pages');
-        $form = node_add('dc_gift_vouchers');
-		$dc_vote_form = node_add('dc_vote');
-              
-		$vars['send_a_gift_voucher']='<div class="gift-card-area"><button class="send-Gift-card-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#sendGiftVoucher" aria-expanded="false" aria-controls="sendGiftVoucher"><span class="send-gift-card-first">Send a </span><span class="send-gift-card-second">Gift Voucher</span></button><div id="sendGiftVoucher" class="collapse">'.drupal_render($form).'</div></div>';
+        /*
+         * Send a gift on model's wishlist
+         */
+        $vars['send_a_gift']='<div class="gift-card-area"><button class="send-a-Gift-button col-md-12 col-sm-12 btn btn-primary btn-lg" data-toggle="modal" data-target="#sendAGift" ><span class="send-gift-card-first">Send a <span class="send-gift-card-second">Gift</span></span></button></div>'; 
+//               Add the full display of a wishlist item to show in the buy popup.
+
+        /*
+         *  Gift voucher section on model's wishlist
+         * 
+         */
+//        module_load_include('inc', 'node', 'node.pages');
+//        $form = node_add('dc_gift_vouchers');
+//		$dc_vote_form = node_add('dc_vote');
+//              
+//		$vars['send_a_gift_voucher']='<div class="gift-card-area"><button class="send-Gift-card-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#sendGiftVoucher" aria-expanded="false" aria-controls="sendGiftVoucher"><span class="send-gift-card-first">Send a </span><span class="send-gift-card-second">Gift Voucher</span></button><div id="sendGiftVoucher" class="collapse">'.drupal_render($form).'</div></div>';
       
     }
   }
 }
+

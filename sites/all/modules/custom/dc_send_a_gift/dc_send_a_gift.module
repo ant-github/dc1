@@ -1,0 +1,618 @@
+<?php
+    require_once 'stripe-php-master/init.php';
+    use Stripe\Stripe;
+    use Stripe\Token;
+    use Stripe\Charge;
+    use Stripe\ApplicationFee;
+    //use Stripe\Recipient;
+    use Stripe\Account;
+    use Stripe\Balance;
+    use Stripe\BalanceTransaction;
+    use Stripe\Transfer;
+
+
+function dc_send_a_gift_menu() {
+
+  $items['dc_gift_payment/payment_status/%'] = array(
+    'title' => 'Payment Status',
+    'page callback' => 'commerce_stripe_gift_charge',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['dc_gift_payment/receive_cash_gift_voucher/%'] = array(
+    'title' => 'Payment Status',
+    'page callback' => 'update_user_gift_voucher_balance',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['dc_gift_payment/receive_cash_bank_account/%'] = array(
+    'title' => 'Payment Status',
+    'page callback' => 'send_cash_user_bank_account',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['dc_add_bank_details'] = array(
+    'title' => 'Add Bank Details',
+    'page callback' => 'send_user_bank_details_to_stripe',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['dc_add_bank_account_country'] = array(
+    'title' => 'Add Bank Country',
+    'page callback' => 'dc_add_bank_account_country',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['dc_save_legel_account'] = array(
+    'title' => 'Add Bank Details',
+    'page callback' => 'send_user_legel_details_to_stripe',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function commerce_stripe_gift_charge($wishlist_id){
+    global $base_url;
+    global $user;
+    
+    $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$wishlist_id."'");
+    foreach($getUserId AS $wishlistUser){
+        $wishlistUserId = $wishlistUser->uid;
+    }
+    $user_wishlist = user_load($wishlistUserId);    
+    $wishlist_user_country = $user_wishlist->field_delivery_address['und'][0]['country'];
+    
+    if($wishlist_user_country == 'US' || $wishlist_user_country == 'CA'){
+        $percentage_stripe = 15;
+    }else{
+        $percentage_stripe = 20;
+    }    
+
+      $amount_post = $_POST['amount'];
+      $amount =  ($amount_post * 100);
+      $amount_trasfer_percent = ($percentage_stripe / 100) * $amount_post;
+      $amount_trasfer_bank = $amount_post - $amount_trasfer_percent;
+      $currency_code = $_POST['currency_code'];
+      $user_email = $_POST['user_email'];
+      $address_line1 = $_POST['address_line1'];
+      $address_country = $_POST['address_country'];
+      $address_state = $_POST['address_state'];
+      $address_city = $_POST['address_city'];
+      $address_zip = $_POST['address_zip'];
+      $user_message = $_POST['user_message'];
+      $stripe_token = $_POST['stripeToken'];
+      if(isset($_POST['user_name']) && $_POST['user_name'] !=''){
+        $user_name = $_POST['user_name'];
+      }else{
+        $user_name = 'Anonymous';
+      }
+      $error = '';
+      $success = '';
+      $charge= '';
+    if (isset($_POST['amount']) && $_POST['amount'] !='' && $_POST['amount'] > 5 && $_POST['amount'] < 1000) {
+    if (isset($_POST['stripeToken']) && $_POST['stripeToken'] !='') {
+      $settings = _load_payment_settings();
+      $error = '';
+      $success = '';
+      try {
+        Stripe::setApiKey($settings['secret_key']);
+        if (isset($_POST['stripeToken'])){
+            $charge = \Stripe\Charge::create(array(
+              "amount" => $amount, // amount in cents, again
+              "currency" => $currency_code,
+              "source" => $stripe_token,
+              "description" => "Gift charge"
+            ));    
+//      print "<pre>"; print($charge->paid);   die('hii');
+        if($charge->paid == 1){
+                
+        $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+        foreach($select_currency_rates_nid AS $res_currency_rates){
+                $currency_rates_nid = $res_currency_rates->nid;
+        }                
+                if($currency_code == 'usd'){
+                    $currency_symbol= '$';
+                        $amount_in_usd = $amount_post;
+                        $usd_amount_trasfer_bank = $amount_trasfer_bank;
+                }else if($currency_code == 'gbp'){
+                    $currency_symbol= '£';
+                        $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                        }
+                        $amount_in_usd = $amount_post / $gbp_rate;
+                        $usd_amount_trasfer_bank = $amount_trasfer_bank / $gbp_rate;
+                }else if($currency_code == 'eur'){
+                    $currency_symbol= '€';
+                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                        }
+                        $amount_in_usd = $amount_post / $eur_rate;
+                        $usd_amount_trasfer_bank = $amount_trasfer_bank / $eur_rate;
+                }                
+
+                $node = new stdClass();  // Create a new node object
+                $node->type = 'model_gifts';  // Content type
+                $node->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
+                node_object_prepare($node);  //Set some default values
+
+                $node->title = $user_wishlist->name;
+                $node->field_model_wishlist_id[$node->language][0]['value'] = $wishlist_id;
+                $node->field_model_id[$node->language][0]['value'] = $wishlistUserId;
+                $node->field_gift_currency[$node->language][0]['value'] = $currency_code;
+                $node->field_gift_amount[$node->language][0]['value'] = $amount_post;
+                $node->field_gift_amount_in_dollar[$node->language][0]['value'] = $amount_in_usd;
+                $node->field_sender_name[$node->language][0]['value'] = $user_name;
+                $node->field_sender_email[$node->language][0]['value'] = $user_email;
+                $node->field_gift_message[$node->language][0]['value'] = $user_message;
+                $node->field_model_redeem[$node->language][0]['value'] = 0;
+                $node->field_gift_amount_transfer[$node->language][0]['value'] = $amount_trasfer_bank;
+                $node->field_usd_gift_amount_transfer[$node->language][0]['value'] = $usd_amount_trasfer_bank;
+                $node->field_model_country[$node->language][0]['value'] = $wishlist_user_country;
+
+                $node->status = 1;   // (1 or 0): published or unpublished
+                $node->promote = 0;  // (1 or 0): promoted to front page or not
+                $node->sticky = 0;  // (1 or 0): sticky at top of lists or not
+                $node->comment = 0;  // 2 = comments open, 1 = comments closed, 0 = comments hidden
+                // Add author of the node
+                $node->uid = 1;
+                // Save the node
+                node_save($node);
+                $gift_voucher_nid = $node->nid;
+/*
+ * Send email to model regarding gift received
+ */
+
+        $key = 'dc_send_a_gift_mail';
+	$to = $user->mail;
+	$from = 'DeliveryCode <support@deliverycode.com>';
+	$params = array(
+    'body' => '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	<tbody><tr><td bgcolor="#FFFFFF" style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+	<tr><td><![endif]-->	<table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" class="content" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;max-width: 600px;width: 100%;">
+	<tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse;" valign="top"><span style="color: #ffffff; font-family: Arial; font-size: 11px; text-align: center;">To ensure you receive our emails, please add support@deliverycode.com to your address book or safe list </span></td>
+	</tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="438" align="left" cellpadding="0" cellspacing="0" border="0">
+	<tr><td><![endif]--><!-- Start Header--><table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr>
+	<td bgcolor="#ffffff" width="100%"><!-- Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+	<td class="center" style="padding:10px 20px"><a href="#"><img alt="" border="0" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/29cd4659-94ad-4b7c-aee4-8459ac94a2f9.jpg" />
+	</a></td></tr></tbody></table><!-- End Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+	<td class="center" style="padding: 30px 0 0 30px"><a href="#"><img alt="DeliveryCode available on the App Store" src="https://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/adde9ea1-f675-4a49-b4fb-517ccae6f418.jpg" />
+	</a></td></tr></tbody></table><!-- Nav --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:40px 10px 20px; font-style:bold">
+	<a href="'.$base_url.'" style="text-decoration: none; color: #000000;">Home</a> &nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/how-it-works" style="text-decoration: none; color: #000000;">How it Works</a>
+	&nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/user" style="text-decoration: none; color: #000000;">My Account</a></td></tr></tbody></table><!-- End Header -->
+	<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr><tr><td style="border-collapse: collapse;" valign="top">
+	<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	<tbody><tr><td style="border-collapse: collapse;" valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	<tbody><tr><td align="center" style="border-collapse: collapse;max-width: 487px;width: 100%;background:#000000;" valign="top">
+	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br /><br /><span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">
+	You have received '.$currency_code.''.$amount_post.' Gift Voucher !</span><br /><br />&nbsp;</p></td></tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
+	<td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
+	<tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
+	<tbody><tr><td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td><td style="border-collapse: collapse;" valign="top">
+	<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	<tbody><tr><td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="580" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
+	<tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
+	<tbody><tr><td style="border-collapse: collapse;" valign="top"><p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br />
+	<span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Dear '.ucfirst($user_wishlist->name).'<br />
+	<br/><br/><table><tr><td style="padding: 10px 20px; border-right:1px solid #ccc;"><a style="text-decoration: none; color: rgb(0, 0, 0); font-size: 20px;" href="'.$base_url.'">deliverycode.com</a><br/><span style="color:#00B29A; float:right;">gift voucher</span></td><td style="padding: 10px 20px;"><span style="font-size: 20px;">'.$currency_symbol.''.$amount_post.'</span><br/><a href="'.$base_url.'/user/gifts?gift_id='.$gift_voucher_nid.'" style="background-color: rgb(0, 178, 154); color: rgb(255, 255, 255); padding: 6px 10px; text-decoration: none; float: left; border-radius: 7px; font-weight: 600;">Redeem Now</a></td></tr></table></span></p></td></tr><tr>
+	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
+        <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Gift voucher funds are automatically applied to eligible orders during the checkout process. You must pay for any remaining balance on your order with another payment menthod.</span></p><br/><br/>
+	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">
+	Login to <a href="'.$base_url.'" target="_blank">www.deliverycode.com</a> to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
+	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
+	<td align="center" style="border-collapse: collapse;" valign="top"><a alt="Open Site" href="'.$base_url.'">
+	<img align="middle" alt="Open Site" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/35798292-f9d9-4aff-a679-6f17c68d04c3.jpg" style="display: block;max-width: 398px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;" /></a></td>
+	</tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
+	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0; font-weight:bold;">
+	- DeliveryCode team</span></p></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table></td>
+	<td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
+	</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top">
+	<!--[if (gte mso 9)|(IE)]><table width="580" align="left" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]--><!-- Start Header-->
+	<table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr><td bgcolor="#ffffff" width="100%">
+	<!-- Social --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+	<td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
+	<a href="http://www.facebook.com/deliverycode" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/01ab8850-b625-41f9-a138-86f72bccfc01.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
+	</a></td><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
+	<a href="http://twitter.com/delivery_code" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/4ae8f912-7c8e-4a40-b507-631e8c3ae188.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
+	</a></td></tr></tbody></table><!-- End Nav --></td></tr></tbody></table><!-- End Header --><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
+	</td></tr><tr></tr></tbody></table><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+	<tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse; padding: 5px 0;" valign="top">
+	<span style="color: #ffffff; font-family: Arial; font-size: 11px;"><a href="'.$base_url.'/contact-us" style="text-decoration: none; color: #ffffff;">
+	Contact Us</a> &nbsp;/&nbsp;<a href="'.$base_url.'/privacy" style="text-decoration: none; color: #ffffff;">Privacy</a> &nbsp;/&nbsp;<a href="'.$base_url.'/terms" style="text-decoration: none; color: #ffffff;">
+	Terms and Conditions</a> </span><br/></td></tr><tr><!-- <td valign="top"  bgcolor="#000000" align="center" style="border-collapse: collapse;">
+	<span style="color: #666666; font-family: Arial; font-size: 11px;"><br></td></tr> --></tr><tr>
+	<td align="center" style="color: #000; font-family: Arial; font-size: 11px;"><br />Copyright © 2014 Delivery Code. All rights reserved.<br />
+	<br />We reserve the right to change the Terms &amp; Conditions at any time<br />
+	If you no longer wish to receive emails from Delivery Code, please unsubscribe by clicking 
+	<a href="file:///tmp/dc_backup.html#" style="color: #666666;" target="_blank">here</a><br />
+	Unless otherwise noted, Delivery Code has applied VAT at 20% to the appropriate items in this transaction based on country of delivery in accordance with the EU laws on distance selling. Our VAT number is GB 180725703<br />
+	This email was sent to you by Delivery Code, Registered number: 8662491. Registered Address: Terleys, Molehill Green, Felsted, Dunmow, Essex CM6 3JP
+	</td></tr><tr><td height="60" style="border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table></td></tr></tbody></table>
+	<!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table><p>&nbsp;</p>',
+    'subject' => 'New gift received',
+    );
+	$mail = drupal_mail('dc_send_a_gift', $key, $to, language_default(), $params, $from);	                
+                
+                drupal_set_message('Your gift has been sent successfully.','status');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);   
+            }     
+        }
+        
+      }
+      catch (Exception $e) {
+        $error = $e->getMessage(); 
+                drupal_set_message('Your gift can not be send becasue: '.$error,'error');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);      
+      } 
+    }else{
+                drupal_set_message('Something went wrong with the payment server. Please try after some time.','error');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
+    }
+    }else{
+                drupal_set_message('You have enter invalid amount. Please enter a valid amount.','error');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
+    }
+}
+
+function update_user_gift_voucher_balance($nid){
+    global $user;
+    global $base_url;
+        $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+        foreach($select_currency_rates_nid AS $res_currency_rates){
+                $currency_rates_nid = $res_currency_rates->nid;
+        }
+  
+        $user_id = $user->uid;
+        $node = node_load($nid);
+        $currency = $node->field_gift_currency['und'][0]['value'];
+        $amount = $node->field_gift_amount['und'][0]['value'];
+
+        $select_user_balace = db_query('SELECT field_gift_balance_usd_value FROM field_data_field_gift_balance_usd WHERE entity_id ='.$user_id);
+        foreach($select_user_balace AS $res_balance){
+                $usd_balance = $res_balance->field_gift_balance_usd_value;
+        }
+        if($usd_balance == ''){
+
+                if($currency == 'usd'){
+
+                        $user_balance = $amount;
+
+                }else if($currency == 'gbp'){
+
+                        $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                        }
+
+                        $amount_usd = $amount / $gbp_rate;
+                        $user_balance = $amount_usd;
+
+                }else if($currency == 'eur'){
+
+                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                        }
+
+                        $amount_eur = $amount / $eur_rate;
+                        $user_balance =  $amount_eur;
+
+                }				
+                //$user_balance = number_format(($user_balance), 2);
+                db_query("INSERT INTO field_data_field_gift_balance_usd (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_gift_balance_usd_value, field_gift_balance_usd_format) VALUES ('user', 'user', 0, '".$user_id."', '".$user_id."', 'und', 0, '".$user_balance."', 'NULL')");
+
+        }else{
+
+                if($currency == 'usd'){
+
+                        $user_balance = $usd_balance + $amount;
+
+
+                }else if($currency == 'gbp'){
+
+                        $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                        }
+
+                        $amount_usd = number_format(($amount / $gbp_rate), 2);
+                        $user_balance = $usd_balance + $amount_usd;
+
+                }else if($currency == 'eur'){
+
+                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                        foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                        }
+
+                        $amount_eur = number_format(($amount / $eur_rate), 2);
+                        $user_balance = $usd_balance + $amount_eur;
+
+                }
+                 //$user_balance = number_format(($user_balance), 2); 
+                db_update('field_data_field_gift_balance_usd')
+                ->fields(array('field_gift_balance_usd_value' => $user_balance))
+            ->condition('entity_id', $user_id)
+            ->execute();            
+        }
+        db_update('field_data_field_model_redeem')
+                ->fields(array('field_model_redeem_value' => 1))
+            ->condition('entity_id', $nid)
+            ->execute();        
+        db_update('field_data_field_model_redeemed_as')
+                ->fields(array('field_model_redeemed_as_value' => 1))
+            ->condition('entity_id', $nid)
+            ->execute();
+        field_cache_clear(TRUE);
+        drupal_set_message('Your gift amount has been added to your gift voucher balance.','status');
+        drupal_goto($base_url.'/user/gifts');
+        
+}
+
+/*
+ * Sending payment to model's bank account.
+ */
+
+function send_cash_user_bank_account($nid){
+    global $user;
+    global $base_url;
+    $user_fields = user_load($user->uid);  
+    $settings = _load_payment_settings();
+    if(isset($user_fields->field_bank_payout_account_id['und'][0]['value']) && $user_fields->field_bank_payout_account_id['und'][0]['value'] != '')  {   
+        $node = node_load($nid);
+//        $currency = $node->field_gift_currency['und'][0]['value'];
+        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
+        $amount = number_format(($amount_get), 2); 
+        $amount = str_replace(',', '', $amount);
+        $amount = str_replace('.', '', $amount);
+            try{    
+                Stripe::setApiKey($settings['secret_key']);  
+                $check_bal = Balance::retrieve();
+                $current_bal = $check_bal->available[0]->amount; 
+                $merchant_bal = ($current_bal/100); 
+                if($merchant_bal > $amount_get){
+                    $desc = "Transfer for ".$user->mail;
+
+                    $transfer =  Transfer::create(array(
+                      "amount" => $amount,
+                      "currency" => 'usd',
+                      "destination" => $user_fields->field_bank_payout_account_id['und'][0]['value'],
+                      "description" => $desc
+                    )); 
+                }else{     
+                    drupal_set_message('Some error occured while transferring amount to your bank account. Please try after some time','error');
+                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
+                }
+            }
+            catch (Exception $e) {
+                    $error = $e->getMessage();
+                    drupal_set_message('Amount can not be added to your bank account because: '.$error,'error');
+                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                       
+            }
+            if($transfer->status == 'paid'){   
+                    $paid_amount = ($transfer->amount/100);
+                    $status =  'Success';
+                    $tansferDate = $transfer->created;
+                    $payout_date = date('Y-m-d', $tansferDate);
+                    $node = new stdClass();  // Create a new node object
+                    $node->type = 'model_payouts';  // Content type
+                    $node->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
+                    node_object_prepare($node);  //Set some default values
+
+                    $node->title = $user->name;
+                    $node->field_payout_transfer_id[$node->language][0]['value'] = $transfer->id;
+                    $node->field_payout_balance_transaction[$node->language][0]['value'] = $transfer->balance_transaction;
+                    $node->field_payout_payment_destination[$node->language][0]['value'] = $transfer->destination_payment;
+                    $node->field_payout_date[$node->language][0]['value'] = $payout_date;
+                    $node->field_payout_status[$node->language][0]['value'] = $status;
+                    $node->field_model_id[$node->language][0]['value'] = $user->uid;
+                    $node->field_payout_amount[$node->language][0]['value'] = $paid_amount;
+
+                    $node->status = 1;   // (1 or 0): published or unpublished
+                    $node->promote = 0;  // (1 or 0): promoted to front page or not
+                    $node->sticky = 0;  // (1 or 0): sticky at top of lists or not
+                    $node->comment = 0;  // 2 = comments open, 1 = comments closed, 0 = comments hidden
+                    // Add author of the node
+                    $node->uid = 1;
+                    // Save the node
+                    node_save($node);
+                    db_update('field_data_field_model_redeem')
+                            ->fields(array('field_model_redeem_value' => 1))
+                        ->condition('entity_id', $nid)
+                        ->execute();        
+                    db_update('field_data_field_model_redeemed_as')
+                            ->fields(array('field_model_redeemed_as_value' => 2))
+                        ->condition('entity_id', $nid)
+                        ->execute();
+                    field_cache_clear(TRUE);                    
+                    
+                }            
+                    drupal_set_message('Your withdraw has been successfull, amount will be transfered to your bank account with in 2 working days.','status');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                     
+
+    }else{
+                drupal_set_message('Please add your bank details to redeem your gift','error');
+                drupal_goto($base_url.'/user/my-bank-payouts');        
+    }
+
+}
+
+function send_user_bank_details_to_stripe(){
+    global $user;
+    global $base_url;
+    if(isset($_POST['stripeToken']) && $_POST['stripeToken'] != ''){
+        $user_details = user_load($user->uid);
+        $settings = _load_payment_settings();
+            $date = date('Y-m-d');
+            $strtotime_date = strtotime($date);
+            $stripe_token = $_POST['stripeToken'];
+            $user_ip = $_SERVER['REMOTE_ADDR'];  
+
+            try{
+                Stripe::setApiKey($settings['secret_key']);   
+                
+                $user_email = $user->mail; 
+                
+                if(isset($user_details->field_bank_payout_account_id['und'][0]['value']) && $user_details->field_bank_payout_account_id['und'][0]['value'] != ''){
+                    $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
+                    $old_bank_account = $user_details->field_stripe_payout_bank_account['und'][0]['value'];
+                    
+                    $account = Account::retrieve($user_stripe_account_id);                    
+                    $account->external_accounts->create(array(
+                            "external_account" => $stripe_token,
+                            "default_for_currency" => true,
+                    ));   
+                    
+                    if($old_bank_account != ''){
+                        $account->external_accounts->retrieve($old_bank_account)->delete();
+                    }     
+                    $account = Account::retrieve($user_stripe_account_id);
+                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
+                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
+                    user_save($user_details);                    
+                    
+                }else{
+                    $newAcc =   Account::create(
+                        array(
+                            "managed"   =>  true,
+                            "country"   =>  $user_details->field_delivery_address['und'][0]['country'],
+                            "email"     =>  $user_email                
+                        )
+                    );    
+                   
+                    $user_stripe_account_id = $newAcc->id;  
+                    
+                    $user_details->field_bank_payout_account_id['und'][0]['value'] = $user_stripe_account_id;
+                    $user_details->field_stripe_account_country['und'][0]['value'] = $user_details->field_delivery_address['und'][0]['country'];
+                    user_save($user_details);
+                    
+                    $account = Account::retrieve($user_stripe_account_id);
+                    
+                    $account->external_accounts->create(array(
+                            "external_account" => $stripe_token,
+                            "default_for_currency" => true,
+                    ));                     
+                    $account->tos_acceptance->ip = $user_ip;
+                    $account->tos_acceptance->date = time();
+                    $account->legal_entity->dob->year = '1988';
+                    $account->legal_entity->dob->month = '03';
+                    $account->legal_entity->dob->day = '05';
+
+                    $account->legal_entity->first_name = $user->name;
+                    $account->legal_entity->last_name = $user->name.'_last';
+                    $account->legal_entity->type = 'individual';
+                    $account->legal_entity->address->city = $user_details->field_delivery_address['und'][0]['locality'];
+                    $account->legal_entity->personal_address->city = $user_details->field_delivery_address['und'][0]['locality'];
+                    $account->legal_entity->address->line1 = $user_details->field_delivery_address['und'][0]['thoroughfare'];
+                    $account->legal_entity->personal_address->line1 = $user_details->field_delivery_address['und'][0]['thoroughfare'];
+                    $account->legal_entity->address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
+                    $account->legal_entity->personal_address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
+                    $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];
+
+                    $account->save();                    
+                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
+                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
+                    user_save($user_details);
+                }
+        
+
+                drupal_set_message('Your bank details has been saved. You can now redeem your gift to your bank account.','status');
+                drupal_goto($base_url.'/user/my-bank-payouts');                  
+            }
+            catch (Exception $e) {
+                    $error = $e->getMessage();
+                    drupal_set_message('Some error occurred while updating your bank details, @error: '.$error.'. Please try after some time.','error');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                       
+            }  
+    }
+}
+
+function send_user_legel_details_to_stripe(){
+    
+    global $user;
+    global $base_url;
+        $user_details = user_load($user->uid);
+        print "<pre>"; print_r($user_details); die('hii');
+        $settings = _load_payment_settings();
+        $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
+            $date = date('Y-m-d');
+            $strtotime_date = strtotime($date);
+            $user_ip = $_SERVER['REMOTE_ADDR']; 
+ 
+            try{
+                Stripe::setApiKey($settings['secret_key']); 
+
+                $account = Account::retrieve($user_stripe_account_id); 
+                
+                $account->tos_acceptance->ip = $user_ip ? '192.168.1.101' : NULL;
+                $account->tos_acceptance->date = time();
+                $account->legal_entity->dob->year = '1988'? '1988' : NULL;
+                $account->legal_entity->dob->month = '03' ? '03' : NULL;
+                $account->legal_entity->dob->day = '05' ? '05' : NULL;
+
+                $account->legal_entity->first_name = 'sss' ? 'sss' : NULL;
+                $account->legal_entity->last_name = 'kamal'? 'kamal': NULL ;
+                $account->legal_entity->type = 'individual'? 'individual': NULL;
+//                
+                $account->save();                
+                print "<pre>"; print_r($account); die('hii');
+                
+                drupal_set_message('Your details has been saved.','status');
+                drupal_goto($base_url.'/user/gifts');                 
+            }
+            catch (Exception $e) {
+                    $error = $e->getMessage();
+                    drupal_set_message('Some error occurred while updating your details, @error: '.$error,'error');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                       
+            }  
+}
+
+
+function _load_payment_settings($name = NULL) {
+  static $settings = array();
+
+  if (!empty($settings)) {
+    return $settings;
+  }
+
+  if (commerce_payment_method_load('commerce_stripe') && rules_config_load('commerce_payment_commerce_stripe')) {
+    $commerce_stripe_payment_method = commerce_payment_method_instance_load('commerce_stripe|commerce_payment_commerce_stripe');
+  }
+
+  if (isset($name) && rules_config_load('commerce_payment_commerce_stripe')) {
+    $commerce_stripe_payment_method = commerce_payment_method_instance_load('commerce_stripe|commerce_payment_commerce_stripe');
+  }
+
+  if (isset($commerce_stripe_payment_method)) {
+    $settings = $commerce_stripe_payment_method['settings'];
+  }
+
+  return $settings;
+}
+
+function dc_send_a_gift_mail($key, &$message, $params) {
+
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8;',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  $message['subject'] = $params['subject'];
+  $message['body'] = $params['body'];
+}

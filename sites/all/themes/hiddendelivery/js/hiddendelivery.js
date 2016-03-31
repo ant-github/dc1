@@ -113,6 +113,40 @@ if($('.page-checkout-review').length ){
 /*
  * End of Payment form desgin and review form
  */
+
+/*
+ * Model add bank/payout details
+ */
+if($('.user-bank-payout-forms').length){    
+    $('.user-bank-payout-forms .bank-account-detail .add-new-bank-button').click(function() {
+        $('.user-bank-payout-forms .bank-account-detail').css("display", "none");
+        $('.user-bank-payout-forms .add-bank-account-form').css("display", "block");
+    });     
+}
+
+/*
+ * Model's redeem gift section
+ */
+//if($('.view-model-gifts').length){
+//    var get_redeem_val = '';
+//    get_redeem_val = $('.view-model-gifts tbody .views-field-field-model-redeem').html();
+//    if(get_redeem_val == ' Pending '){
+//        $('.view-model-gifts tbody .views-field-field-model-redeem').addClass('redeem-pending');
+//    }else{
+//        $('.view-model-gifts tbody .views-field-field-model-redeem').addClass('redeem-completed');
+//    }
+//}
+if($('.redeem-gift-first-section').length){
+    $('.page-title-wrapper h1.page-header').html('Redeem Gift');
+}
+if($('.redeem-gift-second-section').length){
+    $('.page-title-wrapper h1.page-header').html('Redeem Gift');
+}
+$('.redeem-gift-first-section .redeem-gift-first-section-body .redeem-gift-amount .amount').click(function() {
+    $('.redeem-gift-first-section').css("display", "none");
+    $('.redeem-gift-second-section').css("display", "block");
+}); 
+
 $('.close-product-model-box span').click(function() {
     $('#simple-dialog-container').dialog('close');
 });        
