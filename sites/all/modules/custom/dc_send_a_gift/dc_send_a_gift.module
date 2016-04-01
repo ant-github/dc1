@@ -248,6 +248,10 @@ function commerce_stripe_gift_charge($wishlist_id){
                 
                 drupal_set_message('Your gift has been sent successfully.','status');
                 drupal_goto($base_url.'/wishlist/'.$wishlist_id);   
+            }else{
+                node_delete($gift_voucher_nid);
+                drupal_set_message('Some error occurred while creating you a charge for gift. Please try after some time. @error: '.$error,'error');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);                        
             }     
         }
         
