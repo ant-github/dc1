@@ -57,7 +57,7 @@ if($user->uid == 0){
             }
             $(document).ready(function() {
                 $("#payment-form").submit(function(event) {
-                    var user_name = $('#payment-form .user_name').val();
+//                    var user_name = $('#payment-form .user_name').val();
                     var user_email = $('#payment-form .user_email').val();
                     var address_country = $('#payment-form .address_country').val();
                     var address_state = $('#payment-form .address_state').val();
@@ -78,9 +78,9 @@ if($user->uid == 0){
                         $('html,body').animate({'scrollTop' : 200},1000);
                         return false;                        
                     }
-                    if(user_name == '' || user_email == '' || address_country == '' || address_state == '' || address_zip == '' || address_line1 == '' || address_city == '' || user_message == ''){
+                    if(user_email == '' || address_country == '' || address_state == '' || address_zip == '' || address_line1 == '' || address_city == '' || user_message == ''){
                         $(".payment-errors").css("display", "block");
-                        $(".payment-errors").html('All fields are required. Please enter the required information.');
+                        $(".payment-errors").html('All fields are required, except the Name field. Please enter the required information.');
                         $('html,body').animate({'scrollTop' : 200},1000);
                         return false;
                     }

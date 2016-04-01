@@ -106,15 +106,7 @@ function commerce_stripe_gift_charge($wishlist_id){
       try {
         Stripe::setApiKey($settings['secret_key']);
         if (isset($_POST['stripeToken'])){
-            $charge = \Stripe\Charge::create(array(
-              "amount" => $amount, // amount in cents, again
-              "currency" => $currency_code,
-              "source" => $stripe_token,
-              "description" => "Gift charge"
-            ));    
-//      print "<pre>"; print($charge->paid);   die('hii');
-        if($charge->paid == 1){
-                
+            
         $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
         foreach($select_currency_rates_nid AS $res_currency_rates){
                 $currency_rates_nid = $res_currency_rates->nid;
@@ -168,7 +160,18 @@ function commerce_stripe_gift_charge($wishlist_id){
                 $node->uid = 1;
                 // Save the node
                 node_save($node);
-                $gift_voucher_nid = $node->nid;
+                $gift_voucher_nid = $node->nid;            
+            
+            $charge = \Stripe\Charge::create(array(
+              "amount" => $amount, // amount in cents, again
+              "currency" => $currency_code,
+              "source" => $stripe_token,
+              "description" => "Gift order: $gift_voucher_nid"
+            ));    
+//      print "<pre>"; print($charge->paid);   die('hii');
+        if($charge->paid == 1){
+                
+
 /*
  * Send email to model regarding gift received
  */
@@ -206,7 +209,7 @@ function commerce_stripe_gift_charge($wishlist_id){
 	<span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Dear '.ucfirst($user_wishlist->name).'<br />
 	<br/><br/><table><tr><td style="padding: 10px 20px; border-right:1px solid #ccc;"><a style="text-decoration: none; color: rgb(0, 0, 0); font-size: 20px;" href="'.$base_url.'">deliverycode.com</a><br/><span style="color:#00B29A; float:right;">gift voucher</span></td><td style="padding: 10px 20px;"><span style="font-size: 20px;">'.$currency_symbol.''.$amount_post.'</span><br/><a href="'.$base_url.'/user/gifts?gift_id='.$gift_voucher_nid.'" style="background-color: rgb(0, 178, 154); color: rgb(255, 255, 255); padding: 6px 10px; text-decoration: none; float: left; border-radius: 7px; font-weight: 600;">Redeem Now</a></td></tr></table></span></p></td></tr><tr>
 	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
-        <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Gift voucher funds are automatically applied to eligible orders during the checkout process. You must pay for any remaining balance on your order with another payment menthod.</span></p><br/><br/>
+        <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Congratulations you have received a gift voucher – Click "redeem now" to transfer the funds right to your bank or apply them to your DC gift voucher balance.</span></p><br/><br/>
 	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">
 	Login to <a href="'.$base_url.'" target="_blank">www.deliverycode.com</a> to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
 	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
@@ -466,7 +469,16 @@ function send_user_bank_details_to_stripe(){
             $strtotime_date = strtotime($date);
             $stripe_token = $_POST['stripeToken'];
             $user_ip = $_SERVER['REMOTE_ADDR'];  
-
+            
+            $model_get_real_name = $user_details->field_name['und'][0]['value'];
+            $model_real_name = explode(' ',$model_get_real_name);
+            $model_first_name = $model_real_name[0];
+            if(isset($model_real_name[1]) && $model_real_name[1] != ''){
+                $model_last_name = $model_real_name[1];
+            }else{
+                $model_last_name = 'lastName';
+            }
+            
             try{
                 Stripe::setApiKey($settings['secret_key']);      
                 
@@ -517,8 +529,8 @@ function send_user_bank_details_to_stripe(){
                     $account->legal_entity->dob->month = '03';
                     $account->legal_entity->dob->day = '05';
 
-                    $account->legal_entity->first_name = $user->name;
-                    $account->legal_entity->last_name = $user->name.'_last';
+                    $account->legal_entity->first_name = $model_first_name;
+                    $account->legal_entity->last_name = $model_last_name;
                     $account->legal_entity->type = 'individual';
                     $account->legal_entity->address->city = $user_details->field_delivery_address['und'][0]['locality'];
                     $account->legal_entity->personal_address->city = $user_details->field_delivery_address['und'][0]['locality'];
