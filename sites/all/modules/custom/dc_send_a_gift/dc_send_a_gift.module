@@ -388,13 +388,14 @@ function send_cash_user_bank_account($nid){
         $amount = number_format(($amount_get), 2); 
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
+        $model_real_name = $user_fields->field_name['und'][0]['value'];
             try{    
                 Stripe::setApiKey($settings['secret_key']);    
                 $check_bal = Balance::retrieve();
                 $current_bal = $check_bal->available[0]->amount; 
                 $merchant_bal = ($current_bal/100); 
 //                if($merchant_bal > $amount_get){
-                    $desc = "Transfer for ".$user->mail;
+                    $desc = "Transfer for ".$model_real_name;
 
                     $transfer =  Transfer::create(array(
                       "amount" => $amount,
