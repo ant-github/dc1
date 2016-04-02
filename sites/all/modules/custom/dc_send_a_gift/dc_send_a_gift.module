@@ -568,39 +568,22 @@ function send_user_legel_details_to_stripe(){
     global $user;
     global $base_url;
         $user_details = user_load($user->uid);
-//        print "<pre>"; print_r($user_details); die('hii');
-        $settings = _load_payment_settings();
-        $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
+        
             $date = date('Y-m-d');
             $strtotime_date = strtotime($date);
             $user_ip = $_SERVER['REMOTE_ADDR']; 
  
             try{
+                $settings = _load_payment_settings();
                 Stripe::setApiKey($settings['secret_key']); 
-
-                $account = Account::retrieve($user_stripe_account_id); 
-                
-                $account->tos_acceptance->ip = $user_ip ? '192.168.1.101' : NULL;
-                $account->tos_acceptance->date = time();
-                $account->legal_entity->dob->year = '1988'? '1988' : NULL;
-                $account->legal_entity->dob->month = '03' ? '03' : NULL;
-                $account->legal_entity->dob->day = '05' ? '05' : NULL;
-
-                $account->legal_entity->first_name = 'sss' ? 'sss' : NULL;
-                $account->legal_entity->last_name = 'kamal'? 'kamal': NULL ;
-                $account->legal_entity->type = 'individual'? 'individual': NULL;
-//                
-                $account->save();                
-                print "<pre>"; print_r($account); die('hii');
-                
-                drupal_set_message('Your details has been saved.','status');
-                drupal_goto($base_url.'/user/gifts');                 
+                $account = Account::retrieve('acct_17vHYeBd9yaeRAaK'); 
+                $account->transfer_schedule->interval = "manual";
+                $account->save();
+                die('try');
+            } catch (Exception $ex) {
+                die('catch');
             }
-            catch (Exception $e) {
-                    $error = $e->getMessage();
-                    drupal_set_message('Some error occurred while updating your details, @error: '.$error,'error');
-                    drupal_goto($base_url.'/user/my-bank-payouts');                       
-            }  
+ 
 }
 
 
