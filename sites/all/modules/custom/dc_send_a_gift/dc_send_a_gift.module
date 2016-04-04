@@ -567,12 +567,10 @@ function send_user_legel_details_to_stripe(){
     
     global $user;
     global $base_url;
-        $user_details = user_load($user->uid);
-        
+        $user_details = user_load($user->uid);       
             $date = date('Y-m-d');
             $strtotime_date = strtotime($date);
-            $user_ip = $_SERVER['REMOTE_ADDR']; 
- 
+            $user_ip = $_SERVER['REMOTE_ADDR'];  
             try{
                 $settings = _load_payment_settings();
                 Stripe::setApiKey($settings['secret_key']); 

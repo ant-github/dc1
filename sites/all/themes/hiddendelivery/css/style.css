@@ -13,11 +13,8 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
- .page-wishlist-3957 .send-a-Gift-button{
-     display: block !Important;
- }
- .send-a-Gift-button{
-     display: none;
+ .view-new-wishlists .view-empty{
+     padding: 54px;
  }
  .menu-name-user-menu .model-gift-received span{
     background: #20b29b none repeat scroll 0 0;
