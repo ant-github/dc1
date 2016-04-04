@@ -2206,7 +2206,19 @@ select#userProfileCurrency{
   margin-top: 10px;
   margin-bottom: -10px;
 }	
-select.bank-country,
+select.bank-country{
+	-webkit-appearance: none;
+  	-moz-appearance: none;
+  	appearance: none;
+  	background: #fff url("../images/icon-select-black.png") no-repeat scroll 97% 50%;
+    border: 0 none;
+    border-radius: 6px;
+    height: 40px;
+    padding: 7px 10px;
+    width: 100%;
+	border:1px solid #ccc;
+        margin-bottom: 12px; 
+	}
 select.bank-country-iban,
 select.bank-currency-iban{
 	-webkit-appearance: none;
@@ -2219,7 +2231,7 @@ select.bank-currency-iban{
     padding: 7px 10px;
     width: 100%;
 	border:1px solid #ccc;
-	}
+	}        
 .model-payout-section .form-heading {
   margin-top: 17px;
 }
