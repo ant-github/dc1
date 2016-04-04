@@ -44,7 +44,6 @@
     margin-bottom: 18px;
     padding: 10px 0px;     
  }
- 
  .not-front.logged-in.page-user .tabs--primary.nav-tabs{
      float: left;
  }
@@ -548,7 +547,7 @@ a.twitter-share-button{
     text-align: center;    
 }
 .header-right-side .header-search-block form{
-    left: 16%;
+    left: 14%;
     position: relative;
     width: 300px;
 }
@@ -570,11 +569,11 @@ a.twitter-share-button{
 }
 .not-logged-in .home-secondary-nav{
     float: left;
-    padding: 29px 20px 26px;    
+    padding: 29px 75px 26px;    
 }
 .logged-in .home-secondary-nav{
     float: left;
-    padding: 29px 64px 26px;    
+    padding: 29px 117px 26px;    
 }
 #search-block-form input[type="text"] {
   background: #fff url("../images/icon-search.jpg") no-repeat scroll 5px 50%;
