@@ -2137,7 +2137,7 @@ a.twitter-share-button{
 	}
 .bank-payout-tabs ul {
   border-bottom: 1px solid #d7d7d7;
-  padding: 13px 0 0 27px;
+  padding: 14px 0 0 27px;
 }
 .bank-payout-tabs ul li {
   color: #858585;
@@ -2177,21 +2177,34 @@ select#userProfileCurrency{
 #model-add-bank-details-form .form-heading	{
 	font-size:18px;
 	font-weight:600;
-	margin:15px 0;
+	margin:0 0 22px;
+	}
+.user-bank-payout-forms .form-heading label{
+	font-size:16px;
+	color: #000;
+	margin-bottom:9px;
 	}
 .user-bank-payout-forms label{
-	font-size:15px;
+	font-size:14px;
 	color:rgba(0,0,0,0.66);
 	margin-bottom:8px;
 	}
 .user-bank-payout-forms input[type="text"].form-control{
 	border:1px solid #dbdbdb;
 	background:#fff;
-	height:45px;
+	height:40px;
 	}
+.user-bank-payout-forms #model-add-bank-details-iban-form .form-submit {
+  font-size: 17px;
+  padding: 10px 22px;
+  margin-top: 5px;
+  margin-bottom: -10px;
+}	
 .user-bank-payout-forms .form-submit {
   font-size: 17px;
   padding: 10px 22px;
+  margin-top: 10px;
+  margin-bottom: -10px;
 }	
 select.bank-country,
 select.bank-country-iban,
@@ -2202,11 +2215,10 @@ select.bank-currency-iban{
   	background: #fff url("../images/icon-select-black.png") no-repeat scroll 97% 50%;
     border: 0 none;
     border-radius: 6px;
-    height: 41px;
-    padding: 10px;
+    height: 40px;
+    padding: 7px 10px;
     width: 100%;
 	border:1px solid #ccc;
-	margin-bottom:18px;
 	}
 .model-payout-section .form-heading {
   margin-top: 17px;

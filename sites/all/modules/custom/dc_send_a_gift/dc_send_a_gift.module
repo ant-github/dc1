@@ -511,8 +511,7 @@ function send_user_bank_details_to_stripe(){
                     $newAcc =   Account::create(
                         array(
                             "managed"   =>  true,
-                            "country"   =>  $user_details->field_delivery_address['und'][0]['country'],
-                            "email"     =>  $user_email                
+                            "country"   =>  $user_details->field_delivery_address['und'][0]['country']               
                         )
                     );    
                    

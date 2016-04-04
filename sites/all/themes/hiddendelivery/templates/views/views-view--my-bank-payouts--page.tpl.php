@@ -123,9 +123,9 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                         </script>            
                         <form id="model-add-bank-details-form" action="<?php echo $base_url; ?>/dc_add_bank_details" method="post">
                             <div class="col-sm-12 clearfix">
-                                <div class="form-heading">
+<!--                                <div class="form-heading">
                                     <span>Add New Bank Account</span>
-                                </div>
+                                </div>-->
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-sm-6 form-group routing-number-field">
@@ -233,9 +233,9 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                         </script>
                         <form id="model-add-bank-details-iban-form" action="<?php echo $base_url; ?>/dc_add_bank_details" method="post">
                             <div class="col-sm-12 clearfix">
-                                <div class="form-heading">
+<!--                                <div class="form-heading">
                                     <label>Add New Bank Account</label>
-                                </div>
+                                </div>-->
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-sm-6 bank-country-field">
