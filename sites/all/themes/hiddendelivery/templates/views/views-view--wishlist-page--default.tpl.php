@@ -231,10 +231,11 @@ if($user->uid == 0){
                     </div>
                     </div>    
                     
-                       <div class="col-sm-12">
+                    <div class="col-sm-12">
                      <div class="row">          
                     <div class="col-sm-6">
-                        <input type="text" value="" name="address_country" placeholder="Country" class="address_country"/>
+                        <input type="text" value="" name="address_city" placeholder="City" class="address_city"/>
+                        
                     </div>            
                     <div class="col-sm-6">
                         <input type="text" value="" name="address_state" placeholder="State" class="address_state"/>
@@ -242,13 +243,13 @@ if($user->uid == 0){
                     </div>
                     </div>    
                         
-                        <div class="col-sm-12">
-                     <div class="row">            
-                    <div class="col-sm-6">
-                        <input type="text" value="" name="address_city" placeholder="City" class="address_city"/>
-                    </div>            
+                    <div class="col-sm-12">
+                    <div class="row">            
                     <div class="col-sm-6">
                         <input type="text" value="" name="address_zip" placeholder="Postal Code/Zip" class="address_zip"/>
+                    </div>            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_country" placeholder="Country" class="address_country"/>
                     </div> 
                     </div>
                     </div> 
