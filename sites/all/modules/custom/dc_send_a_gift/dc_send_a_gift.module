@@ -511,6 +511,9 @@ function send_user_bank_details_to_stripe(){
                             "external_account" => $stripe_token,
                             "default_for_currency" => true,
                     ));   
+                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
+                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
+                    user_save($user_details);
                     
                     if($old_bank_account != ''){
                         $account->external_accounts->retrieve($old_bank_account)->delete();
@@ -534,12 +537,11 @@ function send_user_bank_details_to_stripe(){
                           ),
                           array("stripe_account" => $user_stripe_account_id)
                         );
-//                       print "<pre>"; print_r($file); print "<br/>";print "<br/>";
-                       $account->legal_entity->verification->document = $file->id;
-                       $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1;                      
+                       if(isset($file->id) && $file->id != ''){
+                        $account->legal_entity->verification->document = $file->id;
+                        $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1; 
+                       }
                     }                      
-                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
-                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);                    
                     
                 }else{
@@ -578,8 +580,15 @@ function send_user_bank_details_to_stripe(){
                     $account->legal_entity->personal_address->line1 = $user_details->field_delivery_address['und'][0]['thoroughfare'];
                     $account->legal_entity->address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
                     $account->legal_entity->personal_address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
-                    $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];
-
+                    $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];                    
+                    
+                    $account->save();                    
+                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
+                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
+                    user_save($user_details);
+                    
+                    $account = Account::retrieve($user_stripe_account_id);
+                    
                     if(isset($_POST['ssn_last_4']) && $_POST['ssn_last_4'] !=''){
                         $account->legal_entity->ssn_last_4 = $_POST['ssn_last_4'];
                         $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
@@ -597,15 +606,13 @@ function send_user_bank_details_to_stripe(){
                           ),
                           array("stripe_account" => $user_stripe_account_id)
                         );
-//                       print "<pre>"; print_r($file); print "<br/>";print "<br/>";
-                       $account->legal_entity->verification->document = $file->id;
-                       $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1;                      
-                    }                    
-                    
-                    $account->save();                    
-                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
-                    $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
+                       if(isset($file->id) && $file->id != ''){
+                        $account->legal_entity->verification->document = $file->id;
+                        $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1; 
+                       }                      
+                    }  
                     user_save($user_details);
+                    
                 }        
 
                 drupal_set_message('Your bank details has been saved. You can now redeem your gift to your bank account.','status');
@@ -614,7 +621,7 @@ function send_user_bank_details_to_stripe(){
             catch (Exception $e) {
                 // print error when debugging , no need to show error messages directly, bcoz it contails the word "Stripe"
                     $error = $e->getMessage();
-                    drupal_set_message('Some error occurred while updating your bank details. '.$error.' Please try after some time.','error');
+                    drupal_set_message('Some error occurred while updating your details. '.$error.' Please try after some time.','error');
                     drupal_goto($base_url.'/user/my-bank-payouts');                       
             }  
     }
