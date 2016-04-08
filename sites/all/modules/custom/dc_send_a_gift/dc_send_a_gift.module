@@ -257,6 +257,9 @@ function commerce_stripe_gift_charge($wishlist_id){
         
       }
       catch (Exception $e) {
+          if(isset($gift_voucher_nid) && $gift_voucher_nid != ''){
+            node_delete($gift_voucher_nid);  
+          }          
         $error = $e->getMessage(); 
                 drupal_set_message('Your gift can not be send becasue: '.$error,'error');
                 drupal_goto($base_url.'/wishlist/'.$wishlist_id);      
