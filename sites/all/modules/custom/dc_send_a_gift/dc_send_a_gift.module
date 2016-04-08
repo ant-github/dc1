@@ -6,6 +6,7 @@
     use Stripe\ApplicationFee;
     //use Stripe\Recipient;
     use Stripe\Account;
+    use Stripe\FileUpload;
     use Stripe\Balance;
     use Stripe\BalanceTransaction;
     use Stripe\Transfer;
@@ -38,6 +39,13 @@ function dc_send_a_gift_menu() {
   $items['dc_add_bank_details'] = array(
     'title' => 'Add Bank Details',
     'page callback' => 'send_user_bank_details_to_stripe',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['update_model_id_info'] = array(
+    'title' => 'Update model IDs',
+    'page callback' => 'update_model_id_to_stripe',
     'page arguments' => '',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -107,6 +115,9 @@ function commerce_stripe_gift_charge($wishlist_id){
         Stripe::setApiKey($settings['secret_key']);
         if (isset($_POST['stripeToken'])){
             
+            /*
+             * Create node to show model about gift received and for admin for order records
+             */
         $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
         foreach($select_currency_rates_nid AS $res_currency_rates){
                 $currency_rates_nid = $res_currency_rates->nid;
@@ -284,7 +295,7 @@ function update_user_gift_voucher_balance($nid){
   
         $user_id = $user->uid;
         $node = node_load($nid);
-    if($user->uid == $node->field_model_id['und'][0]['value']){        
+        if($user->uid == $node->field_model_id['und'][0]['value']){
         $currency = $node->field_gift_currency['und'][0]['value'];
         $amount = $node->field_gift_amount['und'][0]['value'];
 
@@ -367,37 +378,36 @@ function update_user_gift_voucher_balance($nid){
         field_cache_clear(TRUE);
         drupal_set_message('Your gift amount has been added to your gift voucher balance.','status');
         drupal_goto($base_url.'/user/gifts');
-        
     }else{
         drupal_set_message('You can not receive this gift.','error');
         drupal_goto($base_url.'/user/gifts');        
-    }        
+    }    
 }
 
 /*
  * Sending payment to model's bank account.
  */
 
-function send_cash_user_bank_account($nid){
+function send_cash_user_bank_account($nid) {
     global $user;
     global $base_url;
     $user_fields = user_load($user->uid);  
     $settings = _load_payment_settings();
     $node = node_load($nid);
-  if($user->uid == $node->field_model_id['und'][0]['value']){
+    if($user->uid == $node->field_model_id['und'][0]['value']){
     if(isset($user_fields->field_bank_payout_account_id['und'][0]['value']) && $user_fields->field_bank_payout_account_id['und'][0]['value'] != '')  {   
 //        $currency = $node->field_gift_currency['und'][0]['value'];
-        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value']; 
+        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
         $amount = number_format(($amount_get), 2); 
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
         $model_real_name = $user_fields->field_name['und'][0]['value'];
             try{    
-                Stripe::setApiKey($settings['secret_key']);    
+                Stripe::setApiKey($settings['secret_key']);  
                 $check_bal = Balance::retrieve();
                 $current_bal = $check_bal->available[0]->amount; 
                 $merchant_bal = ($current_bal/100); 
-//                if($merchant_bal > $amount_get){
+                if($merchant_bal > $amount_get){
                     $desc = "Transfer for ".$model_real_name;
 
                     $transfer =  Transfer::create(array(
@@ -406,10 +416,10 @@ function send_cash_user_bank_account($nid){
                       "destination" => $user_fields->field_bank_payout_account_id['und'][0]['value'],
                       "description" => $desc
                     )); 
-//                }else{     
-//                    drupal_set_message('Merchant has low balance to transfer. Please try after some time OR contact to administrator.','error');
-//                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
-//                }
+                }else{     
+                    drupal_set_message('Some error occured while transferring amount to your bank account. Please try after some time','error');
+                    drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
+                }
             }
             catch (Exception $e) {
                     $error = $e->getMessage();
@@ -462,13 +472,14 @@ function send_cash_user_bank_account($nid){
                 drupal_goto($base_url.'/user/my-bank-payouts');        
     }
     }else{
-            drupal_set_message('You can not receive this gift.','error');
-            drupal_goto($base_url.'/user/my-bank-payouts');         
+                drupal_set_message('You can not receive this gift.','error');
+                drupal_goto($base_url.'/user/my-bank-payouts');         
     }
 }
 
 function send_user_bank_details_to_stripe(){
     global $user;
+    
     global $base_url;
     if(isset($_POST['stripeToken']) && $_POST['stripeToken'] != ''){
         $user_details = user_load($user->uid);
@@ -476,8 +487,7 @@ function send_user_bank_details_to_stripe(){
             $date = date('Y-m-d');
             $strtotime_date = strtotime($date);
             $stripe_token = $_POST['stripeToken'];
-            $user_ip = $_SERVER['REMOTE_ADDR'];  
-            
+            $user_ip = $_SERVER['REMOTE_ADDR']; 
             $model_get_real_name = $user_details->field_name['und'][0]['value'];
             $model_real_name = explode(' ',$model_get_real_name);
             $model_first_name = $model_real_name[0];
@@ -486,9 +496,9 @@ function send_user_bank_details_to_stripe(){
             }else{
                 $model_last_name = 'lastName';
             }
-            
+//            print "<pre>"; print_r($model_real_name); die();
             try{
-                Stripe::setApiKey($settings['secret_key']);      
+                Stripe::setApiKey($settings['secret_key']);   
                 
                 $user_email = $user->mail; 
                 
@@ -506,6 +516,28 @@ function send_user_bank_details_to_stripe(){
                         $account->external_accounts->retrieve($old_bank_account)->delete();
                     }     
                     $account = Account::retrieve($user_stripe_account_id);
+                    
+                    if(isset($_POST['ssn_last_4']) && $_POST['ssn_last_4'] !=''){
+                        $account->legal_entity->ssn_last_4 = $_POST['ssn_last_4'];
+                        $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                    }
+//                    print $_POST['personal_id_number']; print "<br/>";print "<br/>";
+                    if(isset($_POST['personal_id_number']) && $_POST['personal_id_number'] !=''){
+                        $account->legal_entity->personal_id_number = $_POST['personal_id_number'];
+                        $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                    } 
+                    if(isset($_FILES) && $_FILES['upload_verification_doc']['name'] !=''){
+                       $file =  FileUpload::create(
+                          array(
+                            "purpose" => "identity_document",
+                            "file" => fopen($_FILES['upload_verification_doc']['tmp_name'], 'r')
+                          ),
+                          array("stripe_account" => $user_stripe_account_id)
+                        );
+//                       print "<pre>"; print_r($file); print "<br/>";print "<br/>";
+                       $account->legal_entity->verification->document = $file->id;
+                       $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1;                      
+                    }                      
                     $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
                     $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);                    
@@ -514,7 +546,7 @@ function send_user_bank_details_to_stripe(){
                     $newAcc =   Account::create(
                         array(
                             "managed"   =>  true,
-                            "country"   =>  $user_details->field_delivery_address['und'][0]['country']               
+                            "country"   =>  $user_details->field_delivery_address['und'][0]['country']              
                         )
                     );    
                    
@@ -525,11 +557,12 @@ function send_user_bank_details_to_stripe(){
                     user_save($user_details);
                     
                     $account = Account::retrieve($user_stripe_account_id);
-                    
                     $account->external_accounts->create(array(
                             "external_account" => $stripe_token,
                             "default_for_currency" => true,
-                    ));                     
+                    ));   
+
+//                    print "<pre>"; print_r($account); die();
                     $account->tos_acceptance->ip = $user_ip;
                     $account->tos_acceptance->date = time();
                     $account->legal_entity->dob->year = '1988';
@@ -547,41 +580,87 @@ function send_user_bank_details_to_stripe(){
                     $account->legal_entity->personal_address->postal_code = $user_details->field_delivery_address['und'][0]['postal_code'];
                     $account->legal_entity->address->state = $user_details->field_delivery_address['und'][0]['administrative_area'];
 
-                    $account->save();     
+                    if(isset($_POST['ssn_last_4']) && $_POST['ssn_last_4'] !=''){
+                        $account->legal_entity->ssn_last_4 = $_POST['ssn_last_4'];
+                        $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                    }
+//                    print $_POST['personal_id_number']; print "<br/>";print "<br/>";
+                    if(isset($_POST['personal_id_number']) && $_POST['personal_id_number'] !=''){
+                        $account->legal_entity->personal_id_number = $_POST['personal_id_number'];
+                        $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                    } 
+                    if(isset($_FILES) && $_FILES['upload_verification_doc']['name'] !=''){
+                       $file =  FileUpload::create(
+                          array(
+                            "purpose" => "identity_document",
+                            "file" => fopen($_FILES['upload_verification_doc']['tmp_name'], 'r')
+                          ),
+                          array("stripe_account" => $user_stripe_account_id)
+                        );
+//                       print "<pre>"; print_r($file); print "<br/>";print "<br/>";
+                       $account->legal_entity->verification->document = $file->id;
+                       $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1;                      
+                    }                    
+                    
+                    $account->save();                    
                     $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
                     $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);
-                }
-        
+                }        
 
                 drupal_set_message('Your bank details has been saved. You can now redeem your gift to your bank account.','status');
-                drupal_goto($base_url.'/user/gifts');                  
+                drupal_goto($base_url.'/user/my-bank-payouts');                  
             }
             catch (Exception $e) {
+                // print error when debugging , no need to show error messages directly, bcoz it contails the word "Stripe"
                     $error = $e->getMessage();
-                    drupal_set_message('Some error occurred while updating your bank details, @error: '.$error.'. Please try after some time.','error');
+                    drupal_set_message('Some error occurred while updating your bank details. '.$error.' Please try after some time.','error');
                     drupal_goto($base_url.'/user/my-bank-payouts');                       
             }  
     }
 }
 
-function send_user_legel_details_to_stripe(){
+function update_model_id_to_stripe(){
     
     global $user;
     global $base_url;
-        $user_details = user_load($user->uid);       
-            $date = date('Y-m-d');
-            $strtotime_date = strtotime($date);
-            $user_ip = $_SERVER['REMOTE_ADDR'];  
+        $user_details = user_load($user->uid);
+        $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
+        $settings = _load_payment_settings();
+        
+
             try{
-                $settings = _load_payment_settings();
-                Stripe::setApiKey($settings['secret_key']); 
-                $account = Account::retrieve('acct_17vHYeBd9yaeRAaK'); 
-                $account->transfer_schedule->interval = "manual";
+                Stripe::setApiKey($settings['secret_key']);
+                $account = Account::retrieve($user_stripe_account_id);                  
+                if(isset($_POST['ssn_last_4']) && $_POST['ssn_last_4'] !=''){
+                    $account->legal_entity->ssn_last_4 = $_POST['ssn_last_4'];
+                    $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                }
+                if(isset($_POST['personal_id_number']) && $_POST['personal_id_number'] !=''){
+                    $account->legal_entity->personal_id_number = $_POST['personal_id_number'];
+                    $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = 1;
+                } 
+                if(isset($_FILES) && $_FILES['upload_verification_doc']['name'] !=''){
+                   $file =  FileUpload::create(
+                      array(
+                        "purpose" => "identity_document",
+                        "file" => fopen($_FILES['upload_verification_doc']['tmp_name'], 'r')
+                      ),
+                      array("stripe_account" => $user_stripe_account_id)
+                    );
+                   $account->legal_entity->verification->document = $file->id;
+                   $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1;                      
+                }
+                //save stripe account
                 $account->save();
-                die('try');
-            } catch (Exception $ex) {
-                die('catch');
+                //update user account details
+                user_save($user_details); 
+                drupal_set_message('Your account details has been saved.','status');
+                drupal_goto($base_url.'/user/my-bank-payouts');                
+            } catch (Exception $e) {
+                    $error = $e->getMessage();
+                    drupal_set_message('Some error occurred while updating your account. @error '.$error.'.','error');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                               
             }
  
 }

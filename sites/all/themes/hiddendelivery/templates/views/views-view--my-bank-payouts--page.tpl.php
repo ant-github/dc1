@@ -1,4 +1,16 @@
 <?php
+
+/*
+Important Note:
+
+Please do not replace directrly this file with the live website file,  Please replace or change the working code
+
+Reason:  
+Different public key is used in this file, on live site there is different stripe publishable key"    
+ "pk_test_4S8XotFis6j7VWvhD0nWT2Jd" on live it is different
+ */
+
+
 /**
  * @file
  * Main view template.
@@ -27,465 +39,286 @@
  */
 global $base_url;
 global $user;
-if ($user->uid != 0) {
-    $user_details = user_load($user->uid);
-
-    /* get stripe coutries list to transfer ammount from user's field_stripe_account_country */
-$stripe_country_list = field_info_field('field_stripe_account_country');
-$stripe_country_list_options = list_allowed_values($stripe_country_list);    
-if (array_key_exists($user_details->field_delivery_address['und'][0]['country'], $stripe_country_list_options)) {  
-    ?>
-    <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
-    <!-- jQuery is used only for this example; it isn't required to use Stripe -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript">
-        // this identifies your website in the createToken call below
-        Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
-    </script>
-    <div class="user-bank-payout-forms">
-        <noscript>
-        <div class="bs-callout bs-callout-danger">
-            <h4>JavaScript is not enabled!</h4>
-            <p>This payment form requires your browser to have JavaScript enabled. Please activate JavaScript and reload this page. Check <a href="http://enable-javascript.com" target="_blank">enable-javascript.com</a> for more informations.</p>
-        </div>
-        </noscript>    
-        <div class="bank-payout-tabs">
-            <ul>
-                <li class="active add-bank-account-tab">Bank Account</li>
-            </ul>
-        </div>
-
+$userWishlistId = arg(1);
+if($user->uid == 0){
+?>
+        <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+        <!-- jQuery is used only for this example; it isn't required to use Stripe -->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            // this identifies your website in the createToken call below
+            Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
+//            Stripe.setPublishableKey('pk_test_4S8XotFis6j7VWvhD0nWT2Jd');
+            function stripeResponseHandler(status, response) {
+                if (response.error) {
+                    // re-enable the submit button
+                    $('.submit-button').removeAttr("disabled");
+                    // show the errors on the form
+                    $(".payment-errors").css("display", "block");
+                    $(".payment-errors").html(response.error.message);
+                } else {
+                    var form$ = $("#payment-form");
+                    // token contains id, last4, and card type
+                    var token = response['id'];
+                    // insert the token into the form so it gets submitted to the server
+                    form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
+                    // and submit
+                    form$.get(0).submit();
+                }
+            }
+            $(document).ready(function() {
+                $("#payment-form").submit(function(event) {
+//                    var user_name = $('#payment-form .user_name').val();
+                    var user_email = $('#payment-form .user_email').val();
+                    var address_country = $('#payment-form .address_country').val();
+                    var address_state = $('#payment-form .address_state').val();
+                    var address_zip = $('#payment-form .address_zip').val();
+                    var address_line1 = $('#payment-form .address_line1').val();
+                    var address_city = $('#payment-form .address_city').val();
+                    var user_message = $('#payment-form .user_message').val();
+                    var amount = $('#payment-form .payment-amount').val();
+                    if(amount < 5){
+                        $(".payment-errors").css("display", "block");
+                        $(".payment-errors").html('Amount should be greater than 5.');
+                        $('html,body').animate({'scrollTop' : 200},1000);
+                        return false;                        
+                    }
+                    if(amount >= 1000){
+                        $(".payment-errors").css("display", "block");
+                        $(".payment-errors").html('Amount should be less than 1000.');
+                        $('html,body').animate({'scrollTop' : 200},1000);
+                        return false;                        
+                    }
+                    if(user_email == '' || address_country == '' || address_state == '' || address_zip == '' || address_line1 == '' || address_city == '' || user_message == ''){
+                        $(".payment-errors").css("display", "block");
+                        $(".payment-errors").html('All fields are required, except the Name field. Please enter the required information.');
+                        $('html,body').animate({'scrollTop' : 200},1000);
+                        return false;
+                    }
+                    // disable the submit button to prevent repeated clicks
+                    $('.submit-button').attr("disabled", "disabled");
+                    // createToken returns immediately - the supplied callback submits the form if there are no errors
+                    Stripe.createToken({
+                        number: $('.card_number').val(),
+                        cvc: $('.card_cvc').val(),
+                        exp_month: $('.card_expiry_month').val(),
+                        exp_year: $('.card_expiry_year').val(),
+                        name: $('.user_name').val(),
+                        address_line1: $('.address_line1').val(),
+                        address_city: $('.address_city').val(),
+                        address_state: $('.address_state').val(),
+                        address_zip: $('.address_zip').val(),
+                        address_country: $('.address_country').val()
+                    }, stripeResponseHandler);
+                    return false; // submit from callback
+                });
+            });
+        </script>
 <?php
-if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) && $user_details->field_stripe_payout_bank_account['und'][0]['value'] != '') {
+}
 ?>
-        <div class="col-sm-12 bank-account-detail">
-            <div class="bank-account-details-text">
-             You currently have a bank account linked. Account ending with <?php echo $user_details->field_stripe_bank_account['und'][0]['value'];?>.
-            </div>
-            <div class="add-new-bank-account">
-                <button class="add-new-bank-button">Add New</button>
-            </div>
-        </div>
-        <div class="col-sm-12 add-bank-account-form" style="display: none;">
-<?php }else{ ?>
-        <div class="col-sm-12 add-bank-account-form">
-<?php } ?>       
-        
-            <div class="form-fields">
-                <span class="payment-errors"></span>
-                <?php
-//                if (isset($user_details->field_bank_payout_account_id['und'][0]['value']) && $user_details->field_bank_payout_account_id['und'][0]['value'] != '') {
-                    $country_value = $user_details->field_delivery_address['und'][0]['country'];
-                    if ($country_value == 'US' || $country_value == 'CA' || $country_value == 'AU') {
-
-                        if ($country_value == 'AU') {
-                            $currency_value = 'AUD';
-                        } else {
-                            $currency_value = 'USD';
-                        }
-                        ?> 
-                        <script type="text/javascript">
-                            //            Stripe.setPublishableKey('pk_test_4S8XotFis6j7VWvhD0nWT2Jd');
-                            function stripeResponseHandlerAcc(status, response) {
-                                if (response.error) {
-                                    // re-enable the submit button
-                                    $('.submit-button').removeAttr("disabled");
-                                    // show the errors on the form
-                                    $(".payment-errors").css("display", "block");
-                                    $(".payment-errors").css("color", "#b94a48");
-                                    $(".payment-errors").css("padding-left", "10px");
-                                    $(".payment-errors").css("background", "#f2dede");
-                                    $(".payment-errors").html(response.error.message);
-                                } else {
-                                    var form$ = $("#model-add-bank-details-form");
-                                    // token contains id, last4, and card type
-                                    var token = response['id'];
-                                    // insert the token into the form so it gets submitted to the server
-                                    form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-                                    // and submit
-                                    form$.get(0).submit();
-                                }
-                            }
-                            $(document).ready(function () {
-                                $("#model-add-bank-details-form").submit(function (event) {
-                                    // disable the submit button to prevent repeated clicks
-                                    $('.submit-button').attr("disabled", "disabled");
-                                    // createToken returns immediately - the supplied callback submits the form if there are no errors
-                                    Stripe.bankAccount.createToken({
-                                        country: '<?php echo $country_value; ?>',
-                                        currency: '<?php echo $currency_value; ?>',
-                                        routing_number: $('.routing-number').val(),
-                                        account_number: $('.account-number').val()
-                                    }, stripeResponseHandlerAcc);
-                                    return false; // submit from callback
-                                });
-                            });
-                        </script>            
-                        <form id="model-add-bank-details-form" action="<?php echo $base_url; ?>/dc_add_bank_details" method="post">
-                            <div class="col-sm-12 clearfix">
-<!--                                <div class="form-heading">
-                                    <span>Add New Bank Account</span>
-                                </div>-->
-                                <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col-sm-6 form-group routing-number-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-                                                        <label>Routing Number</label>
-                                                        <input type="text" name="routingNumber" class="form-control routing-number"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 account-number-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-                                                        <label>Account Number</label>
-                                                        <input type="text" name="accountNumber" class="form-control account-number"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        </div>
-                                         <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col-sm-6 bank-country-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">        
-                                                        <label>Your Bank Account Country</label>
-                                                        <select class="form-control bank-country" disabled="disabled">
-                                                            
-                <?php
-                    foreach($stripe_country_list_options AS $key=>$values){
-                ?>
-                    <option value="<?php echo $key;?>" <?php if ($country_value == $key) {echo "selected=selected";}?>><?php echo $values;?></option>
-                <?php
-                    }
-                ?>  
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        </div>
-                                         <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="row">
-                                                <div class="col-sm-6"> 
-                                                    <div class="row">
-                                                        <div class="col-sm-11"> 
-                                                            <div class="row">                                
-                                                        <input type="submit" class="submit-button form-submit" value="Submit"/> 
-                                                    </div>
-                                                </div>
-                                            </div>                                
-                                        </div>  
-                                        </div>  
-                                        </div>     
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <?php
-                    } else {
-                        ?>
-                        <script type="text/javascript">
-                            //            Stripe.setPublishableKey('pk_test_4S8XotFis6j7VWvhD0nWT2Jd');
-                            function stripeResponseHandlerAcc(status, response) {
-                                if (response.error) {
-                                    // re-enable the submit button
-                                    $('.form-submit').removeAttr("disabled");
-                                    // show the errors on the form
-                                    $(".payment-errors").css("display", "block");
-                                    $(".payment-errors").css("color", "#b94a48");
-                                    $(".payment-errors").css("padding-left", "10px");
-                                    $(".payment-errors").css("background", "#f2dede");
-                                    $(".payment-errors").html(response.error.message);
-                                } else {
-                                    var form$ = $("#model-add-bank-details-iban-form");
-                                    // token contains id, last4, and card type
-                                    var token = response['id'];
-                                    // insert the token into the form so it gets submitted to the server
-                                    form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-                                    // and submit
-                                    form$.get(0).submit();
-                                }
-                            }
-                            $(document).ready(function () {
-                                $("#model-add-bank-details-iban-form").submit(function (event) {
-                                    // disable the submit button to prevent repeated clicks
-                                    $('.submit-button').attr("disabled", "disabled");
-                                    // createToken returns immediately - the supplied callback submits the form if there are no errors
-                                    Stripe.bankAccount.createToken({
-                                        country: '<?php echo $country_value; ?>',
-                                        currency: $('.bank-currency-iban').val(),
-                                        account_number: $('.account-number-iban').val()
-                                    }, stripeResponseHandlerAcc);
-                                    return false; // submit from callback
-                                });
-                            });
-                        </script>
-                        <form id="model-add-bank-details-iban-form" action="<?php echo $base_url; ?>/dc_add_bank_details" method="post">
-                            <div class="col-sm-12 clearfix">
-<!--                                <div class="form-heading">
-                                    <label>Add New Bank Account</label>
-                                </div>-->
-                                <div class="col-sm-12">
-                                    <div class="row">
-                                        <div class="col-sm-6 bank-country-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-
-                                                        <label>Your Bank Account Country</label>
-                                                        <select class="form-control bank-country-iban" disabled="disabled">
-                <?php
-                    foreach($stripe_country_list_options AS $key=>$values){
-                ?>
-                    <option value="<?php echo $key;?>" <?php if ($country_value == $key) {echo "selected=selected";}?>><?php echo $values;?></option>
-                <?php
-                    }
-                ?>                                                            
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-group bank-currency-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-                                                        <label>Select Currency</label>
-                                                        <select class="form-control bank-currency-iban">
-                                                            <option value="">Select your bank account currency</option> 
-                                                            <option value="AED">United Arab Emirates dirham</option> 
-                                                            <option value="AFN">Afghan afghani</option> 
-                                                            <option value="ALL">Albanian lek</option> 
-                                                            <option value="AMD">Armenian dram</option> 
-                                                            <option value="AOA">Angolan kwanza</option> 
-                                                            <option value="ARS">Argentine peso</option> 
-                                                            <option value="AUD">Australian dollar</option> 
-                                                            <option value="AWG">Aruban florin</option> 
-                                                            <option value="AZN">Azerbaijani manat</option> 
-                                                            <option value="BAM">Bosnia and Herzegovina convertible mark</option> 
-                                                            <option value="BBD">Barbadian dollar</option> 
-                                                            <option value="BDT">Bangladeshi taka</option> 
-                                                            <option value="BGN">Bulgarian lev</option> 
-                                                            <option value="BHD">Bahraini dinar</option> 
-                                                            <option value="BIF">Burundian franc</option> 
-                                                            <option value="BMD">Bermudian dollar</option> 
-                                                            <option value="BND">Brunei dollar</option> 
-                                                            <option value="BOB">Bolivian boliviano</option> 
-                                                            <option value="BRL">Brazilian real</option> 
-                                                            <option value="BSD">Bahamian dollar</option> 
-                                                            <option value="BTN">Bhutanese ngultrum</option> 
-                                                            <option value="BWP">Botswana pula</option> 
-                                                            <option value="BYR">Belarusian ruble</option> 
-                                                            <option value="BZD">Belize dollar</option> 
-                                                            <option value="CAD">Canadian dollar</option> 
-                                                            <option value="CDF">Congolese franc</option> 
-                                                            <option value="CHF">Swiss franc</option> 
-                                                            <option value="CLP">Chilean peso</option> 
-                                                            <option value="CNY">Chinese yuan</option> 
-                                                            <option value="COP">Colombian peso</option> 
-                                                            <option value="CRC">Costa Rican colón</option> 
-                                                            <option value="CUP">Cuban convertible peso</option> 
-                                                            <option value="CVE">Cape Verdean escudo</option> 
-                                                            <option value="CZK">Czech koruna</option> 
-                                                            <option value="DJF">Djiboutian franc</option> 
-                                                            <option value="DKK">Danish krone</option> 
-                                                            <option value="DOP">Dominican peso</option> 
-                                                            <option value="DZD">Algerian dinar</option> 
-                                                            <option value="EGP">Egyptian pound</option> 
-                                                            <option value="ERN">Eritrean nakfa</option> 
-                                                            <option value="ETB">Ethiopian birr</option> 
-                                                            <option value="EUR">Euro</option> 
-                                                            <option value="FJD">Fijian dollar</option> 
-                                                            <option value="FKP">Falkland Islands pound</option> 
-                                                            <option value="GBP">British pound</option> 
-                                                            <option value="GEL">Georgian lari</option> 
-                                                            <option value="GHS">Ghana cedi</option> 
-                                                            <option value="GMD">Gambian dalasi</option> 
-                                                            <option value="GNF">Guinean franc</option> 
-                                                            <option value="GTQ">Guatemalan quetzal</option> 
-                                                            <option value="GYD">Guyanese dollar</option> 
-                                                            <option value="HKD">Hong Kong dollar</option> 
-                                                            <option value="HNL">Honduran lempira</option> 
-                                                            <option value="HRK">Croatian kuna</option> 
-                                                            <option value="HTG">Haitian gourde</option> 
-                                                            <option value="HUF">Hungarian forint</option> 
-                                                            <option value="IDR">Indonesian rupiah</option> 
-                                                            <option value="ILS">Israeli new shekel</option> 
-                                                            <option value="IMP">Manx pound</option> 
-                                                            <option value="INR">Indian rupee</option> 
-                                                            <option value="IQD">Iraqi dinar</option> 
-                                                            <option value="IRR">Iranian rial</option> 
-                                                            <option value="ISK">Icelandic króna</option> 
-                                                            <option value="JEP">Jersey pound</option> 
-                                                            <option value="JMD">Jamaican dollar</option> 
-                                                            <option value="JOD">Jordanian dinar</option> 
-                                                            <option value="JPY">Japanese yen</option> 
-                                                            <option value="KES">Kenyan shilling</option> 
-                                                            <option value="KGS">Kyrgyzstani som</option> 
-                                                            <option value="KHR">Cambodian riel</option> 
-                                                            <option value="KMF">Comorian franc</option> 
-                                                            <option value="KPW">North Korean won</option> 
-                                                            <option value="KRW">South Korean won</option> 
-                                                            <option value="KWD">Kuwaiti dinar</option> 
-                                                            <option value="KYD">Cayman Islands dollar</option> 
-                                                            <option value="KZT">Kazakhstani tenge</option> 
-                                                            <option value="LAK">Lao kip</option> 
-                                                            <option value="LBP">Lebanese pound</option> 
-                                                            <option value="LKR">Sri Lankan rupee</option> 
-                                                            <option value="LRD">Liberian dollar</option> 
-                                                            <option value="LSL">Lesotho loti</option> 
-                                                            <option value="LTL">Lithuanian litas</option> 
-                                                            <option value="LVL">Latvian lats</option> 
-                                                            <option value="LYD">Libyan dinar</option> 
-                                                            <option value="MAD">Moroccan dirham</option> 
-                                                            <option value="MDL">Moldovan leu</option> 
-                                                            <option value="MGA">Malagasy ariary</option> 
-                                                            <option value="MKD">Macedonian denar</option> 
-                                                            <option value="MMK">Burmese kyat</option> 
-                                                            <option value="MNT">Mongolian tögrög</option> 
-                                                            <option value="MOP">Macanese pataca</option> 
-                                                            <option value="MRO">Mauritanian ouguiya</option> 
-                                                            <option value="MUR">Mauritian rupee</option> 
-                                                            <option value="MVR">Maldivian rufiyaa</option> 
-                                                            <option value="MWK">Malawian kwacha</option> 
-                                                            <option value="MXN">Mexican peso</option> 
-                                                            <option value="MYR">Malaysian ringgit</option> 
-                                                            <option value="MZN">Mozambican metical</option> 
-                                                            <option value="NAD">Namibian dollar</option> 
-                                                            <option value="NGN">Nigerian naira</option> 
-                                                            <option value="NIO">Nicaraguan cordoba</option> 
-                                                            <option value="NOK">Norwegian krone</option> 
-                                                            <option value="NPR">Nepalese rupee</option> 
-                                                            <option value="NZD">New Zealand dollar</option> 
-                                                            <option value="OMR">Omani rial</option> 
-                                                            <option value="PAB">Panamanian balboa</option> 
-                                                            <option value="PEN">Peruvian nuevo sol</option> 
-                                                            <option value="PGK">Papua New Guinean kina</option> 
-                                                            <option value="PHP">Philippine peso</option> 
-                                                            <option value="PKR">Pakistani rupee</option> 
-                                                            <option value="PLN">Polish złoty</option> 
-                                                            <option value="PRB">Transnistrian ruble</option> 
-                                                            <option value="PYG">Paraguayan guaraní</option> 
-                                                            <option value="QAR">Qatari riyal</option> 
-                                                            <option value="RON">Romanian leu</option> 
-                                                            <option value="RSD">Serbian dinar</option> 
-                                                            <option value="RUB">Russian ruble</option> 
-                                                            <option value="RWF">Rwandan franc</option> 
-                                                            <option value="SAR">Saudi riyal</option> 
-                                                            <option value="SBD">Solomon Islands dollar</option> 
-                                                            <option value="SCR">Seychellois rupee</option> 
-                                                            <option value="SDG">Singapore dollar</option> 
-                                                            <option value="SEK">Swedish krona</option> 
-                                                            <option value="SGD">Singapore dollar</option> 
-                                                            <option value="SHP">Saint Helena pound</option> 
-                                                            <option value="SLL">Sierra Leonean leone</option> 
-                                                            <option value="SOS">Somali shilling</option> 
-                                                            <option value="SRD">Surinamese dollar</option> 
-                                                            <option value="SSP">South Sudanese pound</option> 
-                                                            <option value="STD">Sao Tome and Principe dobra</option> 
-                                                            <option value="SVC">Salvadoran colon</option> 
-                                                            <option value="SYP">Syrian pound</option> 
-                                                            <option value="SZL">Swazi lilangeni</option> 
-                                                            <option value="THB">Thai baht</option> 
-                                                            <option value="TJS">Tajikistani somoni</option> 
-                                                            <option value="TMT">Turkmenistan manat</option> 
-                                                            <option value="TND">Tunisian dinar</option> 
-                                                            <option value="TOP">Tongan paanga</option> 
-                                                            <option value="TRY">Turkish lira</option> 
-                                                            <option value="TTD">Trinidad and Tobago dollar</option> 
-                                                            <option value="TWD">New Taiwan dollar</option> 
-                                                            <option value="TZS">Tanzanian shilling</option> 
-                                                            <option value="UAH">Ukrainian hryvnia</option> 
-                                                            <option value="UGX">Ugandan shilling</option> 
-                                                            <option value="USD">United States dollar</option> 
-                                                            <option value="UYU">Uruguayan peso</option> 
-                                                            <option value="UZS">Uzbekistani som</option> 
-                                                            <option value="VEF">Venezuelan bolívar</option> 
-                                                            <option value="VND">Vietnamese dong</option> 
-                                                            <option value="VUV">Vanuatu vatu</option> 
-                                                            <option value="WST">Samoan tala</option> 
-                                                            <option value="XAF">Central African CFA franc</option> 
-                                                            <option value="XCD">East Caribbean dollar</option> 
-                                                            <option value="XOF">West African CFA franc</option> 
-                                                            <option value="XPF">CFP franc</option> 
-                                                            <option value="YER">Yemeni rial</option> 
-                                                            <option value="ZAR">South African rand</option> 
-                                                            <option value="ZMW">Zambian kwacha</option> 
-                                                            <option value="ZWL">Zimbabwean dollar</option>  
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                    
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div class="col-sm-6 account-number-field">
-                                                    <div class="row">
-                                                        <div class="col-sm-11">
-                                                            <div class="row">
-                                                                <label>Account Number (IBAN)</label>
-                                                                <input type="text" name="accountNumberIban" class="form-control account-number-iban"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> 
-                                            </div>
-                                        </div> 
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div class="col-sm-6"> 
-                                                    <div class="row">
-                                                        <div class="col-sm-11"> 
-                                                            <div class="row">
-
-                                                                <input type="submit" class="submit-button form-submit" value="Submit"/> 
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                            </div>
-
-                        </form>
-                        <?php
-                    }
-                ?>            
-            </div>
-        </div>
+<div class="<?php print $classes; ?>">
+  <?php print render($title_prefix); ?>
+  <?php if ($title): ?>
+    <?php print $title; ?>
+  <?php endif; ?>
+  <?php print render($title_suffix); ?>
+  <?php if ($header): ?>
+    <div class="view-header">
+      <div class="row">
+      <div class="view-filters col-md-7">
+        <?php print $exposed; ?>
+        <?php if ($is_owner): ?>
+          <div class="manage-wishlist-display"><a href="<?php echo $base_url;?>/wishlist_manage/<?php echo arg(1);?>">Manage Wishlist Items Display</a></div>       	
+        <?php endif; ?>
+      </div>
+      <div class="share-wishlist-container col-md-5">
+        <?php if ($is_owner){ ?>
+          <button class="col-md-12 col-sm-12 white-button btn btn-primary btn-lg wishlistShare" data-toggle="modal" data-target="#<?php print $share_links_popup_id ;?>">
+            <span class="bg-sprite bg-sprite-circle-star2 share-wishlist"></span><?php print t('Share Your Wishlist Online'); ?>
+          </button>
+      <?php print $add_an_item_to_wishlist; ?>
+      <?php print $add_an_item_to_wishlist_popup; ?>
+      <?php print $add_items_from_amazon_wishlist; ?>
+      <?php print $add_items_from_amazon_wishlist_popup; ?>
+          <?php print render($share_links_popup); ?>
+        <?php }else{
+//            print $send_a_gift_voucher;  
+            if ($user->uid==0):
+            print $send_a_gift;
+            endif;
+            
+        } ?>  
+          
+      </div>
     </div>
-    <div class="model-payout-section">
-        <div class="form-heading">
-            <span>Payouts</span>
-        </div>
-        <?php echo views_embed_view('model_s_payout_view', 'block'); ?>
-    </div>  
     </div>
+  <?php endif; ?>
+
+  <?php if ($exposed): ?>
+  <?php endif; ?>
+
+  <?php if ($attachment_before): ?>
+    <div class="attachment attachment-before">
+      <?php print $attachment_before; ?>
+    </div>
+  <?php endif; ?>
     <?php
-}else{
-?>
-    <div class="model-bank-payout-section">
-        <div class="view view-model-s-payout-view view-id-model_s_payout_view view-display-id-block view-dom-id-8101f148731275bb8429a2d663138d3d">
-            <div class="view-empty">
-              <p>This option is currently not available for your country.</p>
-            </div>
+       
+       $getUserId = db_query("SELECT uid FROM wishlist WHERE wishlist_id ='".$userWishlistId."'");
+       foreach($getUserId AS $wishlistUser){
+           $userId = $wishlistUser->uid;		   
+       }
+       $wishlistUserDetails = user_load($userId);
+    ?>
+    <div class="send-a-gift-section" style="display: none">
+        <div class="send-a-gift-header">
+            <span class="send-a-gift-close-button">x</span>
+            <span class="gift-header-text">Send a gift to </span>
+            <span class="gift-header-text-bold"><?php echo ucfirst($wishlistUserDetails->name);?></span>
         </div>
-    </div>     
-<?php    
-}
-}
-?>
+        <div class="send-a-gift-section-body">   
+            <span class="payment-errors"></span>
+            <form action="<?php echo $base_url;?>/dc_gift_payment/payment_status/<?php echo $userWishlistId;?>" method="POST" id="payment-form">
+                <div class="col-sm-12">
+                     <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-1">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-btn" style="width: 7%;">
+                          <select class="form-control" name="currency_code">
+                            <option selected="selected"value="usd">$</option>
+                            <option value="gbp">£</option>
+                            <option value="eur">€</option>
+                          </select>
+                        </div>
+                        <div class="select-value">
+                        <input class="form-control payment-amount" name="amount" type="text" placeholder="0">
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+                
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 send-gift-form">
+                <div class="col-sm-12">
+                     <div class="row">
+                    <div class="col-sm-6">
+                        <input type="text" value=""  placeholder="Debit Card Number" class="card_number"/>
+                    </div>
+                    <div class="col-sm-6">
+                     <div class="row">
+                    <div class="col-sm-6">
+                        <input type="text" value=""  placeholder="MM" class="card_expiry_month"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" value=""  placeholder="YY" class="card_expiry_year"/>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    
+                     <div class="col-sm-12">
+                     <div class="row">
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="card_cvc" placeholder="CVV" class="card_cvc"/>
+                    </div>            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="user_name" placeholder="Name" class="user_name"/>
+                    </div>
+                    </div>
+                    </div>  
+                    
+                    <div class="col-sm-12">
+                     <div class="row">          
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_line1" placeholder="Address" class="address_line1"/>
+                    </div>            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_city" placeholder="City" class="address_city"/>
+                    </div>
+                    </div>
+                    </div>    
+                    
+                    <div class="col-sm-12">
+                     <div class="row">          
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_state" placeholder="State" class="address_state"/>                        
+                    </div>            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_zip" placeholder="Postal Code/Zip" class="address_zip"/>
+                    </div> 
+                    </div>
+                    </div>    
+                        
+                    <div class="col-sm-12">
+                    <div class="row">            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_country" placeholder="Country" class="address_country"/>
+                    </div>            
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="user_email" placeholder="Email" class="user_email"/>
+                    </div> 
+                    </div>
+                    </div> 
+                              
+                    <div class="col-sm-12">
+                        <input type="text" value="" name="user_message" placeholder="Your Message" class="user_message"/>
+                    </div>            
+                    <div class="col-sm-12 btn-sendCash">
+                        <button type="submit" class="submit-button">Send Gift</button>
+                    </div>            
+                </div>
+            </form>
+        </div>
+    </div>    
+  <?php if ($rows): ?>
+    <div class="view-content">
+      <?php print $rows; ?>
+    </div>
+  <?php elseif ($empty): ?>
+    <div class="view-empty">
+      <div class="alert alert-warning empty-wishlist">
+        <?php if($is_owner): ?>
+        <h3 class="empty-wishlist-header">There are no products in your wishlist</h3>
+      <?php else:?>
+        <?php print $empty; ?>
+      <?php endif;?>
+      </div>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($pager): ?>
+    <?php print $pager; ?>
+  <?php endif; ?>
+
+  <?php if ($attachment_after): ?>
+    <div class="attachment attachment-after">
+      <?php print $attachment_after; ?>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($more): ?>
+    <?php print $more; ?>
+  <?php endif; ?>
+  
+  <?php if ($is_owner):
+  		if ($footer): 
+  ?>
+    <div class="view-footer">
+      <?php print $footer; ?>
+    </div>
+  <?php 
+  		endif; 
+  		endif;
+  ?>
+
+  <?php if ($feed_icon): ?>
+    <div class="feed-icon">
+      <?php print $feed_icon; ?>
+    </div>
+  <?php endif; ?>
+
+</div><?php /* class view */ ?>

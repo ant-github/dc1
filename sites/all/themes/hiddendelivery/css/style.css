@@ -13,6 +13,48 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ .verification-doc-div-main .desc-text{
+    clear: both;
+    float: left;
+    font-size: 12px;
+    margin-left: -15px;     
+ }
+ #update_model_id_info{
+    border-bottom: 1px solid #d7d7d7;
+    margin-bottom: 20px;     
+ }
+ #update_model_id_info .submit-button{
+      margin-bottom: 20px;
+ }
+ .verification-doc-div-main img{
+    float: left;
+    margin-left: -14px;
+    margin-right: 25px;
+ }
+ .verification-doc-div {
+    background-color: #666;
+    border-radius: 3px;
+    float: left;
+    margin: 10px 0 5px -14px;
+    position: relative;
+}
+.verification-doc-div label {
+    background: rgba(0, 0, 0, 0) url("../images/dc-master-sprite.png") no-repeat scroll 3px -1812px;
+    color: #fff !important;
+    font-size: 14px;
+    line-height: 25px;
+    padding: 5px 8px 1px 35px;
+    vertical-align: middle;
+}
+   
+.verification-doc {
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
  .view-new-wishlists .view-empty{
      padding: 54px;
  }
