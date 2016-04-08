@@ -506,7 +506,7 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                 $("#model-add-bank-details-iban-form").submit(function (event) {
                                     
                                 if($('#model-add-bank-details-iban-form .verification-doc').length){
-                                    var user_verification_doc = $('#model-add-bank-details-form .verification-doc').val();
+                                    var user_verification_doc = $('#model-add-bank-details-iban-form .verification-doc').val();
                                     if(user_verification_doc == ''){
                                         $(".payment-errors").css("display", "block");
                                         $(".payment-errors").css("color", "#b94a48");
