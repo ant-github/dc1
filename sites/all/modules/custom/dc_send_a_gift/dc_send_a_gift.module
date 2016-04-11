@@ -511,14 +511,16 @@ function send_user_bank_details_to_stripe(){
                             "external_account" => $stripe_token,
                             "default_for_currency" => true,
                     ));   
+                    if($old_bank_account != ''){
+                        $account->external_accounts->retrieve($old_bank_account)->delete();
+                    }
+                    
+                    
+                    $account = Account::retrieve($user_stripe_account_id);
                     $user_details->field_stripe_payout_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->id;
                     $user_details->field_stripe_bank_account['und'][0]['value'] = $account->bank_accounts->data[0]->last4;
                     user_save($user_details);
                     
-                    if($old_bank_account != ''){
-                        $account->external_accounts->retrieve($old_bank_account)->delete();
-                    }     
-                    $account = Account::retrieve($user_stripe_account_id);
                     
                     if(isset($_POST['ssn_last_4']) && $_POST['ssn_last_4'] !=''){
                         $account->legal_entity->ssn_last_4 = $_POST['ssn_last_4'];
@@ -541,7 +543,8 @@ function send_user_bank_details_to_stripe(){
                         $account->legal_entity->verification->document = $file->id;
                         $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1; 
                        }
-                    }                      
+                    }     
+                    $account->save(); 
                     user_save($user_details);                    
                     
                 }else{
@@ -609,8 +612,10 @@ function send_user_bank_details_to_stripe(){
                        if(isset($file->id) && $file->id != ''){
                         $account->legal_entity->verification->document = $file->id;
                         $user_details->field_has_id_on_stripe_account['und'][0]['value'] = 1; 
-                       }                      
+                       }  
+//                       print "<pre>"; print_r($account); die();
                     }  
+                    $account->save();
                     user_save($user_details);
                     
                 }        

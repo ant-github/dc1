@@ -101,11 +101,12 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                         <div class="col-sm-12">
                             <div class="row">
                                 <div class="col-sm-6 form-group verification-doc-div-main routing-number-field">
+                                    <span class="id-proof-text">ID required to link with bank account</span>
                                     <div class="row">
                                         <div class="col-sm-11">
                                             <img/>
                                             <div class="row verification-doc-div">
-                                                <label>Upload your ID Proof</label>
+                                                <label>Upload ID</label>
                                                 <input type="file" name="upload_verification_doc" accept=".png, .jpg, .jpeg" onChange="showpreviewproof(this)" class="form-control form-file verification-doc"/>
                                                                    
                                             </div>
@@ -162,10 +163,11 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                             <div class="row">
                                 <div class="col-sm-6 form-group verification-doc-div-main routing-number-field">
                                     <div class="row">
+                                    <span class="id-proof-text">ID required to link with bank account</span>
                                         <div class="col-sm-11">
                                             <img/>
                                             <div class="row verification-doc-div">
-                                                <label>Upload your ID Proof</label>
+                                                <label>Upload ID</label>
                                                 <input type="file" name="upload_verification_doc" accept=".png, .jpg, .jpeg" onChange="showpreviewproof(this)" class="form-control form-file verification-doc"/>
                                                                   
                                             </div>
@@ -201,10 +203,11 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                             <div class="row">
                                 <div class="col-sm-6 form-group verification-doc-div-main routing-number-field">
                                     <div class="row">
+                                    <span class="id-proof-text">ID required to link with bank account</span>
                                         <div class="col-sm-11">
                                             <img/>
                                             <div class="row verification-doc-div">
-                                                <label>Upload your ID Proof</label>
+                                                <label>Upload ID</label>
                                                 <input type="file" name="upload_verification_doc" accept=".png, .jpg, .jpeg" onChange="showpreviewproof(this)" class="form-control form-file verification-doc"/>
                                             </div>
                                             <span class="desc-text">(Accept only png/jpeg images.)</span>
@@ -343,33 +346,8 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                             <div class="row">
                                                 <div class="col-sm-11">
                                                     <div class="row">
-                                                        <label>Your Bank Account Name</label>
+                                                        <label>Full Legal Name On Account</label>
                                                         <input type="text" name="accountHolderName" class="form-control account-holder-name"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-group routing-number-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-                                                        <label>Routing Number</label>
-                                                        <input type="text" name="routingNumber" class="form-control routing-number"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="row">
-
-                                        <div class="col-sm-6 account-number-field">
-                                            <div class="row">
-                                                <div class="col-sm-11">
-                                                    <div class="row">
-                                                        <label>Account Number</label>
-                                                        <input type="text" name="accountNumber" class="form-control account-number"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -393,6 +371,33 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row">
+
+                                        <div class="col-sm-6 account-number-field">
+                                            <div class="row">
+                                                <div class="col-sm-11">
+                                                    <div class="row">
+                                                        <label>Account Number</label>
+                                                        <input type="text" name="accountNumber" class="form-control account-number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 form-group routing-number-field">
+                                            <div class="row">
+                                                <div class="col-sm-11">
+                                                    <div class="row">
+                                                        <label>Routing Number</label>
+                                                        <input type="text" name="routingNumber" class="form-control routing-number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         </div>
                                 </div>
                         <div class="col-sm-12">
@@ -441,10 +446,11 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                 ?>
                                 <div class="col-sm-6 form-group verification-doc-div-main routing-number-field">
                                     <div class="row">
+                                        <span class="id-proof-text">ID required to link with bank account</span>
                                         <div class="col-sm-11">
                                             <img/>
                                             <div class="row verification-doc-div">
-                                                <label>Upload your ID Proof</label>
+                                                <label>Upload ID</label>
                                                 <input type="file" name="upload_verification_doc" accept=".png, .jpg, .jpeg" onChange="showpreviewproof(this)" class="form-control form-file verification-doc"/>
                                                 
                                             </div>
@@ -735,7 +741,7 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                                     <div class="row">
                                                         <div class="col-sm-11">
                                                             <div class="row">
-                                                                <label>Your Bank Account Name (IBAN)</label>
+                                                                <label>Full Legal Name On Account</label>
                                                                 <input type="text" name="accountHolderName" class="form-control account-holder-name"/>
                                                             </div>
                                                         </div>
@@ -760,10 +766,11 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                                 <div class="row">
                                                     <div class="col-sm-6 form-group verification-doc-div-main routing-number-field">
                                                         <div class="row">
+                                                            <span class="id-proof-text">ID required to link with bank account</span>
                                                             <div class="col-sm-11">
                                                                 <img/>
                                                                 <div class="row verification-doc-div">
-                                                                    <label>Upload your ID Proof</label>
+                                                                    <label>Upload ID</label>
                                                                     <input type="file" name="upload_verification_doc" accept=".png, .jpg, .jpeg" onChange="showpreviewproof(this)" class="form-control form-file verification-doc"/>
                                                                
                                                                     

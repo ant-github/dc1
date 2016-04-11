@@ -13,6 +13,11 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ .verification-doc-div-main .id-proof-text{
+    color: rgba(0, 0, 0, 0.66);
+    font-size: 14px;
+    font-weight: 600;     
+ }
  .verification-doc-div-main .desc-text{
     clear: both;
     float: left;
@@ -30,12 +35,13 @@
     float: left;
     margin-left: -14px;
     margin-right: 25px;
+    margin-top: 10px;
  }
  .verification-doc-div {
     background-color: #666;
     border-radius: 3px;
     float: left;
-    margin: 10px 0 5px -14px;
+    margin: 10px 0 5px -14px !important;
     position: relative;
 }
 .verification-doc-div label {
@@ -54,6 +60,7 @@
     position: absolute;
     right: 0;
     top: 0;
+    cursor: pointer;
 }
  .view-new-wishlists .view-empty{
      padding: 54px;
