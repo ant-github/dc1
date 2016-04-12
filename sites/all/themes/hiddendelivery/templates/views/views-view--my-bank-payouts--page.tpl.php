@@ -1,15 +1,4 @@
 <?php
-
-/*
-Important Note:
-Please do not replace directrly this file with the live website file,  Please replace or change the working code
-
-Reason:  
-Different public key is used in this file, on live site there is different stripe publishable key"    
- "pk_test_4S8XotFis6j7VWvhD0nWT2Jd" on live it is different
- */
-
-
 /**
  * @file
  * Main view template.
@@ -39,6 +28,22 @@ Different public key is used in this file, on live site there is different strip
 global $base_url;
 global $user;
 if ($user->uid != 0) {
+    $gv_settings_nid = '';
+    
+    $select_gv_settings_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+    foreach($select_gv_settings_nid AS $res_gv_settings_nid){
+            $gv_settings_nid = $res_gv_settings_nid->nid;
+    }
+        
+       	
+    $get_public_keys = db_query("SELECT field_stripe_public_key_for_gv_value AS public_key FROM field_data_field_stripe_public_key_for_gv WHERE entity_id='".$gv_settings_nid."'");
+
+    $public_key = '';
+
+    foreach($get_public_keys AS $res_public_keys){
+            $public_key = $res_public_keys->public_key;
+    }   
+    
     $user_details = user_load($user->uid);
 
     /* get stripe coutries list to transfer ammount from user's field_stripe_account_country */
@@ -51,7 +56,7 @@ if (array_key_exists($user_details->field_delivery_address['und'][0]['country'],
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript">
         // this identifies your website in the createToken call below
-        Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
+        Stripe.setPublishableKey('<?php echo $public_key;?>');
     </script>
     <div class="user-bank-payout-forms">
         <noscript>

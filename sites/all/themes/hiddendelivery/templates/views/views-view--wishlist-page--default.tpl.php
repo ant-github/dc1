@@ -30,13 +30,28 @@ global $base_url;
 global $user;
 $userWishlistId = arg(1);
 if($user->uid == 0){
+    $gv_settings_nid = '';
+    
+    $select_gv_settings_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+    foreach($select_gv_settings_nid AS $res_gv_settings_nid){
+            $gv_settings_nid = $res_gv_settings_nid->nid;
+    }
+        
+       	
+    $get_public_keys = db_query("SELECT field_stripe_public_key_for_gv_value AS public_key FROM field_data_field_stripe_public_key_for_gv WHERE entity_id='".$gv_settings_nid."'");
+
+    $public_key = '';
+
+    foreach($get_public_keys AS $res_public_keys){
+            $public_key = $res_public_keys->public_key;
+    }     
 ?>
         <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
         <!-- jQuery is used only for this example; it isn't required to use Stripe -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript">
             // this identifies your website in the createToken call below
-            Stripe.setPublishableKey('pk_live_Devr8oSBxu3oSaYdFwJ2xIUw');
+            Stripe.setPublishableKey('<?php echo $public_key;?>');
 //            Stripe.setPublishableKey('pk_test_4S8XotFis6j7VWvhD0nWT2Jd');
             function stripeResponseHandler(status, response) {
                 if (response.error) {
@@ -187,7 +202,7 @@ if($user->uid == 0){
                       </div>
                     </div>
                 </div>
-                 </div>
+                </div>
                 </div>
                 
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 send-gift-form">
@@ -234,8 +249,7 @@ if($user->uid == 0){
                     <div class="col-sm-12">
                      <div class="row">          
                     <div class="col-sm-6">
-                        <input type="text" value="" name="address_state" placeholder="State" class="address_state"/>
-                        
+                        <input type="text" value="" name="address_state" placeholder="State" class="address_state"/>                        
                     </div>            
                     <div class="col-sm-6">
                         <input type="text" value="" name="address_zip" placeholder="Postal Code/Zip" class="address_zip"/>

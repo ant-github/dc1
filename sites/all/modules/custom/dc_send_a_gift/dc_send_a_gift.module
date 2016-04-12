@@ -723,23 +723,33 @@ function update_model_id_to_stripe(){
 
 
 function _load_payment_settings($name = NULL) {
-  static $settings = array();
+    $settings = array();
+    
+    $gv_settings_nid = '';
+    
+    $select_gv_settings_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+    foreach($select_gv_settings_nid AS $res_gv_settings_nid){
+            $gv_settings_nid = $res_gv_settings_nid->nid;
+    }
+        
+       	
+        $get_public_keys = db_query("SELECT field_stripe_public_key_for_gv_value AS public_key FROM field_data_field_stripe_public_key_for_gv WHERE entity_id='".$gv_settings_nid."'");
 
-  if (!empty($settings)) {
-    return $settings;
-  }
-
-  if (commerce_payment_method_load('commerce_stripe') && rules_config_load('commerce_payment_commerce_stripe')) {
-    $commerce_stripe_payment_method = commerce_payment_method_instance_load('commerce_stripe|commerce_payment_commerce_stripe');
-  }
-
-  if (isset($name) && rules_config_load('commerce_payment_commerce_stripe')) {
-    $commerce_stripe_payment_method = commerce_payment_method_instance_load('commerce_stripe|commerce_payment_commerce_stripe');
-  }
-
-  if (isset($commerce_stripe_payment_method)) {
-    $settings = $commerce_stripe_payment_method['settings'];
-  }
+    	$public_key = '';
+        
+        foreach($get_public_keys AS $res_public_keys){
+                $public_key = $res_public_keys->public_key;
+        }
+        
+        $get_secret_keys = db_query("SELECT field_stripe_secret_key_for_gv_value AS secret_key FROM field_data_field_stripe_secret_key_for_gv WHERE entity_id='".$gv_settings_nid."'");
+        
+    	$secret_key = '';   
+        
+        foreach($get_secret_keys AS $res_secret_keys){
+                $secret_key = $res_secret_keys->secret_key;
+        }
+		   
+        $settings = array('public_key'=>$public_key, 'secret_key'=>$secret_key);
 
   return $settings;
 }
