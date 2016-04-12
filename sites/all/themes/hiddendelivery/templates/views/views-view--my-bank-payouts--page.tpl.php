@@ -240,10 +240,10 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
             <div class="add-new-bank-account">
                 <button class="add-new-bank-button">Add New</button>
             </div>            
-<!--            <div class="delete-account-bank-account">
-                <a href="<?php // echo $base_url;?>/dc_delete_model_account"><button class="delete-account-bank-account-button">Delete Current Account</button></a>
-                <p>*Pending transfers must be completed before changing account details. If your account has pending transfers & account info is changed mid-transfer it will continute to the orginal account.</p>
-            </div>            -->
+            <div class="delete-account-bank-account">
+                <a href="<?php echo $base_url;?>/dc_delete_model_account"><button class="delete-account-bank-account-button">Delete Current Account</button></a>
+                <p>*Pending transfers must be completed before changing account details. If your account has pending transfers your account info cannot be changed mid-transfer, it will continue to the original account.</p>
+            </div>            
         </div>
         <div class="col-sm-12 add-bank-account-form" style="display: none;">
 <?php }else{ ?>
