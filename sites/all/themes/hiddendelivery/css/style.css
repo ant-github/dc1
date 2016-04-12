@@ -88,6 +88,31 @@
     font-weight: 600;
     padding: 8px 12px;     
  }
+ .bank-account-detail .delete-account-bank-account-button{
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #000;
+    border-bottom: 0 none;
+    border-image: none;
+    border-left: 0 none;
+    border-right: 0 none;
+    border-radius: 7px;
+    border-top: 0 none;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 12px;     
+ }
+ .bank-account-detail .delete-account-bank-account-button:hover{
+    background: red;    
+ }
+ .bank-account-detail .delete-account-bank-account{
+    margin-top: 10px;    
+ }
+ .bank-account-detail .delete-account-bank-account p{
+    color: red; 
+ }
  .bank-account-detail .bank-account-details-text{
     font-weight: 600;
     margin-bottom: 18px;

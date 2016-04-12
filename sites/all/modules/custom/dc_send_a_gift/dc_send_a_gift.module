@@ -57,6 +57,13 @@ function dc_send_a_gift_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['dc_delete_model_account'] = array(
+    'title' => 'Add Bank Details',
+    'page callback' => 'delete_model_managed_account',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );  
   $items['dc_save_legel_account'] = array(
     'title' => 'Add Bank Details',
     'page callback' => 'send_user_legel_details_to_stripe',
@@ -417,7 +424,7 @@ function send_cash_user_bank_account($nid) {
                       "description" => $desc
                     )); 
                 }else{     
-                    drupal_set_message('Some error occured while transferring amount to your bank account. Please try after some time','error');
+                    drupal_set_message('Amount could not be transfer. Please contact to support regarding this issue or try after some time','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
                 }
             }
@@ -632,6 +639,44 @@ function send_user_bank_details_to_stripe(){
     }
 }
 
+function delete_model_managed_account(){
+    global $user;
+    global $base_url;
+    if($user->uid != 0){
+        $user_details = user_load($user->uid);
+        $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
+        $settings = _load_payment_settings();
+        
+            try{
+                Stripe::setApiKey($settings['secret_key']);
+                $account = Account::retrieve($user_stripe_account_id);                  
+                $account->delete();
+                if($account->deleted == 1){
+                    $user_details->field_bank_payout_account_id['und'][0]['value'] = '';
+                    $user_details->field_stripe_payout_bank_account['und'][0]['value'] = '';
+                    $user_details->field_stripe_bank_account['und'][0]['value'] = '';
+                    $user_details->field_has_ssn_personal_on_stripe['und'][0]['value'] = '';
+                    $user_details->field_has_id_on_stripe_account['und'][0]['value'] = '';
+                    user_save($user_details); 
+                    drupal_set_message('Your account has been deleted successfully.','status');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                    
+                }else{
+                    drupal_set_message('Some error occurred while deleting your account. Please try again','error');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                    
+                }
+                
+            } catch (Exception $e) {
+                    $error = $e->getMessage();
+                    drupal_set_message('Some error occurred while deleting your account. @error '.$error.'.','error');
+                    drupal_goto($base_url.'/user/my-bank-payouts');                               
+            } 
+    }else{
+                    drupal_set_message('Your are not authorized to access this page','error');
+                    drupal_goto($base_url);        
+    }
+            
+}
+
 function update_model_id_to_stripe(){
     
     global $user;
@@ -640,7 +685,6 @@ function update_model_id_to_stripe(){
         $user_stripe_account_id = $user_details->field_bank_payout_account_id['und'][0]['value'];
         $settings = _load_payment_settings();
         
-
             try{
                 Stripe::setApiKey($settings['secret_key']);
                 $account = Account::retrieve($user_stripe_account_id);                  
