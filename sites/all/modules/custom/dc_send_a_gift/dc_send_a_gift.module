@@ -91,7 +91,8 @@ function commerce_stripe_gift_charge($wishlist_id){
     }else{
         $percentage_stripe = 20;
     }    
-
+    if(isset($_POST['user_email']) && $_POST['user_email'] != '' && isset($_POST['user_name']) && $_POST['user_name'] != '' && isset($_POST['address_line1']) && $_POST['address_line1'] != '' && isset($_POST['address_country']) && $_POST['address_country'] != '' && isset($_POST['address_state']) && $_POST['address_state'] != '' && isset($_POST['address_city']) && $_POST['address_city'] != '' && isset($_POST['address_zip']) && $_POST['address_zip'] != ''){
+        
       $amount_post = $_POST['amount'];
       $amount =  ($amount_post * 100);
       $amount_trasfer_percent = ($percentage_stripe / 100) * $amount_post;
@@ -216,7 +217,7 @@ function commerce_stripe_gift_charge($wishlist_id){
 	<tbody><tr><td style="border-collapse: collapse;" valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
 	<tbody><tr><td align="center" style="border-collapse: collapse;max-width: 487px;width: 100%;background:#000000;" valign="top">
 	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br /><br /><span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">
-	You have received '.$currency_symbol.''.$amount_post.' Gift Voucher !</span><br /><br />&nbsp;</p></td></tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
+	You have received a '.$currency_symbol.''.$amount_post.' Gift Voucher</span><br /><br />&nbsp;</p></td></tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
 	<td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
 	<tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
 	<tbody><tr><td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td><td style="border-collapse: collapse;" valign="top">
@@ -288,6 +289,10 @@ function commerce_stripe_gift_charge($wishlist_id){
     }
     }else{
                 drupal_set_message('You have enter invalid amount. Please enter a valid amount.','error');
+                drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
+    }
+    }else{
+                drupal_set_message('Your request has been decline. All fields are required, you have not entered the required information. Please try again.','error');
                 drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
     }
 }
