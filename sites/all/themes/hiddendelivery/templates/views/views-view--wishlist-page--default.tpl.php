@@ -73,13 +73,21 @@ if($user->uid == 0){
             $(document).ready(function() {
                 $("#payment-form").submit(function(event) {
                     var user_name = $('#payment-form .user_name').val();
+                    var user_name_len = $('#payment-form .user_name').val().trim().length;
                     var user_email = $('#payment-form .user_email').val();
+                    var user_email_len = $('#payment-form .user_email').val().trim().length;
                     var address_country = $('#payment-form .address_country').val();
+                    var address_country_len = $('#payment-form .address_country').val().trim().length;
                     var address_state = $('#payment-form .address_state').val();
+                    var address_state_len = $('#payment-form .address_state').val().trim().length;
                     var address_zip = $('#payment-form .address_zip').val();
+                    var address_zip_len = $('#payment-form .address_zip').val().trim().length;
                     var address_line1 = $('#payment-form .address_line1').val();
+                    var address_line1_len = $('#payment-form .address_line1').val().trim().length;
                     var address_city = $('#payment-form .address_city').val();
+                    var address_city_len = $('#payment-form .address_city').val().trim().length;
                     var user_message = $('#payment-form .user_message').val();
+                    var user_message_len = $('#payment-form .user_message').val().trim().length;
                     var amount = $('#payment-form .payment-amount').val();
                     if(amount < 5){
                         $(".payment-errors").css("display", "block");
@@ -93,7 +101,7 @@ if($user->uid == 0){
                         $('html,body').animate({'scrollTop' : 200},1000);
                         return false;                        
                     }
-                    if(user_name == '' || user_email == '' || address_country == '' || address_state == '' || address_zip == '' || address_line1 == '' || address_city == '' || user_message == ''){
+                    if(user_name == '' || user_name_len == 0 || user_email == '' || user_email_len == 0 || address_country == '' || address_country_len == 0 || address_state == '' || address_state_len == 0 || address_zip == '' || address_zip_len == 0 || address_line1 == '' || address_line1_len == 0 || address_city == '' || address_city_len == 0 || user_message == '' || user_message_len == 0){
                         $(".payment-errors").css("display", "block");
                         $(".payment-errors").html('All fields are required. Please enter the required information.');
                         $('html,body').animate({'scrollTop' : 200},1000);
