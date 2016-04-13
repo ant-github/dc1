@@ -91,7 +91,7 @@ function commerce_stripe_gift_charge($wishlist_id){
     }else{
         $percentage_stripe = 20;
     }    
-    if(isset($_POST['user_email']) && $_POST['user_email'] != '' && isset($_POST['user_name']) && $_POST['user_name'] != '' && isset($_POST['address_line1']) && $_POST['address_line1'] != '' && isset($_POST['address_country']) && $_POST['address_country'] != '' && isset($_POST['address_state']) && $_POST['address_state'] != '' && isset($_POST['address_city']) && $_POST['address_city'] != '' && isset($_POST['address_zip']) && $_POST['address_zip'] != ''){
+    if(isset($_POST['amount']) && $_POST['amount'] != '' && isset($_POST['user_email']) && $_POST['user_email'] != '' && isset($_POST['user_name']) && $_POST['user_name'] != '' && isset($_POST['address_line1']) && $_POST['address_line1'] != '' && isset($_POST['address_country']) && $_POST['address_country'] != '' && isset($_POST['address_state']) && $_POST['address_state'] != '' && isset($_POST['address_city']) && $_POST['address_city'] != '' && isset($_POST['address_zip']) && $_POST['address_zip'] != ''){
         
       $amount_post = $_POST['amount'];
       $amount =  ($amount_post * 100);
