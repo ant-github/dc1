@@ -71,6 +71,13 @@ function dc_send_a_gift_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['model_widget_send_gift'] = array(
+    'title' => 'Send Gift',
+    'page callback' => 'send_gift_model_widget',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
@@ -114,183 +121,180 @@ function commerce_stripe_gift_charge($wishlist_id){
       $error = '';
       $success = '';
       $charge= '';
-    if (isset($_POST['amount']) && $_POST['amount'] !='' && $_POST['amount'] > 5 && $_POST['amount'] < 1000) {
-    if (isset($_POST['stripeToken']) && $_POST['stripeToken'] !='') {
-      $settings = _load_payment_settings();
-      $error = '';
-      $success = '';
-      try {
-        Stripe::setApiKey($settings['secret_key']);
-        if (isset($_POST['stripeToken'])){
-            
-            /*
-             * Create node to show model about gift received and for admin for order records
-             */
-        $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
-        foreach($select_currency_rates_nid AS $res_currency_rates){
-                $currency_rates_nid = $res_currency_rates->nid;
-        }                
-                if($currency_code == 'usd'){
-                    $currency_symbol= '$';
-                        $amount_in_usd = $amount_post;
-                        $usd_amount_trasfer_bank = $amount_trasfer_bank;
-                }else if($currency_code == 'gbp'){
-                    $currency_symbol= '£';
-                        $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
-                        foreach($usd_vs_gbp AS $res_usd_vs_gbp){
-                                $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
-                        }
-                        $amount_in_usd = $amount_post / $gbp_rate;
-                        $usd_amount_trasfer_bank = $amount_trasfer_bank / $gbp_rate;
-                }else if($currency_code == 'eur'){
-                    $currency_symbol= '€';
-                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
-                        foreach($usd_vs_eur AS $res_usd_vs_eur){
-                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
-                        }
-                        $amount_in_usd = $amount_post / $eur_rate;
-                        $usd_amount_trasfer_bank = $amount_trasfer_bank / $eur_rate;
+        if (isset($_POST['amount']) && $_POST['amount'] !='' && $_POST['amount'] > 5 && $_POST['amount'] < 1000) {
+            if (isset($_POST['stripeToken']) && $_POST['stripeToken'] !='') {
+              $settings = _load_payment_settings();
+              $error = '';
+              $success = '';
+              try {
+                Stripe::setApiKey($settings['secret_key']);           
+                    /*
+                     * Create node to show model about gift received and for admin for order records
+                     */
+                $select_currency_rates_nid = db_query("SELECT nid FROM node WHERE type ='currency_exchange_rates_for_gift' ORDER BY nid ASC LIMIT 1");
+                foreach($select_currency_rates_nid AS $res_currency_rates){
+                        $currency_rates_nid = $res_currency_rates->nid;
                 }                
+                        if($currency_code == 'usd'){
+                            $currency_symbol= '$';
+                                $amount_in_usd = $amount_post;
+                                $usd_amount_trasfer_bank = $amount_trasfer_bank;
+                        }else if($currency_code == 'gbp'){
+                            $currency_symbol= '£';
+                                $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                                foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                        $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                                }
+                                $amount_in_usd = $amount_post / $gbp_rate;
+                                $usd_amount_trasfer_bank = $amount_trasfer_bank / $gbp_rate;
+                        }else if($currency_code == 'eur'){
+                            $currency_symbol= '€';
+                                $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                                foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                        $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                                }
+                                $amount_in_usd = $amount_post / $eur_rate;
+                                $usd_amount_trasfer_bank = $amount_trasfer_bank / $eur_rate;
+                        }                
 
-                $node = new stdClass();  // Create a new node object
-                $node->type = 'model_gifts';  // Content type
-                $node->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
-                node_object_prepare($node);  //Set some default values
+                        $node = new stdClass();  // Create a new node object
+                        $node->type = 'model_gifts';  // Content type
+                        $node->language = LANGUAGE_NONE;  // Or e.g. 'en' if locale is enabled
+                        node_object_prepare($node);  //Set some default values
 
-                $node->title = $user_wishlist->name;
-                $node->field_model_wishlist_id[$node->language][0]['value'] = $wishlist_id;
-                $node->field_model_id[$node->language][0]['value'] = $wishlistUserId;
-                $node->field_gift_currency[$node->language][0]['value'] = $currency_code;
-                $node->field_gift_amount[$node->language][0]['value'] = $amount_post;
-                $node->field_gift_amount_in_dollar[$node->language][0]['value'] = $amount_in_usd;
-                $node->field_sender_name[$node->language][0]['value'] = $user_name;
-                $node->field_sender_email[$node->language][0]['value'] = $user_email;
-                $node->field_gift_message[$node->language][0]['value'] = $user_message;
-                $node->field_model_redeem[$node->language][0]['value'] = 0;
-                $node->field_gift_amount_transfer[$node->language][0]['value'] = $amount_trasfer_bank;
-                $node->field_usd_gift_amount_transfer[$node->language][0]['value'] = $usd_amount_trasfer_bank;
-                $node->field_model_country[$node->language][0]['value'] = $wishlist_user_country;
+                        $node->title = $user_wishlist->name;
+                        $node->field_model_wishlist_id[$node->language][0]['value'] = $wishlist_id;
+                        $node->field_model_id[$node->language][0]['value'] = $wishlistUserId;
+                        $node->field_gift_currency[$node->language][0]['value'] = $currency_code;
+                        $node->field_gift_amount[$node->language][0]['value'] = $amount_post;
+                        $node->field_gift_amount_in_dollar[$node->language][0]['value'] = $amount_in_usd;
+                        $node->field_sender_name[$node->language][0]['value'] = $user_name;
+                        $node->field_sender_email[$node->language][0]['value'] = $user_email;
+                        $node->field_gift_message[$node->language][0]['value'] = $user_message;
+                        $node->field_model_redeem[$node->language][0]['value'] = 0;
+                        $node->field_gift_amount_transfer[$node->language][0]['value'] = $amount_trasfer_bank;
+                        $node->field_usd_gift_amount_transfer[$node->language][0]['value'] = $usd_amount_trasfer_bank;
+                        $node->field_model_country[$node->language][0]['value'] = $wishlist_user_country;
 
-                $node->status = 1;   // (1 or 0): published or unpublished
-                $node->promote = 0;  // (1 or 0): promoted to front page or not
-                $node->sticky = 0;  // (1 or 0): sticky at top of lists or not
-                $node->comment = 0;  // 2 = comments open, 1 = comments closed, 0 = comments hidden
-                // Add author of the node
-                $node->uid = 1;
-                // Save the node
-                node_save($node);
-                $gift_voucher_nid = $node->nid;            
-            
-            $charge = \Stripe\Charge::create(array(
-              "amount" => $amount, // amount in cents, again
-              "currency" => $currency_code,
-              "source" => $stripe_token,
-              "description" => "Gift order: $gift_voucher_nid"
-            ));    
-//      print "<pre>"; print($charge->paid);   die('hii');
-        if($charge->paid == 1){
-                
+                        $node->status = 1;   // (1 or 0): published or unpublished
+                        $node->promote = 0;  // (1 or 0): promoted to front page or not
+                        $node->sticky = 0;  // (1 or 0): sticky at top of lists or not
+                        $node->comment = 0;  // 2 = comments open, 1 = comments closed, 0 = comments hidden
+                        // Add author of the node
+                        $node->uid = 1;
+                        // Save the node
+                        node_save($node);
+                        $gift_voucher_nid = $node->nid;            
 
-/*
- * Send email to model regarding gift received
- */
+                    $charge = \Stripe\Charge::create(array(
+                      "amount" => $amount, // amount in cents, again
+                      "currency" => $currency_code,
+                      "source" => $stripe_token,
+                      "description" => "Gift order: $gift_voucher_nid"
+                    ));    
+        //      print "<pre>"; print($charge->paid);   die('hii');
+                if($charge->paid == 1){
 
-        $key = 'dc_send_a_gift_mail';
-	$to = $user_wishlist->mail;
-	$from = 'DeliveryCode <support@deliverycode.com>';
-	$params = array(
-    'body' => '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
-	<tbody><tr><td bgcolor="#FFFFFF" style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
-	<tr><td><![endif]-->	<table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" class="content" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;max-width: 600px;width: 100%;">
-	<tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse;" valign="top"><span style="color: #ffffff; font-family: Arial; font-size: 11px; text-align: center;">To ensure you receive our emails, please add support@deliverycode.com to your address book or safe list </span></td>
-	</tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="438" align="left" cellpadding="0" cellspacing="0" border="0">
-	<tr><td><![endif]--><!-- Start Header--><table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr>
-	<td bgcolor="#ffffff" width="100%"><!-- Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
-	<td class="center" style="padding:10px 20px"><a href="#"><img alt="" border="0" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/29cd4659-94ad-4b7c-aee4-8459ac94a2f9.jpg" />
-	</a></td></tr></tbody></table><!-- End Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
-	<td class="center" style="padding: 30px 0 0 30px"><a href="#"><img alt="DeliveryCode available on the App Store" src="https://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/adde9ea1-f675-4a49-b4fb-517ccae6f418.jpg" />
-	</a></td></tr></tbody></table><!-- Nav --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:40px 10px 20px; font-style:bold">
-	<a href="'.$base_url.'" style="text-decoration: none; color: #000000;">Home</a> &nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/how-it-works" style="text-decoration: none; color: #000000;">How it Works</a>
-	&nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/user" style="text-decoration: none; color: #000000;">My Account</a></td></tr></tbody></table><!-- End Header -->
-	<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr><tr><td style="border-collapse: collapse;" valign="top">
-	<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
-	<tbody><tr><td style="border-collapse: collapse;" valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
-	<tbody><tr><td align="center" style="border-collapse: collapse;max-width: 487px;width: 100%;background:#000000;" valign="top">
-	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br /><br /><span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">
-	You have received a '.$currency_symbol.''.$amount_post.' Gift Voucher</span><br /><br />&nbsp;</p></td></tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
-	<td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
-	<tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
-	<tbody><tr><td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td><td style="border-collapse: collapse;" valign="top">
-	<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
-	<tbody><tr><td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="580" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
-	<tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
-	<tbody><tr><td style="border-collapse: collapse;" valign="top"><p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br />
-	<span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Dear '.ucfirst($user_wishlist->name).'<br />
-	<br/><br/><table><tr><td style="padding: 10px 20px; border-right:1px solid #ccc;"><a style="text-decoration: none; color: rgb(0, 0, 0); font-size: 20px;" href="'.$base_url.'">deliverycode.com</a><br/><span style="color:#00B29A; float:right;">gift voucher</span></td><td style="padding: 10px 20px;"><span style="font-size: 20px;">'.$currency_symbol.''.$amount_post.'</span><br/><a href="'.$base_url.'/user/gifts?gift_id='.$gift_voucher_nid.'" style="background-color: rgb(0, 178, 154); color: rgb(255, 255, 255); padding: 6px 10px; text-decoration: none; float: left; border-radius: 7px; font-weight: 600;">Redeem Now</a></td></tr></table></span></p></td></tr><tr>
-	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
-        <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Congratulations you have received a gift voucher – Click "redeem now" to transfer the funds right to your bank or apply them to your DC gift voucher balance.</span></p><br/><br/>
-	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">
-	Login to <a href="'.$base_url.'" target="_blank">www.deliverycode.com</a> to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
-	<td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
-	<td align="center" style="border-collapse: collapse;" valign="top"><a alt="Open Site" href="'.$base_url.'">
-	<img align="middle" alt="Open Site" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/35798292-f9d9-4aff-a679-6f17c68d04c3.jpg" style="display: block;max-width: 398px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;" /></a></td>
-	</tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
-	<p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0; font-weight:bold;">
-	- DeliveryCode team</span></p></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table></td>
-	<td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
-	</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top">
-	<!--[if (gte mso 9)|(IE)]><table width="580" align="left" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]--><!-- Start Header-->
-	<table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr><td bgcolor="#ffffff" width="100%">
-	<!-- Social --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
-	<td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
-	<a href="http://www.facebook.com/deliverycode" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/01ab8850-b625-41f9-a138-86f72bccfc01.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
-	</a></td><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
-	<a href="http://twitter.com/delivery_code" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/4ae8f912-7c8e-4a40-b507-631e8c3ae188.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
-	</a></td></tr></tbody></table><!-- End Nav --></td></tr></tbody></table><!-- End Header --><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
-	</td></tr><tr></tr></tbody></table><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
-	<tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse; padding: 5px 0;" valign="top">
-	<span style="color: #ffffff; font-family: Arial; font-size: 11px;"><a href="'.$base_url.'/contact-us" style="text-decoration: none; color: #ffffff;">
-	Contact Us</a> &nbsp;/&nbsp;<a href="'.$base_url.'/privacy" style="text-decoration: none; color: #ffffff;">Privacy</a> &nbsp;/&nbsp;<a href="'.$base_url.'/terms" style="text-decoration: none; color: #ffffff;">
-	Terms and Conditions</a> </span><br/></td></tr><tr><!-- <td valign="top"  bgcolor="#000000" align="center" style="border-collapse: collapse;">
-	<span style="color: #666666; font-family: Arial; font-size: 11px;"><br></td></tr> --></tr><tr>
-	<td align="center" style="color: #000; font-family: Arial; font-size: 11px;"><br />Copyright © 2014 Delivery Code. All rights reserved.<br />
-	<br />We reserve the right to change the Terms &amp; Conditions at any time<br />
-	If you no longer wish to receive emails from Delivery Code, please unsubscribe by clicking 
-	<a href="file:///tmp/dc_backup.html#" style="color: #666666;" target="_blank">here</a><br />
-	Unless otherwise noted, Delivery Code has applied VAT at 20% to the appropriate items in this transaction based on country of delivery in accordance with the EU laws on distance selling. Our VAT number is GB 180725703<br />
-	This email was sent to you by Delivery Code, Registered number: 8662491. Registered Address: Terleys, Molehill Green, Felsted, Dunmow, Essex CM6 3JP
-	</td></tr><tr><td height="60" style="border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table></td></tr></tbody></table>
-	<!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table><p>&nbsp;</p>',
-    'subject' => 'New gift received',
-    );
-	$mail = drupal_mail('dc_send_a_gift', $key, $to, language_default(), $params, $from);	                
-                
-                drupal_set_message('Your gift has been sent successfully.','status');
-                drupal_goto($base_url.'/wishlist/'.$wishlist_id);   
+
+        /*
+         * Send email to model regarding gift received
+         */
+
+                $key = 'dc_send_a_gift_mail';
+                $to = $user_wishlist->mail;
+                $from = 'DeliveryCode <support@deliverycode.com>';
+                $params = array(
+            'body' => '<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+                <tbody><tr><td bgcolor="#FFFFFF" style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+                <tr><td><![endif]-->	<table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" class="content" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;max-width: 600px;width: 100%;">
+                <tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse;" valign="top"><span style="color: #ffffff; font-family: Arial; font-size: 11px; text-align: center;">To ensure you receive our emails, please add support@deliverycode.com to your address book or safe list </span></td>
+                </tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="438" align="left" cellpadding="0" cellspacing="0" border="0">
+                <tr><td><![endif]--><!-- Start Header--><table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr>
+                <td bgcolor="#ffffff" width="100%"><!-- Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+                <td class="center" style="padding:10px 20px"><a href="#"><img alt="" border="0" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/29cd4659-94ad-4b7c-aee4-8459ac94a2f9.jpg" />
+                </a></td></tr></tbody></table><!-- End Logo --><table align="left" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+                <td class="center" style="padding: 30px 0 0 30px"><a href="#"><img alt="DeliveryCode available on the App Store" src="https://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/adde9ea1-f675-4a49-b4fb-517ccae6f418.jpg" />
+                </a></td></tr></tbody></table><!-- Nav --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:40px 10px 20px; font-style:bold">
+                <a href="'.$base_url.'" style="text-decoration: none; color: #000000;">Home</a> &nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/how-it-works" style="text-decoration: none; color: #000000;">How it Works</a>
+                &nbsp;&nbsp;&nbsp; <a href="'.$base_url.'/user" style="text-decoration: none; color: #000000;">My Account</a></td></tr></tbody></table><!-- End Header -->
+                <!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr><tr><td style="border-collapse: collapse;" valign="top">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+                <tbody><tr><td style="border-collapse: collapse;" valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+                <tbody><tr><td align="center" style="border-collapse: collapse;max-width: 487px;width: 100%;background:#000000;" valign="top">
+                <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br /><br /><span style="color: #FFFFFF; font-family: Arial; font-size: 25px; line-height: 16px; font-weight:bold; padding: 0 0 10px 0;">
+                You have received a '.$currency_symbol.''.$amount_post.' Gift Voucher</span><br /><br />&nbsp;</p></td></tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
+                <td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="600" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
+                <tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
+                <tbody><tr><td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td><td style="border-collapse: collapse;" valign="top">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+                <tbody><tr><td style="border-collapse: collapse;" valign="top"><!--[if (gte mso 9)|(IE)]><table width="580" align="right" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #ffffff;">
+                <tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" class="main-text" style="border: 1px solid #ffffff;width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
+                <tbody><tr><td style="border-collapse: collapse;" valign="top"><p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><br />
+                <span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Dear '.ucfirst($user_wishlist->name).'<br />
+                <br/><br/><table><tr><td style="padding: 10px 20px; border-right:1px solid #ccc;"><a style="text-decoration: none; color: rgb(0, 0, 0); font-size: 20px;" href="'.$base_url.'">deliverycode.com</a><br/><span style="color:#00B29A; float:right;">gift voucher</span></td><td style="padding: 10px 20px;"><span style="font-size: 20px;">'.$currency_symbol.''.$amount_post.'</span><br/><a href="'.$base_url.'/user/gifts?gift_id='.$gift_voucher_nid.'" style="background-color: rgb(0, 178, 154); color: rgb(255, 255, 255); padding: 6px 10px; text-decoration: none; float: left; border-radius: 7px; font-weight: 600;">Redeem Now</a></td></tr></table></span></p></td></tr><tr>
+                <td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
+                <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">Congratulations you have received a gift voucher – Click "redeem now" to transfer the funds right to your bank or apply them to your DC gift voucher balance.</span></p><br/><br/>
+                <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0;">
+                Login to <a href="'.$base_url.'" target="_blank">www.deliverycode.com</a> to spend your voucher or add more products to your wishlist.</span></p></td></tr><tr>
+                <td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr>
+                <td align="center" style="border-collapse: collapse;" valign="top"><a alt="Open Site" href="'.$base_url.'">
+                <img align="middle" alt="Open Site" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/35798292-f9d9-4aff-a679-6f17c68d04c3.jpg" style="display: block;max-width: 398px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;" /></a></td>
+                </tr><tr><td style="height: 10px;border-collapse: collapse;" valign="top">&nbsp;</td></tr><tr><td style="border-collapse: collapse;" valign="top">
+                <p style="mso-table-lspace:0;mso-table-rspace:0; margin:0"><span style="color: #000000; font-family: Arial; font-size: 13px; line-height: 16px; padding: 0 0 10px 0; font-weight:bold;">
+                - DeliveryCode team</span></p></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table></td>
+                <td style="width: 20px;border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
+                </td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="padding: 10px 10px 10px 10px;border-collapse: collapse;" valign="top">
+                <!--[if (gte mso 9)|(IE)]><table width="580" align="left" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]--><!-- Start Header-->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" class="deviceWidth" width="580"><tbody><tr><td bgcolor="#ffffff" width="100%">
+                <!-- Social --><table align="right" border="0" cellpadding="0" cellspacing="0" class="deviceWidth"><tbody><tr>
+                <td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
+                <a href="http://www.facebook.com/deliverycode" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/01ab8850-b625-41f9-a138-86f72bccfc01.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
+                </a></td><td class="center" style="font-size: 12px; color: #000000; font-weight: bold; text-align: right; font-family: Arial; line-height: 20px; vertical-align: middle; padding:10px 20px; font-style:bold" width="30">
+                <a href="http://twitter.com/delivery_code" style="text-decoration: none;"><img align="left" class="fwimage" src="http://gallery.mailchimp.com/be5f319b883fe2a2b83f96a61/images/4ae8f912-7c8e-4a40-b507-631e8c3ae188.jpg" style="display: block;max-width: 31px;width: 100%;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;height: auto;padding-right:20px;" />
+                </a></td></tr></tbody></table><!-- End Nav --></td></tr></tbody></table><!-- End Header --><!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]-->
+                </td></tr><tr></tr></tbody></table><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;" width="100%">
+                <tbody><tr><td align="center" bgcolor="#000000" style="border-collapse: collapse; padding: 5px 0;" valign="top">
+                <span style="color: #ffffff; font-family: Arial; font-size: 11px;"><a href="'.$base_url.'/contact-us" style="text-decoration: none; color: #ffffff;">
+                Contact Us</a> &nbsp;/&nbsp;<a href="'.$base_url.'/privacy" style="text-decoration: none; color: #ffffff;">Privacy</a> &nbsp;/&nbsp;<a href="'.$base_url.'/terms" style="text-decoration: none; color: #ffffff;">
+                Terms and Conditions</a> </span><br/></td></tr><tr><!-- <td valign="top"  bgcolor="#000000" align="center" style="border-collapse: collapse;">
+                <span style="color: #666666; font-family: Arial; font-size: 11px;"><br></td></tr> --></tr><tr>
+                <td align="center" style="color: #000; font-family: Arial; font-size: 11px;"><br />Copyright © 2014 Delivery Code. All rights reserved.<br />
+                <br />We reserve the right to change the Terms &amp; Conditions at any time<br />
+                If you no longer wish to receive emails from Delivery Code, please unsubscribe by clicking 
+                <a href="file:///tmp/dc_backup.html#" style="color: #666666;" target="_blank">here</a><br />
+                Unless otherwise noted, Delivery Code has applied VAT at 20% to the appropriate items in this transaction based on country of delivery in accordance with the EU laws on distance selling. Our VAT number is GB 180725703<br />
+                This email was sent to you by Delivery Code, Registered number: 8662491. Registered Address: Terleys, Molehill Green, Felsted, Dunmow, Essex CM6 3JP
+                </td></tr><tr><td height="60" style="border-collapse: collapse;" valign="top">&nbsp;</td></tr></tbody></table></td></tr></tbody></table>
+                <!--[if (gte mso 9)|(IE)]> </td></tr></table><![endif]--></td></tr></tbody></table><p>&nbsp;</p>',
+            'subject' => 'New gift received',
+            );
+                $mail = drupal_mail('dc_send_a_gift', $key, $to, language_default(), $params, $from);	                
+
+                        drupal_set_message('Your gift has been sent successfully.','status');
+                        drupal_goto($base_url.'/wishlist/'.$wishlist_id);   
+                    }else{
+                        node_delete($gift_voucher_nid);
+                        drupal_set_message('Some error occurred while creating you a charge for gift. Please try after some time. @error: '.$error,'error');
+                        drupal_goto($base_url.'/wishlist/'.$wishlist_id);                        
+                    }     
+
+              }
+              catch (Exception $e) {
+                  if(isset($gift_voucher_nid) && $gift_voucher_nid != ''){
+                    node_delete($gift_voucher_nid);  
+                  }          
+                        $error = $e->getMessage(); 
+                        drupal_set_message('Your gift can not be send becasue: '.$error,'error');
+                        drupal_goto($base_url.'/wishlist/'.$wishlist_id);      
+              } 
             }else{
-                node_delete($gift_voucher_nid);
-                drupal_set_message('Some error occurred while creating you a charge for gift. Please try after some time. @error: '.$error,'error');
-                drupal_goto($base_url.'/wishlist/'.$wishlist_id);                        
-            }     
+                        drupal_set_message('Something went wrong with the payment server. Please try after some time.','error');
+                        drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
+            }
+        }else{
+                    drupal_set_message('You have enter invalid amount. Please enter a valid amount.','error');
+                    drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
         }
-        
-      }
-      catch (Exception $e) {
-          if(isset($gift_voucher_nid) && $gift_voucher_nid != ''){
-            node_delete($gift_voucher_nid);  
-          }          
-        $error = $e->getMessage(); 
-                drupal_set_message('Your gift can not be send becasue: '.$error,'error');
-                drupal_goto($base_url.'/wishlist/'.$wishlist_id);      
-      } 
-    }else{
-                drupal_set_message('Something went wrong with the payment server. Please try after some time.','error');
-                drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
-    }
-    }else{
-                drupal_set_message('You have enter invalid amount. Please enter a valid amount.','error');
-                drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
-    }
     }else{
                 drupal_set_message('Your request has been decline. All fields are required, you have not entered the required information. Please try again.','error');
                 drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
@@ -682,6 +686,32 @@ function delete_model_managed_account(){
             
 }
 
+function send_gift_model_widget(){
+    global $user;
+    global $base_url;
+    if($user->uid==0){
+            $model_id = $_POST['model_id'];      
+
+            $getUserWishlistId = db_query("SELECT wishlist_id FROM wishlist WHERE  uid='".$model_id."'");
+
+            foreach($getUserWishlistId AS $resWishlistId){
+                $wishlistId = $resWishlistId->wishlist_id;
+            }            
+            if($_POST['amount'] >=5 && $_POST['amount'] < 1000){
+                $amount = $_POST['amount']; 
+                drupal_set_message('Please enter the required information to send a gift.','status');
+                drupal_goto($base_url.'/wishlist/'.$wishlistId.'?sending_amount='.$amount);
+            }else{
+                drupal_set_message('You have entered an invalid amount. Please try again.','error');
+                drupal_goto($base_url.'/wishlist/'.$wishlistId);            
+            }
+    }else{
+        drupal_set_message('Send a gift option is only available for visitors','error');
+        drupal_goto($base_url.'/user');        
+    }
+}
+
+/*
 function update_model_id_to_stripe(){
     
     global $user;
@@ -725,7 +755,7 @@ function update_model_id_to_stripe(){
             }
  
 }
-
+*/
 
 function _load_payment_settings($name = NULL) {
     $settings = array();

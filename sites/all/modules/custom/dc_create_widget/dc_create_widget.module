@@ -1,53 +1,1020 @@
 <?php
 /******* user buy wishlist items via model's wishlist ********/
 function dc_create_widget_menu() {   
-  $items['buy-wishlist-item-widgets'] = array(
-    'page callback' => 'buy_wishlist_item_from_widgets',
+//  $items['buy-wishlist-item-widgets'] = array(
+//    'page callback' => 'buy_wishlist_item_from_widgets',
+//    'access arguments' => array('access content'),
+//    'type' => MENU_CALLBACK,
+//  );
+  $items['widget-black-vertical/%'] = array(
+    'page callback' => 'widget_black_veritcal',
+    'page arguments' => array(1),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['widget-black-horizontal/%'] = array(
+    'page callback' => 'widget_black_horizontal',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['widget-white-vertical/%'] = array(
+    'page callback' => 'widget_white_veritcal',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['widget-white-horizontal/%'] = array(
+    'page callback' => 'widget_white_horizontal',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+    
   
   return $items;
 }
 
-function buy_wishlist_item_from_widgets(){
-    global $user;
-    $uid = $user->uid;    
-        /************ Add product to cart ********************/
-        //$uid = $form['uid']['#value'];
-        $pid = arg(1);
-        $wishlist_id = arg(2);
-        $quantity = 1;
-        if ($product = commerce_product_load($pid) ) {
-          $line_item = commerce_product_line_item_new($product, $quantity);
-          //load wishlist
-          $wishlist = hd_wishlist_load($wishlist_id);
-          //set wishlist owner reference field
-          $line_item->field_wish_list_owner_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->uid;
-          //set custom wishlist id reference field
-          $line_item->field_wishlist_id_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->wishlist_id;
-          //query the wishlist item to get the id
-          $query = new EntityFieldQuery();
-          $query->entityCondition('entity_type', 'wishlist_item')
-              ->propertyCondition('uid', $wishlist->uid)
-          ->fieldCondition('field_commerce_produc_ref ', 'product_id', $pid, '=')
-          ->addMetaData('account', user_load(1)); // Run the query as user 1.
-          $result = $query->execute();
-          $wiw_id = key($result['wishlist_item']);
-          $wiw = entity_load_single('wishlist_item', $wiw_id);
-          //set custom wishlist item id reference field
-          $line_item->field_wishlist_item_id_ref[LANGUAGE_NONE][0]['target_id'] = $wiw_id;
-          //set custom store id reference field
-          $line_item->field_store_country_ref[LANGUAGE_NONE][0]['target_id'] =
-            $wiw->field_store_ref[LANGUAGE_NONE][0]['target_id'];
-          //additional product info
-          if(!empty($wiw->field_note[LANGUAGE_NONE][0]['value'])){
-            $line_item->field_additional_information[LANGUAGE_NONE][0]['value'] =
-              $wiw->field_note[LANGUAGE_NONE][0]['value'];
-          }
-          //add to cart
-          $line_item = commerce_cart_product_add($uid, $line_item, FALSE);
-          drupal_goto('cart');
-        }     
+function widget_black_veritcal($user_id){
+    global $base_url;
+    $user_details =  user_load($user_id);  
+//    print "<pre>"; print_r($user_details); die();
+    if($user_details){
+        $getUserWishlistId = db_query("SELECT wishlist_id FROM wishlist WHERE  uid='".$user_id."'");
+
+        foreach($getUserWishlistId AS $resWishlistId){
+            $wishlistId = $resWishlistId->wishlist_id;
+        }
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <title></title>
+                <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+                <link href="https://fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css">
+                <link rel="stylesheet" href="">
+                <style>
+                        body{
+                                padding:0px;
+                                margin: 0px;
+                                font-family: "Lato", sans-serif;
+                        }
+                        div, ul{float: left;}
+                        .clear{
+                                clear: both;
+                        }
+
+                        .ModelAddContainer{
+                                display: block;
+                                width: 201px;
+                                background: #393a3c;
+                        }
+                        .ModelAddContainer .topHdr{
+                                display: block;
+                                width: 100%;
+                                color: #ffffff;
+                                font-size: 22px;
+                                line-height: 52px;
+                                text-align: center;
+                                font-family: "Lato", sans-serif;
+                        }
+                        .ModelAddContainer .modelImg{
+                                display: block;
+                                height: auto;
+                                width: 100%;
+                        }
+                        .ModelAddContainer .modelImg img{
+                                display: block;
+                                width: 100%;
+                                height: 200px;
+                        }
+                        .ModelAddContainer .SubHdr{
+                                display: block;
+                                text-align: center;
+                                width: 100%;
+                                padding: 10px 0;
+                        }
+                        .ModelAddContainer .SubHdr h4{
+                                margin: 0 0 0 0;
+                                padding: 0 0 0 0;
+                                color: #ffffff;
+                                font-size: 20px;
+                                font-weight: 300;
+                                font-family: "Lato", sans-serif;
+                        }
+                        .ModelAddContainer .SubHdr p{
+                                margin: 0 0 0 0;
+                                padding: 0 0 0 0;
+                                color:rgba(255, 255, 255, 0.44);
+                                font-size: 13px;
+                                font-weight: 300;
+                        }
+                        .ModelAddContainer ul.mPriceList{
+                                display: block;
+                                margin: 10px 0 12px 19px;
+                                padding: 0px;
+                        }
+                        .ModelAddContainer ul.mPriceList li{
+                                display: inline-block;
+                                width: 75px;
+                                height: 43px;
+                                text-align: center;
+                                background: #141415;
+                                font-size: 16px;
+                                color: #fff;
+                                font-weight: 300;
+                                line-height: 43px;
+                                font-family: "Lato", sans-serif;
+                                border-radius: 20px;
+                                margin-right: 8px;
+                                margin-bottom: 8px;
+                                cursor: pointer;
+                        }
+                        .ModelAddContainer .modelAddFtr{
+                                display: block;
+                                width: 100%;
+                                text-align: center;
+                                background: #2c2c2e;
+                        }
+                        .ModelAddContainer .modelAddFtr h2.ftrHd{
+                                display: block;
+                                font-size: 14px;
+                                font-weight: 300;
+                                color: #fff;
+                                text-transform: uppercase;
+                                font-family: "Lato", sans-serif;
+                                margin: 15px 0 10px 0; 
+                        }
+                        .ModelAddContainer .modelAddForm{
+                                display: block;
+                                width: 100%;
+                                padding: 0px 15px;
+                                -webkit-box-sizing: border-box;
+                                -moz-box-sizing: border-box;
+                                box-sizing: border-box;
+                        }
+                        .ModelAddContainer .modelAddFormFields{
+                                display: block;
+                                width: 100%;
+                                height: 41px;
+                                border-radius: 25px;
+                                padding: 4px 0 0 0;
+                                background: #141415;
+
+                        }
+                        .ModelAddContainer .modelAddFormFields input[type="text"]{
+                                width: calc(100% - 65px);
+                                height: 35px;
+                                border-radius: 15px 0 0 15px;
+                                color: rgba(255, 255, 255, 0.8);
+                                font-family: "Lato", sans-serif;
+                                padding-left: 18px;
+                                -webkit-box-sizing: border-box;
+                                -moz-box-sizing: border-box;
+                                box-sizing: border-box;
+                                background: transparent;
+                                border: 0px;
+                        }
+                        .ModelAddContainer .modelAddFormFields input[type="text"]::-webkit-input-placeholder {
+                           color: rgba(255, 255, 255, 0.22);
+                        }
+
+                        .ModelAddContainer .modelAddFormFields input[type="text"]:-moz-placeholder { /* Firefox 18- */
+                           color: rgba(255, 255, 255, 0.22);  
+                        }
+
+                        .ModelAddContainer .modelAddFormFields input[type="text"]::-moz-placeholder {  /* Firefox 19+ */
+                           color: rgba(255, 255, 255, 0.22);  
+                        }
+
+                        .ModelAddContainer .modelAddFormFields input[type="text"]:-ms-input-placeholder {  
+                           color: rgba(255, 255, 255, 0.22);  
+                        }
+                        .ModelAddContainer .modelAddFormFields button[type="submit"]{
+                                width:58px;
+                                height: 37px;
+                                border-radius: 20px;
+                                background: #1d988c;
+                                border:0px;
+                                font-size: 16px;
+                                font-weight: 400;
+                        }
+                        .ModelAddContainer .modelAddFtr p.ftrtext{
+                                float: left;
+                                display: block;
+                                margin-top: 5px;
+                                font-size: 13px;
+                                font-weight: 300;
+                                color: #8e9095;
+                                font-family: "Lato", sans-serif;
+                                text-align: left;
+                        }
+
+
+                </style>
+        </head>
+        <body>
+        <div class="ModelAddContainer">
+                <div class="topHdr">
+                        SEND A GIFT
+                </div>
+                <div class="modelImg">
+                        <img src="'.$base_url.'/sites/default/files/styles/large/public/pictures/'.$user_details->picture->filename.'" alt="'.$user_details->name.'">
+                </div>
+                <div class="SubHdr">
+                        <h4>'.ucfirst($user_details->name).'</h4>
+                        <p>'.$base_url.'/wishlist/'.$wishlistId.'</p>
+                </div>
+                <ul class="mPriceList">
+                        <li>$10</li>
+                        <li>$25</li>
+                        <li>$50</li>
+                        <li>$100</li>
+                        <li>$250</li>
+                        <li>$500</li>
+                </ul>
+                <div class="modelAddFtr">
+                        <h2 class="ftrHd">ENTER OTHER AMOUNT</h2>
+                        <div class="modelAddForm">
+                                <div class="modelAddFormFields">
+                                    <form action="'.$base_url.'/model_widget_send_gift" method="post" target="_blank">
+                                        <input type="hidden" class="model-id" value="'.$user_id.'" name="model_id"/>
+                                        <input type="text" class="send-gift-amount" name="amount" placeholder="0.00"><button type="submit" style="cursor:pointer">PAY</button>
+                                    </form>    
+                                </div>
+                                <p class="ftrtext">Minimum gift amount on 
+        Deliverycode.com is $5</p>
+                        </div>
+
+                </div>
+        </div>
+        <script type="text/javascript">
+            $(".mPriceList li").on("click", function(){
+            var amount = $(this).html().replace("$", "");
+            $(".send-gift-amount").val(amount);
+            });            
+        </script>        
+        </body>      
+        </html>';
+    }
 }
+
+function widget_black_horizontal($user_id){
+    global $base_url;
+    $user_details =  user_load($user_id);  
+//    print "<pre>"; print_r($user_details); die();
+    if($user_details){
+        $getUserWishlistId = db_query("SELECT wishlist_id FROM wishlist WHERE  uid='".$user_id."'");
+
+        foreach($getUserWishlistId AS $resWishlistId){
+            $wishlistId = $resWishlistId->wishlist_id;
+        }
+        echo '<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="">
+	<style>
+		body{
+			padding:0px;
+			margin: 0px;
+			font-family: "Lato", sans-serif;
+		}
+		div, ul{float: left;}
+		.clear{
+			clear: both;
+		}
+
+		.ModelAddContainerBlackHoriz{
+			display: block;
+			width: 800px;
+			background: #393a3c;
+		}
+		.ModelAddContainerBlackHoriz .modelImg{
+			display: block;
+			width: 178px;
+			height: auto;
+		}
+		.ModelAddContainerBlackHoriz .modelImg img{
+			display: block;
+			width: 100%;
+			height: 200px;
+		}
+		.ModelAddContainerBlackHorizContent{
+			display: block;
+			width: calc(100% - 178px);
+			height: auto;
+			padding-left: 23px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		.ModelAddContainerBlackHoriz .SubHdr{
+			display: block;
+			text-align: left;
+			width: 100%;
+			padding: 10px 0;
+		}
+		.ModelAddContainerBlackHoriz .SubHdr h4{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color: #fff;
+			font-size: 20px;
+			font-weight: 300;
+			font-family: "Lato", sans-serif;
+		}
+		.ModelAddContainerBlackHoriz .SubHdr h4 strong{
+			color: #1d988c;
+			font-size: 22px;
+			font-family: "Lato", sans-serif;
+		}
+
+		.ModelAddContainerBlackHoriz .SubHdr p{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color:rgba(255,255,255,0.44);
+			font-size: 13px;
+			font-weight: 300;
+		}
+		.ModelAddContainerBlackHoriz ul.mPriceList{
+			display: block;
+			margin: 6px 0 7px;
+			padding: 0px;
+		}
+		.ModelAddContainerBlackHoriz ul.mPriceList li{
+			display: inline-block;
+			width: 75px;
+			height: 43px;
+			text-align: center;
+			background: #141415;
+			font-size: 16px;
+			color: #fff;
+			font-weight: 300;
+			line-height: 43px;
+			font-family: "Lato", sans-serif;
+			border-radius: 20px;
+			margin-right: 8px;
+			margin-bottom: 8px;
+                        cursor: pointer;
+		}
+		.ModelAddContainerBlackHoriz .modelAddFtr{
+			display: block;
+			width: 100%;
+			text-align: center;
+		}
+		.ModelAddContainerBlackHoriz .modelAddFtr h2.ftrHd{
+			display: block;
+			font-size: 14px;
+			font-weight: 300;
+			text-align: left;
+			color: #fff;
+			text-transform: uppercase;
+			font-family: "Lato", sans-serif;
+			margin: 0px 0 3px 0; 
+		}
+		.ModelAddContainerBlackHoriz .modelAddForm{
+			display: block;
+			width: 100%;
+			padding: 0px 0;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		.ModelAddContainerBlackHoriz .modelAddFormFields{
+			display: block;
+			width: 222px;
+			height: 40px;
+			border-radius: 25px;
+			padding: 2px 0 0 0;
+			background: #fff;
+			background: #141415;
+			margin-right: 8px;
+
+		}
+		.ModelAddContainerBlackHoriz .modelAddFormFields input[type="text"]{
+			width: calc(100% - 63px);
+			display: inline-block;
+			vertical-align: top;
+			height: 38px;
+			border-radius: 20px 0 0 20px;
+			color: #fff;
+			font-family: "Lato", sans-serif;
+			padding-left: 18px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			background: transparent;
+			border: 0px;
+		
+		}
+		.ModelAddContainerBlackHoriz .modelAddFormFields input[type="text"]::-webkit-input-placeholder {
+		   color: #9d9d9d;
+		}
+
+		.ModelAddContainerBlackHoriz .modelAddFormFields input[type="text"]:-moz-placeholder { /* Firefox 18- */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerBlackHoriz .modelAddFormFields input[type="text"]::-moz-placeholder {  /* Firefox 19+ */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerBlackHoriz .modelAddFormFields input[type="text"]:-ms-input-placeholder {  
+		   color: #9d9d9d;  
+		}
+		.ModelAddContainerBlackHoriz .modelAddFormFields button[type="submit"]{
+			width:58px;
+			height: 38px;
+			border-radius: 20px;
+			background: #1d988c;
+			border:0px;
+			color: #fff;
+			font-size: 16px;
+			font-weight: 400;
+			display: inline-block;
+			vertical-align: top;
+		}
+		.ModelAddContainerBlackHoriz .modelAddFtr p.ftrtext{
+			float: left;
+			display: block;
+			margin-top: 13px;
+			font-size: 13px;
+			font-weight: 300;
+			color: #7e8185;
+			font-family: "Lato", sans-serif;
+			text-align: left;
+		}
+
+
+	</style>
+</head>
+<body>
+<div class="ModelAddContainerBlackHoriz">
+	<div class="modelImg">
+	<img src="'.$base_url.'/sites/default/files/styles/large/public/pictures/'.$user_details->picture->filename.'" alt="'.$user_details->name.'">
+	</div>
+	<div class="ModelAddContainerBlackHorizContent">
+		<div class="SubHdr">
+			<h4><strong>SEND A GIFT - </strong> '.ucfirst($user_details->name).'</h4>
+			<p>'.$base_url.'/wishlist/'.$wishlistId.'</p>
+		</div>
+		<ul class="mPriceList">
+			<li>$10</li>
+			<li>$25</li>
+			<li>$50</li>
+			<li>$100</li>
+			<li>$250</li>
+			<li>$500</li>
+		</ul>
+		<div class="modelAddFtr">
+		<h2 class="ftrHd">ENTER OTHER AMOUNT</h2>
+		<div class="modelAddForm">
+			<div class="modelAddFormFields">
+                            <form action="'.$base_url.'/model_widget_send_gift" method="post" target="_blank">
+                                <input type="hidden" class="model-id" value="'.$user_id.'" name="model_id"/>
+                                <input type="text" class="send-gift-amount" name="amount" placeholder="0.00"><button type="submit" style="cursor:pointer">PAY</button>
+                            </form> 
+			</div>
+			<p class="ftrtext">Minimum gift amount on 
+Deliverycode.com is $5</p>
+		</div>
+		
+	</div>
+
+	</div>	
+</div>
+        <script type="text/javascript">
+            $(".mPriceList li").on("click", function(){
+            var amount = $(this).html().replace("$", "");
+            $(".send-gift-amount").val(amount);
+            });            
+        </script>	
+</body>
+</html>';
+    }
+}
+
+
+
+function widget_white_veritcal($user_id){
+    global $base_url;
+    $user_details =  user_load($user_id);  
+//    print "<pre>"; print_r($user_details); die();
+    if($user_details){
+        $getUserWishlistId = db_query("SELECT wishlist_id FROM wishlist WHERE  uid='".$user_id."'");
+
+        foreach($getUserWishlistId AS $resWishlistId){
+            $wishlistId = $resWishlistId->wishlist_id;
+        }
+        echo '<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="">
+	<style>
+		body{
+			padding:0px;
+			margin: 0px;
+			font-family: "Lato", sans-serif;
+		}
+		div, ul{float: left;}
+		.clear{
+			clear: both;
+		}
+
+		.ModelAddContainerGray{
+			display: block;
+			width: 201px;
+			background: #f4f4f4;
+			box-shadow: 0 0 4px rgba(0,0,0,0.2)
+		}
+		.ModelAddContainerGray .topHdr{
+			display: block;
+			width: 100%;
+			color: #1d988c;
+			font-size: 22px;
+			line-height: 52px;
+			text-align: center;
+			font-family: "Lato", sans-serif;
+		}
+		.ModelAddContainerGray .modelImg{
+			display: block;
+			height: auto;
+			width: 100%;
+		}
+		.ModelAddContainerGray .modelImg img{
+			display: block;
+			width: 100%;
+			height: 200px;
+		}
+		.ModelAddContainerGray .SubHdr{
+			display: block;
+			text-align: center;
+			width: 100%;
+			padding: 10px 0;
+		}
+		.ModelAddContainerGray .SubHdr h4{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color: #393a3c;
+			font-size: 20px;
+			font-weight: 300;
+			font-family: "Lato", sans-serif;
+		}
+		.ModelAddContainerGray .SubHdr p{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color:#8f8f8f;
+			font-size: 13px;
+			font-weight: 300;
+		}
+		.ModelAddContainerGray ul.mPriceList{
+			display: block;
+			margin: 10px 0 12px 19px;
+			padding: 0px;
+		}
+		.ModelAddContainerGray ul.mPriceList li{
+			display: inline-block;
+			width: 75px;
+			height: 43px;
+			text-align: center;
+			background: #1d988c;
+			font-size: 16px;
+			color: #fff;
+			font-weight: 300;
+			line-height: 43px;
+			font-family: "Lato", sans-serif;
+			border-radius: 20px;
+			margin-right: 8px;
+			margin-bottom: 8px;
+                        cursor: pointer;
+		}
+		.ModelAddContainerGray .modelAddFtr{
+			display: block;
+			width: 100%;
+			text-align: center;
+			background: #1d988c;
+		}
+		.ModelAddContainerGray .modelAddFtr h2.ftrHd{
+			display: block;
+			font-size: 14px;
+			font-weight: 300;
+			color: #fff;
+			text-transform: uppercase;
+			font-family: "Lato", sans-serif;
+			margin: 15px 0 10px 0; 
+		}
+		.ModelAddContainerGray .modelAddForm{
+			display: block;
+			width: 100%;
+			padding: 0px 15px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		.ModelAddContainerGray .modelAddFormFields{
+			display: block;
+			width: 100%;
+			height: 41px;
+			border-radius: 25px;
+			padding: 4px 0 0 0;
+			background: #fff;
+
+		}
+		.ModelAddContainerGray .modelAddFormFields input[type="text"]{
+			width: calc(100% - 65px);
+			height: 35px;
+			border-radius: 15px 0 0 15px;
+			color: #333;
+			font-family: "Lato", sans-serif;
+			padding-left: 18px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			background: #fff;
+			border: 0px;
+		}
+		.ModelAddContainerGray .modelAddFormFields input[type="text"]::-webkit-input-placeholder {
+		   color: #9d9d9d;
+		}
+
+		.ModelAddContainerGray .modelAddFormFields input[type="text"]:-moz-placeholder { /* Firefox 18- */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerGray .modelAddFormFields input[type="text"]::-moz-placeholder {  /* Firefox 19+ */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerGray .modelAddFormFields input[type="text"]:-ms-input-placeholder {  
+		   color: #9d9d9d;  
+		}
+		.ModelAddContainerGray .modelAddFormFields button[type="submit"]{
+			width:58px;
+			height: 37px;
+			border-radius: 20px;
+			background: #1d988c;
+			border:0px;
+			font-size: 16px;
+			font-weight: 400;
+		}
+		.ModelAddContainerGray .modelAddFtr p.ftrtext{
+			float: left;
+			display: block;
+			margin-top: 5px;
+			font-size: 13px;
+			font-weight: 300;
+			color: #fff;
+			font-family: "Lato", sans-serif;
+			text-align: left;
+		}
+
+
+	</style>
+</head>
+<body>
+<div class="ModelAddContainerGray">
+	<div class="topHdr">
+		SEND A GIFT
+	</div>
+	<div class="modelImg">
+	<img src="'.$base_url.'/sites/default/files/styles/large/public/pictures/'.$user_details->picture->filename.'" alt="'.$user_details->name.'">
+	</div>
+	<div class="SubHdr">
+		<h4>'.ucfirst($user_details->name).'</h4>
+		<p>'.$base_url.'/wishlist/'.$wishlistId.'</p>
+	</div>
+	<ul class="mPriceList">
+		<li>$10</li>
+		<li>$25</li>
+		<li>$50</li>
+		<li>$100</li>
+		<li>$250</li>
+		<li>$500</li>
+	</ul>
+	<div class="modelAddFtr">
+		<h2 class="ftrHd">ENTER OTHER AMOUNT</h2>
+		<div class="modelAddForm">
+			<div class="modelAddFormFields">
+                            <form action="'.$base_url.'/model_widget_send_gift" method="post" target="_blank">
+                                <input type="hidden" class="model-id" value="'.$user_id.'" name="model_id"/>
+                                <input type="text" class="send-gift-amount" name="amount" placeholder="0.00"><button type="submit" style="cursor:pointer">PAY</button>
+                            </form> 
+			</div>
+			<p class="ftrtext">Minimum gift amount on 
+Deliverycode.com is $5</p>
+		</div>
+		
+	</div>
+
+	
+</div>
+        <script type="text/javascript">
+            $(".mPriceList li").on("click", function(){
+            var amount = $(this).html().replace("$", "");
+            $(".send-gift-amount").val(amount);
+            });            
+        </script>	
+</body>
+</html>';
+    }
+}
+
+
+function widget_white_horizontal($user_id){
+    global $base_url;
+    $user_details =  user_load($user_id);  
+//    print "<pre>"; print_r($user_details); die();
+    if($user_details){
+        $getUserWishlistId = db_query("SELECT wishlist_id FROM wishlist WHERE  uid='".$user_id."'");
+
+        foreach($getUserWishlistId AS $resWishlistId){
+            $wishlistId = $resWishlistId->wishlist_id;
+        }
+        echo '<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="">
+	<style>
+		body{
+			padding:0px;
+			margin: 0px;
+			font-family: "Lato", sans-serif;
+		}
+		div, ul{float: left;}
+		.clear{
+			clear: both;
+		}
+
+		.ModelAddContainerGrayHoriz{
+			display: block;
+			width: 800px;
+			background: #f4f4f4;
+			box-shadow: 0 0 4px rgba(0,0,0,0.2)
+		}
+		.ModelAddContainerGrayHoriz .modelImg{
+			display: block;
+			width: 178px;
+			height: auto;
+		}
+		.ModelAddContainerGrayHoriz .modelImg img{
+			display: block;
+			width: 100%;
+			height: 200px;
+		}
+		.ModelAddContainerGrayHorizContent{
+			display: block;
+			width: calc(100% - 178px);
+			height: auto;
+			padding-left: 23px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		.ModelAddContainerGrayHoriz .SubHdr{
+			display: block;
+			text-align: left;
+			width: 100%;
+			padding: 10px 0;
+		}
+		.ModelAddContainerGrayHoriz .SubHdr h4{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color: #393a3c;
+			font-size: 20px;
+			font-weight: 300;
+			font-family: "Lato", sans-serif;
+		}
+		.ModelAddContainerGrayHoriz .SubHdr h4 strong{
+			color: #1d988c;
+			font-size: 22px;
+			font-family: "Lato", sans-serif;
+			}
+
+		.ModelAddContainerGrayHoriz .SubHdr p{
+			margin: 0 0 0 0;
+			padding: 0 0 0 0;
+			color:#8f8f8f;
+			font-size: 13px;
+			font-weight: 300;
+		}
+		.ModelAddContainerGrayHoriz ul.mPriceList{
+			display: block;
+			margin: 6px 0 7px;
+			padding: 0px;
+		}
+		.ModelAddContainerGrayHoriz ul.mPriceList li{
+			display: inline-block;
+			width: 75px;
+			height: 43px;
+			text-align: center;
+			background: #1d988c;
+			font-size: 16px;
+			color: #fff;
+			font-weight: 300;
+			line-height: 43px;
+			font-family: "Lato", sans-serif;
+			border-radius: 20px;
+			margin-right: 8px;
+			margin-bottom: 8px;
+                        cursor: pointer;
+		}
+		.ModelAddContainerGrayHoriz .modelAddFtr{
+			display: block;
+			width: 100%;
+			text-align: center;
+		}
+		.ModelAddContainerGrayHoriz .modelAddFtr h2.ftrHd{
+			display: block;
+			font-size: 14px;
+			font-weight: 300;
+			text-align: left;
+			color: #000;
+			text-transform: uppercase;
+			font-family: "Lato", sans-serif;
+			margin: 0px 0 3px 0; 
+		}
+		.ModelAddContainerGrayHoriz .modelAddForm{
+			display: block;
+			width: 100%;
+			padding: 0px 0;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		.ModelAddContainerGrayHoriz .modelAddFormFields{
+			display: block;
+			width: 269px;
+			height: 40px;
+			border-radius: 25px;
+			padding: 2px 0 0 0;
+			background: #fff;
+			border: 1px solid #c2c2c2;
+			margin-right: 8px;
+
+		}
+		.ModelAddContainerGrayHoriz .modelAddFormFields input[type="text"]{
+			width: calc(100% - 63px);
+			display: inline-block;
+			vertical-align: top;
+			height: 38px;
+			border-radius: 20px 0 0 20px;
+			color: #333;
+			font-family: "Lato", sans-serif;
+			padding-left: 18px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			background: #fff;
+			border: 0px;
+		
+		}
+		.ModelAddContainerGrayHoriz .modelAddFormFields input[type="text"]::-webkit-input-placeholder {
+		   color: #9d9d9d;
+		}
+
+		.ModelAddContainerGrayHoriz .modelAddFormFields input[type="text"]:-moz-placeholder { /* Firefox 18- */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerGrayHoriz .modelAddFormFields input[type="text"]::-moz-placeholder {  /* Firefox 19+ */
+		   color: #9d9d9d;  
+		}
+
+		.ModelAddContainerGrayHoriz .modelAddFormFields input[type="text"]:-ms-input-placeholder {  
+		   color: #9d9d9d;  
+		}
+		.ModelAddContainerGrayHoriz .modelAddFormFields button[type="submit"]{
+			width:58px;
+			height: 38px;
+			border-radius: 20px;
+			background: #1d988c;
+			color: #fff;
+			border:0px;
+			font-size: 16px;
+			font-weight: 400;
+			display: inline-block;
+			vertical-align: top;
+		}
+		.ModelAddContainerGrayHoriz .modelAddFtr p.ftrtext{
+			float: left;
+			display: block;
+			margin-top: 13px;
+			font-size: 13px;
+			font-weight: 300;
+			color: #7e8185;
+			font-family: "Lato", sans-serif;
+			text-align: left;
+		}
+
+
+	</style>
+</head>
+<body>
+<div class="ModelAddContainerGrayHoriz">
+	<div class="modelImg">
+		<img src="'.$base_url.'/sites/default/files/styles/large/public/pictures/'.$user_details->picture->filename.'" alt="'.$user_details->name.'">
+	</div>
+	<div class="ModelAddContainerGrayHorizContent">
+		<div class="SubHdr">
+			<h4><strong>SEND A GIFT - </strong> '.ucfirst($user_details->name).'</h4>
+			<p>'.$base_url.'/wishlist/'.$wishlistId.'</p>
+		</div>
+		<ul class="mPriceList">
+			<li>$10</li>
+			<li>$25</li>
+			<li>$50</li>
+			<li>$100</li>
+			<li>$250</li>
+			<li>$500</li>
+		</ul>
+		<div class="modelAddFtr">
+		<h2 class="ftrHd">ENTER OTHER AMOUNT</h2>
+		<div class="modelAddForm">
+			<div class="modelAddFormFields">
+                            <form action="'.$base_url.'/model_widget_send_gift" method="post" target="_blank">
+                                <input type="hidden" class="model-id" value="'.$user_id.'" name="model_id"/>
+                                <input type="text" class="send-gift-amount" name="amount" placeholder="0.00"><button type="submit" style="cursor:pointer">PAY</button>
+                            </form> 
+			</div>
+			<p class="ftrtext">Minimum gift amount on 
+Deliverycode.com is $5</p>
+		</div>
+		
+	</div>
+
+	</div>
+	
+	
+	
+
+	
+</div>
+        <script type="text/javascript">
+            $(".mPriceList li").on("click", function(){
+            var amount = $(this).html().replace("$", "");
+            $(".send-gift-amount").val(amount);
+            });            
+        </script>	
+</body>
+</html>';
+    }
+}
+
+
+
+//function buy_wishlist_item_from_widgets(){
+//    global $user;
+//    $uid = $user->uid;    
+//        /************ Add product to cart ********************/
+//        //$uid = $form['uid']['#value'];
+//        $pid = arg(1);
+//        $wishlist_id = arg(2);
+//        $quantity = 1;
+//        if ($product = commerce_product_load($pid) ) {
+//          $line_item = commerce_product_line_item_new($product, $quantity);
+//          //load wishlist
+//          $wishlist = hd_wishlist_load($wishlist_id);
+//          //set wishlist owner reference field
+//          $line_item->field_wish_list_owner_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->uid;
+//          //set custom wishlist id reference field
+//          $line_item->field_wishlist_id_ref[LANGUAGE_NONE][0]['target_id'] = $wishlist->wishlist_id;
+//          //query the wishlist item to get the id
+//          $query = new EntityFieldQuery();
+//          $query->entityCondition('entity_type', 'wishlist_item')
+//              ->propertyCondition('uid', $wishlist->uid)
+//          ->fieldCondition('field_commerce_produc_ref ', 'product_id', $pid, '=')
+//          ->addMetaData('account', user_load(1)); // Run the query as user 1.
+//          $result = $query->execute();
+//          $wiw_id = key($result['wishlist_item']);
+//          $wiw = entity_load_single('wishlist_item', $wiw_id);
+//          //set custom wishlist item id reference field
+//          $line_item->field_wishlist_item_id_ref[LANGUAGE_NONE][0]['target_id'] = $wiw_id;
+//          //set custom store id reference field
+//          $line_item->field_store_country_ref[LANGUAGE_NONE][0]['target_id'] =
+//            $wiw->field_store_ref[LANGUAGE_NONE][0]['target_id'];
+//          //additional product info
+//          if(!empty($wiw->field_note[LANGUAGE_NONE][0]['value'])){
+//            $line_item->field_additional_information[LANGUAGE_NONE][0]['value'] =
+//              $wiw->field_note[LANGUAGE_NONE][0]['value'];
+//          }
+//          //add to cart
+//          $line_item = commerce_cart_product_add($uid, $line_item, FALSE);
+//          drupal_goto('cart');
+//        }     
+//}
 ?>
