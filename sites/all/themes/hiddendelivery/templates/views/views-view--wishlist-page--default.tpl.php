@@ -183,7 +183,17 @@ if($user->uid == 0){
        }
        $wishlistUserDetails = user_load($userId);
     ?>
-    <div class="send-a-gift-section" style="display: none">
+    <?php
+        if(isset($_GET['sending_amount']) && $_GET['sending_amount'] != ''){
+    ?> 
+            <div class="send-a-gift-section">
+    <?php
+        }else{
+    ?> 
+            <div class="send-a-gift-section" style="display: none">
+    <?php
+        }
+    ?>    
         <div class="send-a-gift-header">
             <span class="send-a-gift-close-button">x</span>
             <span class="gift-header-text">Send a gift to </span>
@@ -205,7 +215,17 @@ if($user->uid == 0){
                           </select>
                         </div>
                         <div class="select-value">
-                        <input class="form-control payment-amount" name="amount" type="text" placeholder="0">
+                        <?php
+                            if(isset($_GET['sending_amount']) && $_GET['sending_amount'] != ''){
+                        ?> 
+                                <input class="form-control payment-amount" value="<?php echo $_GET['sending_amount'];?>" name="amount" type="text" placeholder="0">
+                        <?php
+                            }else{
+                        ?> 
+                                <input class="form-control payment-amount" name="amount" type="text" placeholder="0">
+                        <?php
+                            }
+                        ?>                                                   
                         </div>
                       </div>
                     </div>
@@ -285,8 +305,14 @@ if($user->uid == 0){
                 </div>
             </form>
         </div>
-    </div>    
-  <?php if ($rows): ?>
+    </div>
+<?php
+if(isset($_GET['sending_amount']) && $_GET['sending_amount'] != ''){
+?>         
+<?php
+}else{
+        
+    if ($rows): ?>
     <div class="view-content">
       <?php print $rows; ?>
     </div>
@@ -331,6 +357,9 @@ if($user->uid == 0){
     <div class="feed-icon">
       <?php print $feed_icon; ?>
     </div>
-  <?php endif; ?>
+  <?php endif; 
+  
+}
+?>                 
 
 </div><?php /* class view */ ?>
