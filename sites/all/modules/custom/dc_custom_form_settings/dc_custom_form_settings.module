@@ -1,5 +1,42 @@
 <?php
 
+function dc_custom_form_settings_menu() {
+/*** Menu link to update user fields to confirm real name via dialog-box, dialog-box created in page.tpl files ***/
+  $items['dc_custom_form_user_real_name_confirmation/%'] = array(
+    'title' => 'Real Name Confirmation',
+    'page callback' => 'user_real_name_confirmation',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );  
+  return $items;
+}
+
+function user_real_name_confirmation($confirmation_value){
+    // $confirmation_value = 1 means user got the update message.
+    // $confirmation_value = 2 reminder user the alert message on other day.
+    global $user;
+    if($user->uid != 0){
+        $user_details = user_load($user->uid);
+        if(isset($confirmation_value) && $confirmation_value ==1){            
+            $user_details->field_confirmed_realname['und'][0]['value'] = 1; 
+            user_save($user_details);
+            drupal_goto($base_url.'/user/'.$user->uid.'/edit');            
+        }
+        if(isset($confirmation_value) && $confirmation_value ==2){ 
+            $tomorrow = date("Y-m-d", strtotime("+ 1 day"));
+            $user_details->field_confirmed_realname['und'][0]['value'] = $tomorrow;    
+            user_save($user_details);
+            drupal_goto($base_url.'/user');            
+        }
+    }else{
+        drupal_set_message('You are not authorized to access this page.','error');
+        drupal_goto($base_url);        
+    }
+}
+
+
+
 function dc_custom_form_settings_form_alter(&$form, &$form_state, $form_id){
     //print "<pre>"; print_r($form); die();
     if($form['#id'] == 'views-exposed-form-new-wishlists-page-1'){

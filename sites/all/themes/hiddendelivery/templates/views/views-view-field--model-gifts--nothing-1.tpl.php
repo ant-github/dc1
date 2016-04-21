@@ -23,9 +23,13 @@
  */
 ?>
 <?php 
-if($row->field_field_model_redeem[0]['raw']['value'] == 0){
-    print $output;
+if(isset($row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value']) && $row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value'] == 'yes'){
+    print "Admin hold this gift";
 }else{
-   print $row->field_field_gift_message[0]['raw']['value']; 
+    if($row->field_field_model_redeem[0]['raw']['value'] == 0){
+        print $output;
+    }else{
+       print $row->field_field_gift_message[0]['raw']['value']; 
+    }
 }
 ?>

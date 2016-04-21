@@ -23,9 +23,14 @@
  */
 ?>
 <?php
-if($output == 'No'){
-    print "Pending";
-}elseif($output == 'Yes'){
-    print "Complete";
+//print "<pre>"; print_r($row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value']); die();
+if(isset($row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value']) && $row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value'] == 'yes'){
+    print "On Hold";
+}else{
+    if($output == 'No'){
+        print "Pending";
+    }elseif($output == 'Yes'){
+        print "Complete";
+    }
 }
 ?>

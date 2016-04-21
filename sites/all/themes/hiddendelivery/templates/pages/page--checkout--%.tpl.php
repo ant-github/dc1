@@ -333,5 +333,49 @@ if($event_node_id != ''){
   </div>
 </div>
 <footer class="footer">
+<?php if($user->uid !=0){
+$user_details = user_load($user->uid);
+if(isset($user_details->field_confirmed_realname) && $user_details->field_confirmed_realname['und'][0]['value'] !=1){
+$current_date = strtotime(date("Y-m-d"));
+$reminder_date = strtotime($user_details->field_confirmed_realname['und'][0]['value']); 
+if($current_date == $reminder_date){
+?>
+<script type="text/javascript">    
+jQuery(document).ready(function() {    
+    jQuery( ".model-real-name-confirmation-alert" ).dialog({
+      resizable: false,
+      modal: true,
+      width: 350
+    });
+});    
+</script>
+<div class="model-real-name-confirmation-alert simple-dialog" style="display: none;">
+    <div class="custom-model-container">
+        <p class="model-desc">Please ensure legal real name is correct as it shows on your bank account.<br/> **This is viewable to admin only.</p>
+        <p class="alert-buttons"><a class="button-got-it" href="<?php echo $base_url;?>/dc_custom_form_user_real_name_confirmation/1">Got it</a><a class="button-remind-later" href="<?php echo $base_url;?>/dc_custom_form_user_real_name_confirmation/2">Remind later</a></p>
+    </div>
+</div> 
+<?php } }
+if(!isset($user_details->field_confirmed_realname['und'][0]['value'])){
+?>
+<script type="text/javascript">    
+jQuery(document).ready(function() {    
+    jQuery( ".model-real-name-confirmation-alert" ).dialog({
+      resizable: false,
+      modal: true,
+      width: 350
+    });
+});    
+</script>
+<div class="model-real-name-confirmation-alert simple-dialog" style="display: none;">
+    <div class="custom-model-container">
+        <p class="model-desc">Please ensure legal real name is correct as it shows on your bank account.<br/> **This is viewable to admin only.</p>
+        <p class="alert-buttons"><a class="button-got-it" href="<?php echo $base_url;?>/dc_custom_form_user_real_name_confirmation/1">Got it</a><a class="button-remind-later" href="<?php echo $base_url;?>/dc_custom_form_user_real_name_confirmation/2">Remind later</a></p>
+    </div>
+</div> 
+<?php
+}
+
+}?>    
   <?php print render($page['footer']); ?>
 </footer>
