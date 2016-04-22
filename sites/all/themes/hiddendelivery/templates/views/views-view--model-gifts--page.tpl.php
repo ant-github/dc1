@@ -135,7 +135,16 @@ if($user->uid == $node->field_model_id['und'][0]['value']){
             </div>            
         </div>
 </div>
-
+<script type="text/javascript">
+jQuery(document).ready(function() {     
+    jQuery('.send-to-bank-account-now a').click(function(){
+        jQuery('.send-to-bank-account-now a').css('display', 'none');
+    })
+    jQuery('.send-to-gift-voucher-balance a').click(function(){
+        jQuery('.send-to-gift-voucher-balance a').css('display', 'none');
+    })
+});
+</script>
 <div class="<?php print $classes; ?>" style="display: none;">
   <?php print render($title_prefix); ?>
   <?php if ($title): ?>
