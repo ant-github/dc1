@@ -24,7 +24,7 @@
 ?>
 <?php 
 if(isset($row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value']) && $row->_field_data['nid']['entity']->field_hold_gift['und'][0]['value'] == 'yes'){
-    print "Admin hold this gift";
+    print "<p style='width:156px;'>Admin verification, please allow 24-48hrs for this to clear.</p>";
 }else{
     if($row->field_field_model_redeem[0]['raw']['value'] == 0){
         print $output;
