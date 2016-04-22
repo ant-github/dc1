@@ -512,7 +512,7 @@ function send_cash_user_bank_account($nid) {
 //                    $update_gift_node = node_load($nid);
 //                    $update_gift_node->field_model_redeem['und'][0]['value'] = 0;
 //                    node_save($update_gift_node);  
-                    drupal_set_message('Some error occured while making trasfers. Please contact to support for further information..','error');
+                    drupal_set_message('Some error occured while making trasfers. Please contact to support for further information.','error');
                     drupal_goto($base_url.'/user/gifts');                    
                 }            
                      
@@ -525,8 +525,8 @@ function send_cash_user_bank_account($nid) {
                 drupal_set_message('You can not receive this gift.','error');
                 drupal_goto($base_url.'/user/my-bank-payouts');         
     }
-    }else{
-                drupal_set_message('You have already redeemed this gift. You can not redeemed it again and again.','error');
+    }else{       
+                drupal_set_message('Gift amount already sent now. You can not redeemed again and again','error');
                 drupal_goto($base_url.'/user/gifts');        
     }
 }
