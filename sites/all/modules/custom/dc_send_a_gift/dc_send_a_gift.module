@@ -315,8 +315,10 @@ function update_user_gift_voucher_balance($nid){
         }
   
         $user_id = $user->uid;
-        $node = node_load($nid);
+        $node = node_load($nid);    
         if($node->field_model_redeem['und'][0]['value'] ==0){
+            $node->field_model_redeem['und'][0]['value'] = 2;
+            node_save($node);             
         if($user->uid == $node->field_model_id['und'][0]['value']){
         $currency = $node->field_gift_currency['und'][0]['value'];
         $amount = $node->field_gift_amount['und'][0]['value'];
@@ -435,7 +437,8 @@ function send_cash_user_bank_account($nid) {
         drupal_set_message('You can not redeemed this gift for now. Please contact to support for further information.','error');
         drupal_goto($base_url.'/user/gifts');             
     }   
-    
+    $node->field_model_redeem['und'][0]['value'] = 2;
+    node_save($node);
     if(isset($user_fields->field_bank_payout_account_id['und'][0]['value']) && $user_fields->field_bank_payout_account_id['und'][0]['value'] != '')  {   
 //        $currency = $node->field_gift_currency['und'][0]['value'];
         $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
@@ -503,10 +506,16 @@ function send_cash_user_bank_account($nid) {
                         ->condition('entity_id', $nid)
                         ->execute();
                     field_cache_clear(TRUE);                    
-                    
-                }            
                     drupal_set_message('Your withdraw has been successfull, amount will be transfered to your bank account with in 2 working days.','status');
-                    drupal_goto($base_url.'/user/my-bank-payouts');                     
+                    drupal_goto($base_url.'/user/my-bank-payouts');                    
+                }else{
+                    $update_gift_node = node_load($nid);
+                    $update_gift_node->field_model_redeem['und'][0]['value'] = 0;
+                    node_save($update_gift_node);  
+                    drupal_set_message('Some error occured while making trasfers. Please try after some time.','error');
+                    drupal_goto($base_url.'/user/gifts');                    
+                }            
+                     
 
     }else{
                 drupal_set_message('Please add your bank details to redeem your gift','error');
