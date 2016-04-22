@@ -111,7 +111,9 @@ if($user->uid == $node->field_model_id['und'][0]['value']){
                     $stripe_country_list_options = list_allowed_values($stripe_country_list);    
                     if (array_key_exists($user_details->field_delivery_address['und'][0]['country'], $stripe_country_list_options)) {                     
                     ?>
+                    <?php if($node->field_model_redeem['und'][0]['value']==0) { ?>
                     <div class="send-to-bank-account-now"><a href="<?php echo $base_url;?>/dc_gift_payment/receive_cash_bank_account/<?php echo $nid;?>">Withdraw</a></div>
+                    <?php }?>
                     <?php
                     }else{
                     ?>
@@ -128,7 +130,9 @@ if($user->uid == $node->field_model_id['und'][0]['value']){
                     <div class="heading"><span>Gift Voucher</span></div>
                     <div class="gift-voucher-icon"><img src="<?php echo $base_url;?>/sites/all/themes/hiddendelivery/images/account-vochure.png" /></div>
                     <div class="amount">Add <strong><?php echo $currency_symbol.$amount;?></strong> into your gift <br /> voucher balance</div>
+                    <?php if($node->field_model_redeem['und'][0]['value']==0) { ?>
                     <div class="send-to-gift-voucher-balance"><a href="<?php echo $base_url;?>/dc_gift_payment/receive_cash_gift_voucher/<?php echo $nid;?>">Add</a></div>
+                    <?php }?>
                 </div> 
                 </div>
                 </div>

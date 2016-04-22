@@ -316,6 +316,7 @@ function update_user_gift_voucher_balance($nid){
   
         $user_id = $user->uid;
         $node = node_load($nid);
+        if($node->field_model_redeem['und'][0]['value'] ==0){
         if($user->uid == $node->field_model_id['und'][0]['value']){
         $currency = $node->field_gift_currency['und'][0]['value'];
         $amount = $node->field_gift_amount['und'][0]['value'];
@@ -408,6 +409,10 @@ function update_user_gift_voucher_balance($nid){
     }else{
         drupal_set_message('You can not receive this gift.','error');
         drupal_goto($base_url.'/user/gifts');        
+    }   
+    }else{
+                drupal_set_message('You have already redeemed this gift. You can not redeemed it again and again.','error');
+                drupal_goto($base_url.'/user/gifts');        
     }    
 }
 
@@ -421,6 +426,7 @@ function send_cash_user_bank_account($nid) {
     $user_fields = user_load($user->uid);  
     $settings = _load_payment_settings();
     $node = node_load($nid);
+    if($node->field_model_redeem['und'][0]['value'] ==0){
     if($user->uid == $node->field_model_id['und'][0]['value']){
         
     $hold_status = $node->field_hold_gift['und'][0]['value'];
@@ -509,6 +515,10 @@ function send_cash_user_bank_account($nid) {
     }else{
                 drupal_set_message('You can not receive this gift.','error');
                 drupal_goto($base_url.'/user/my-bank-payouts');         
+    }
+    }else{
+                drupal_set_message('You have already redeemed this gift. You can not redeemed it again and again.','error');
+                drupal_goto($base_url.'/user/gifts');        
     }
 }
 
