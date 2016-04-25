@@ -324,7 +324,7 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                         $(".payment-errors").css("color", "#b94a48");
                                         $(".payment-errors").css("padding-left", "10px");
                                         $(".payment-errors").css("background", "#f2dede");
-                                        $(".payment-errors").html('Please upload your identity proof document.');
+                                        $(".payment-errors").html('Please upload your ID for verification.');
                                         $('html,body').animate({'scrollTop' : 200},1000);
                                         return false;
                                     }                                    
@@ -527,7 +527,7 @@ if (isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) &&
                                         $(".payment-errors").css("color", "#b94a48");
                                         $(".payment-errors").css("padding-left", "10px");
                                         $(".payment-errors").css("background", "#f2dede");
-                                        $(".payment-errors").html('Please upload your identity proof document.');
+                                        $(".payment-errors").html('Please upload your ID for verification.');
                                         $('html,body').animate({'scrollTop' : 200},1000);
                                         return false;
                                     }                                    

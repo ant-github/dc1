@@ -461,7 +461,7 @@ function send_cash_user_bank_account($nid) {
                       "description" => $desc
                     )); 
                 }else{     
-                    drupal_set_message('Amount could not be transfer. Please contact to support regarding this issue or try after some time','error');
+                    drupal_set_message('Amount could not be transferred. Please try again later or contact support@deliverycode.com regarding this issue.','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
                 }
             }
@@ -498,15 +498,11 @@ function send_cash_user_bank_account($nid) {
                     $node->uid = 1;
                     // Save the node
                     node_save($node);
-                    db_update('field_data_field_model_redeem')
-                            ->fields(array('field_model_redeem_value' => 1))
-                        ->condition('entity_id', $nid)
-                        ->execute();        
-                    db_update('field_data_field_model_redeemed_as')
-                            ->fields(array('field_model_redeemed_as_value' => 2))
-                        ->condition('entity_id', $nid)
-                        ->execute();
-                    field_cache_clear(TRUE);                    
+                    
+                    $update_gift_node = node_load($nid);
+                    $update_gift_node->field_model_redeem['und'][0]['value'] = 1;
+                    $update_gift_node->field_model_redeemed_as['und'][0]['value'] = 2;
+                    node_save($update_gift_node);                                        
                     drupal_set_message('Your withdraw has been successfull, amount will be transfered to your bank account with in 2 working days.','status');
                     drupal_goto($base_url.'/user/my-bank-payouts');                    
                 }else{
