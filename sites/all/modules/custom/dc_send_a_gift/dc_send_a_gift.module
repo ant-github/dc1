@@ -481,6 +481,7 @@ function send_cash_user_bank_account($nid) {
                     node_object_prepare($node);  //Set some default values
 
                     $node->title = $user->name;
+                    $node->field_gift_order_id[$node->language][0]['value'] = $nid;
                     $node->field_payout_transfer_id[$node->language][0]['value'] = $transfer->id;
                     $node->field_payout_balance_transaction[$node->language][0]['value'] = $transfer->balance_transaction;
                     $node->field_payout_payment_destination[$node->language][0]['value'] = $transfer->destination_payment;
