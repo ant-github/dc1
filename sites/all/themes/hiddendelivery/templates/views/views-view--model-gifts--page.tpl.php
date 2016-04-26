@@ -213,6 +213,16 @@ jQuery(document).ready(function() {
 <?php
 }
 }else{
+    $processed_nodes = '';
+$select_processed_gifts_not_completed = db_query("SELECT r.entity_id FROM field_data_field_model_redeem AS r LEFT JOIN field_data_field_model_id AS mid ON mid.entity_id = r.entity_id WHERE mid.bundle='model_gifts' AND mid.field_model_id_value = ".$user->uid." AND r.field_model_redeem_value =2"); 
+foreach($select_processed_gifts_not_completed AS $res_processed_gifts_not_completed){
+    $processed_nodes = $res_processed_gifts_not_completed->entity_id;
+    if($processed_nodes != ''){
+        $node = node_load($processed_nodes);
+        $node->field_model_redeem['und'][0]['value'] = 0;
+        node_save($node);
+    }
+}
 ?>
 <div class="<?php print $classes; ?>">
   <?php print render($title_prefix); ?>
