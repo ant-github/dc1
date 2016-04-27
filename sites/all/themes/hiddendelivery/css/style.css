@@ -2053,7 +2053,7 @@ a.twitter-share-button{
   padding-bottom: 7px;
   padding-top: 25px;
 }
-.send-gift-form input[type="text"].card_number, .send-gift-form input[type="text"].card_cvc{
+.send-gift-form input[type="text"].card_number, .send-gift-form input[type="text"].card_cvc, .send-gift-form input[type="text"].user_name_card{
 	background: rgba(0, 0, 0, 0) url("../images/HomePage/icon-card.png") no-repeat scroll 0 69%;
 }
 .send-gift-form input[type="text"].card_expiry_month,

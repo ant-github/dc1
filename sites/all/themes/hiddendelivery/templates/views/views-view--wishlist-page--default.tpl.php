@@ -74,6 +74,8 @@ if($user->uid == 0){
                 $("#payment-form").submit(function(event) {
                     var user_name = $('#payment-form .user_name').val();
                     var user_name_len = $('#payment-form .user_name').val().trim().length;
+                    var user_name_card = $('#payment-form .user_name_card').val();
+                    var user_name_card_len = $('#payment-form .user_name_card').val().trim().length;
                     var user_email = $('#payment-form .user_email').val();
                     var user_email_len = $('#payment-form .user_email').val().trim().length;
                     var address_country = $('#payment-form .address_country').val();
@@ -101,7 +103,7 @@ if($user->uid == 0){
                         $('html,body').animate({'scrollTop' : 200},1000);
                         return false;                        
                     }
-                    if(user_name == '' || user_name_len == 0 || user_email == '' || user_email_len == 0 || address_country == '' || address_country_len == 0 || address_state == '' || address_state_len == 0 || address_zip == '' || address_zip_len == 0 || address_line1 == '' || address_line1_len == 0 || address_city == '' || address_city_len == 0 || user_message == '' || user_message_len == 0){
+                    if(user_name == '' || user_name_len == 0 || user_name_card == '' || user_name_card_len == 0 || user_email == '' || user_email_len == 0 || address_country == '' || address_country_len == 0 || address_state == '' || address_state_len == 0 || address_zip == '' || address_zip_len == 0 || address_line1 == '' || address_line1_len == 0 || address_city == '' || address_city_len == 0 || user_message == '' || user_message_len == 0){
                         $(".payment-errors").css("display", "block");
                         $(".payment-errors").html('All fields are required. Please enter the required information.');
                         $('html,body').animate({'scrollTop' : 200},1000);
@@ -115,7 +117,7 @@ if($user->uid == 0){
                         cvc: $('.card_cvc').val(),
                         exp_month: $('.card_expiry_month').val(),
                         exp_year: $('.card_expiry_year').val(),
-                        name: $('.user_name').val(),
+                        name: $('.user_name_card').val(),
                         address_line1: $('.address_line1').val(),
                         address_city: $('.address_city').val(),
                         address_state: $('.address_state').val(),
@@ -237,8 +239,17 @@ if($user->uid == 0){
                 <div class="col-sm-12">
                      <div class="row">
                     <div class="col-sm-6">
+                        <input type="text" value="" name="user_name_card" placeholder="Name on Card" class="user_name_card"/>
+                    </div>                         
+                    <div class="col-sm-6">
                         <input type="text" value=""  placeholder="Debit Card Number" class="card_number"/>
                     </div>
+
+                    </div>
+                </div>
+                    
+                     <div class="col-sm-12">
+                     <div class="row">
                     <div class="col-sm-6">
                      <div class="row">
                     <div class="col-sm-6">
@@ -248,51 +259,46 @@ if($user->uid == 0){
                         <input type="text" value=""  placeholder="YY" class="card_expiry_year"/>
                     </div>
                     </div>
-                    </div>
-                    </div>
-                    </div>
-                    
-                     <div class="col-sm-12">
-                     <div class="row">
+                    </div>                         
                     <div class="col-sm-6">
                         <input type="text" value="" name="card_cvc" placeholder="CVV" class="card_cvc"/>
-                    </div>            
-                    <div class="col-sm-6">
-                        <input type="text" value="" name="user_name" placeholder="Name" class="user_name"/>
-                    </div>
+                    </div>                                
                     </div>
                     </div>  
                     
                     <div class="col-sm-12">
-                     <div class="row">          
+                     <div class="row">
                     <div class="col-sm-6">
+                        <input type="text" value="" name="user_email" placeholder="Email" class="user_email"/>
+                    </div>                         
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="user_name" placeholder="Name shown to model" class="user_name"/>
+                    </div>                            
+                    </div>
+                    </div> 
+                    <div class="col-sm-12">
                         <input type="text" value="" name="address_line1" placeholder="Address" class="address_line1"/>
-                    </div>            
-                    <div class="col-sm-6">
-                        <input type="text" value="" name="address_city" placeholder="City" class="address_city"/>
-                    </div>
-                    </div>
-                    </div>    
+                    </div>                    
                     
                     <div class="col-sm-12">
-                     <div class="row">          
+                     <div class="row">  
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_city" placeholder="City" class="address_city"/>
+                    </div>                         
                     <div class="col-sm-6">
                         <input type="text" value="" name="address_state" placeholder="State" class="address_state"/>                        
-                    </div>            
-                    <div class="col-sm-6">
-                        <input type="text" value="" name="address_zip" placeholder="Postal Code/Zip" class="address_zip"/>
-                    </div> 
+                    </div>             
                     </div>
                     </div>    
                         
                     <div class="col-sm-12">
-                    <div class="row">            
+                    <div class="row">  
+                    <div class="col-sm-6">
+                        <input type="text" value="" name="address_zip" placeholder="Postal Code/Zip" class="address_zip"/>
+                    </div>                        
                     <div class="col-sm-6">
                         <input type="text" value="" name="address_country" placeholder="Country" class="address_country"/>
                     </div>            
-                    <div class="col-sm-6">
-                        <input type="text" value="" name="user_email" placeholder="Email" class="user_email"/>
-                    </div> 
                     </div>
                     </div> 
                               

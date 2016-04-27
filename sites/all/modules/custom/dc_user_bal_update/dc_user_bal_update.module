@@ -127,11 +127,11 @@ function dc_user_bal_update_commerce_cart_line_item_refresh($line_item, $order_w
 			$currency_rates_nid = $res_currency_rates->nid;
 		}
         
-        if($product_value < 25){        	
+        if($product_value < 50){        	
         	$productRate = db_query("SELECT field_dc_fee_25_value AS rate FROM field_data_field_dc_fee_25 WHERE entity_id='".$currency_rates_nid."'");			
-        }elseif($product_value >= 25 && $product_value < 50){        	
+        }elseif($product_value >= 50 && $product_value < 75){        	
         	$productRate = db_query("SELECT field_dc_fee_25_00_49_99_value AS rate FROM field_data_field_dc_fee_25_00_49_99 WHERE entity_id='".$currency_rates_nid."'");
-        }elseif($product_value >= 50 && $product_value < 100){        	
+        }elseif($product_value >= 75 && $product_value < 100){        	
         	$productRate = db_query("SELECT field_dc_fee_50_00_99_99_value AS rate FROM field_data_field_dc_fee_50_00_99_99 WHERE entity_id='".$currency_rates_nid."'");
         }elseif($product_value >= 100){        	
         	$productRate = db_query("SELECT field_dc_fee_100__value AS rate FROM field_data_field_dc_fee_100_ WHERE entity_id='".$currency_rates_nid."'");

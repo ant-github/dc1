@@ -201,4 +201,11 @@ function dc_custom_form_settings_mail($key, &$message, $params) {
   $message['subject'] = $params['subject'];
   $message['body'] = $params['body'];
 }
+
+
+/*** Delete user's wishlist when user deleted via admin ****/
+function dc_custom_form_settings_user_delete($account) {
+     db_query('DELETE FROM wishlist WHERE uid ='.$account->uid);
+}
+
 ?>

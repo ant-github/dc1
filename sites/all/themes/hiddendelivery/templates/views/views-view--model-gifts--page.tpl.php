@@ -213,7 +213,24 @@ jQuery(document).ready(function() {
 <?php
 }
 }else{
-    $processed_nodes = '';
+ /***** unhold the model gifts after 24 hours of the received time****/   
+$hold_nodes = '';
+$select_hold_gifts = db_query("SELECT n.nid, n.created FROM field_data_field_hold_gift AS h LEFT JOIN field_data_field_model_id AS mid ON mid.entity_id = h.entity_id LEFT JOIN node AS n ON n.nid = mid.entity_id WHERE mid.bundle='model_gifts' AND mid.field_model_id_value = ".$user->uid." AND h.field_hold_gift_value ='yes'"); 
+foreach($select_hold_gifts AS $res_hold_gifts){
+    $hold_nodes = $res_hold_gifts->nid;
+    $hold_nodes_time = $res_hold_gifts->created;
+    $current_date = date("Y-m-d H:i", strtotime('-24 hours'));
+    $before_24_hours_strtotime = strtotime($current_date);
+    if($hold_nodes != ''){
+        if($hold_nodes_time <= $before_24_hours_strtotime){
+            $node = node_load($hold_nodes);
+            $node->field_hold_gift['und'][0]['value'] = '';
+            node_save($node);           
+        }
+    }
+}
+    
+$processed_nodes = '';
 $select_processed_gifts_not_completed = db_query("SELECT r.entity_id FROM field_data_field_model_redeem AS r LEFT JOIN field_data_field_model_id AS mid ON mid.entity_id = r.entity_id WHERE mid.bundle='model_gifts' AND mid.field_model_id_value = ".$user->uid." AND r.field_model_redeem_value =2"); 
 foreach($select_processed_gifts_not_completed AS $res_processed_gifts_not_completed){
     $processed_nodes = $res_processed_gifts_not_completed->entity_id;
