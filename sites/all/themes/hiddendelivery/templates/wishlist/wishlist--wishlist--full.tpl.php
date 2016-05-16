@@ -41,49 +41,50 @@ $wishlist_id = arg(1);
       <?php print $account_edit_link; ?>
     <?php endif; ?>
     </div>
-    <?php if (module_exists('dc_vote')) {
+    <?php
+//    if (module_exists('dc_vote')) {
     ?>	
-    <div class="dc-vote-section">
+<!--    <div class="dc-vote-section">-->
     	<?php 
-    	$user_ip = ip_address(); 
-		$vote_done = '';
-    	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$wishlist_id."'");
-		foreach($vote_status AS $res_vote_status){
-			$vote_done = $res_vote_status->nid;
-		}
-		if($vote_done != ''){
-			$model_votes = db_query("SELECT count(entity_id) AS votes FROM field_data_wishlist_id_vote WHERE wishlist_id_vote_value='".$wishlist_id."'");
-			foreach($model_votes AS $res_model_votes){
-				 $total_votes = $res_model_votes->votes; 
-			}
-			if($total_votes == 1){
+//    	$user_ip = ip_address(); 
+//		$vote_done = '';
+//    	$vote_status = db_query("SELECT n.nid FROM field_data_wishlist_id_vote AS w LEFT JOIN field_data_user_ip_vote AS v ON v.entity_id = w.entity_id LEFT JOIN node AS n on n.nid = w.entity_id WHERE v.user_ip_vote_value='".$user_ip."' AND w.wishlist_id_vote_value ='".$wishlist_id."'");
+//		foreach($vote_status AS $res_vote_status){
+//			$vote_done = $res_vote_status->nid;
+//		}
+//		if($vote_done != ''){
+//			$model_votes = db_query("SELECT count(entity_id) AS votes FROM field_data_wishlist_id_vote WHERE wishlist_id_vote_value='".$wishlist_id."'");
+//			foreach($model_votes AS $res_model_votes){
+//				 $total_votes = $res_model_votes->votes; 
+//			}
+//			if($total_votes == 1){
 		?>
-			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
-			<div class="total-vote">I have <span class="vote-me-text"><?php print $total_votes;?></span> vote.</div>
+<!--			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+			<div class="total-vote">I have <span class="vote-me-text"><?php //  print $total_votes;?></span> vote.</div>-->
 		<?php		
-			}else{
+//			}else{
 		?>
-			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
-			<div class="total-vote">I have <span class="vote-me-text"><?php print $total_votes;?></span> votes.</div>
+<!--			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+			<div class="total-vote">I have <span class="vote-me-text"><?php //  print $total_votes;?></span> votes.</div>-->
 		<?php		
-			}
+//			}
 		?>
 		<?php
-		}else{
+//		}else{
 		?>
-			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>
+<!--			<div class="vouchers-vote-header"><h3>Vouchers 4 <span class="vote-header">Votes</span></h3></div>-->
 	    <?php 
-	    	module_load_include('inc', 'node', 'node.pages');
-			$dc_vote_form = node_add('dc_vote');
-			print drupal_render($dc_vote_form);
+//	    	module_load_include('inc', 'node', 'node.pages');
+//			$dc_vote_form = node_add('dc_vote');
+//			print drupal_render($dc_vote_form);
 		?>
 		<?php	
-		}			    
+//		}			    
     	?>
 
-    </div>
+<!--    </div>-->
     <?php 
-    }
+//    }
     ?>
       <?php if ($is_owner): ?>
       <div id="widgetSelectBackground">
