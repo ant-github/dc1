@@ -99,13 +99,13 @@ $wishlist_id = arg(1);
             <div class="my-widget-area">      
               <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontal" aria-expanded="false" aria-controls="myWidgetHorizontal"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
                     <div id="myWidgetHorizontal" class="collapse">
-                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-white-horizontal/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea>
+                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-white-horizontal/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea><div class="view-widget-link"><a href="<?php echo $base_url;?>/widget-white-horizontal/<?php echo $user->uid;?>" target="_blank">View</a></div>
                     </div>
             </div>
             <div class="my-widget-area"> 
               <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVertical" aria-expanded="false" aria-controls="myWidgetVertical"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span></button> 
                     <div id="myWidgetVertical" class="collapse">
-                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-white-vertical/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea>         
+                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-white-vertical/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea><div class="view-widget-link"><a href="<?php echo $base_url;?>/widget-white-vertical/<?php echo $user->uid;?>" target="_blank">View</a></div>
                     </div> 
             </div>
       </div>
@@ -113,14 +113,14 @@ $wishlist_id = arg(1);
             <div class="my-widget-area">      
               <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetHorizontalBlack" aria-expanded="false" aria-controls="myWidgetHorizontalBlack"><span class="my-widget-first">My widget </span><span class="my-widget-second">Horizontal</span></button>     
                     <div id="myWidgetHorizontalBlack" class="collapse">
-                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-black-horizontal/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea>
+                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-black-horizontal/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea><div class="view-widget-link"><a href="<?php echo $base_url;?>/widget-black-horizontal/<?php echo $user->uid;?>" target="_blank">View</a></div>
                     </div>
             </div>
             <div class="my-widget-area"> 
               <button class="my-widget-button col-md-12 col-sm-12 btn btn-primary btn-lg collapsed" data-toggle="collapse" data-target="#myWidgetVerticalBlack" aria-expanded="false" aria-controls="myWidgetVerticalBlack"><span class="my-widget-first">My widget </span><span class="my-widget-second">Vertical</span>
               </button> 
                     <div id="myWidgetVerticalBlack" class="collapse">
-                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-black-vertical/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea>         
+                        <textarea readonly="readonly"><iframe width="100%" height="100%" title="My widget" src="<?php echo $base_url;?>/widget-black-vertical/<?php echo $user->uid;?>" frameborder="0"></iframe></textarea><div class="view-widget-link"><a href="<?php echo $base_url;?>/widget-black-vertical/<?php echo $user->uid;?>" target="_blank">View</a></div>
                     </div> 
             </div>
       </div>      
