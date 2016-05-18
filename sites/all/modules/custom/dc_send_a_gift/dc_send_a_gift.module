@@ -674,7 +674,7 @@ function send_user_bank_details_to_stripe(){
                     
                 }        
 
-                drupal_set_message('Your bank details has been saved. You can now redeem your gift to your bank account.','status');
+                drupal_set_message('Your bank details have been saved. You can now redeem your gifts into your bank account.','status');
                 drupal_goto($base_url.'/user/my-bank-payouts');                  
             }
             catch (Exception $e) {

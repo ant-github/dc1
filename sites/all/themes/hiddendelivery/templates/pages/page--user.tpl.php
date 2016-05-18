@@ -258,7 +258,26 @@ if($event_node_id != ''){
 </div>
 
 <div class="main-container container">
-
+<?php
+$arg0 = arg(0);
+if($arg0 == 'user'){
+$user_details = user_load($user->uid);
+    /* get stripe coutries list to transfer ammount from user's field_stripe_account_country */
+$stripe_country_list = field_info_field('field_stripe_account_country');
+$stripe_country_list_options = list_allowed_values($stripe_country_list);    
+if (array_key_exists($user_details->field_delivery_address['und'][0]['country'], $stripe_country_list_options)) {
+    if (isset($user_details->field_bank_payout_account_id['und'][0]['value']) && $user_details->field_bank_payout_account_id['und'][0]['value'] !='' && isset($user_details->field_stripe_payout_bank_account['und'][0]['value']) && $user_details->field_stripe_payout_bank_account['und'][0]['value'] !=''){
+        
+    }else{
+?>
+    <div class="add-bank-account-alert">
+        <p>You have not yet added a bank account. Click <a href="<?php echo $base_url;?>/user/my-bank-payouts">HERE</a> to add your account and start cashing out your gift vouchers!</p>
+    </div>
+<?php
+    }
+}
+}
+?>
   <header role="banner" id="page-header">
     <?php if (!empty($site_slogan)): ?>
       <p class="lead"><?php print $site_slogan; ?></p>

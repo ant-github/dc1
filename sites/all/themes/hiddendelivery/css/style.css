@@ -13,6 +13,20 @@
 
  /* font-family: 'Kaushan Script', cursive; */
  /* font-family: 'Open Sans', sans-serif; */
+ 
+ .add-bank-account-alert{
+    background: rgb(0, 178, 154) none repeat scroll 0 0;
+    margin-top: 25px;
+    padding: 8px 16px;
+    color: #fff;
+ }
+
+ .add-bank-account-alert p a{
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;    
+ }
+ 
  .model-real-name-confirmation-alert .alert-buttons{
     position: relative;
     top: 8px;     
@@ -2072,15 +2086,15 @@ a.twitter-share-button{
 .send-gift-form input[type="text"].address_city,
 .send-gift-form input[type="text"].address_zip
 {
-	background: rgba(0, 0, 0, 0) url("../images/icon-location.png") no-repeat scroll 0 69%;
-	}
+    background: rgba(0, 0, 0, 0) url("../images/icon-location.png") no-repeat scroll 0 69%;
+}
 .send-gift-form input[type="text"].user_message{
-	background: rgba(0, 0, 0, 0) url("../images/icon-message.png") no-repeat scroll 0 69%;
-	}
+    background: rgba(0, 0, 0, 0) url("../images/icon-message.png") no-repeat scroll 0 69%;
+}
 .send-gift-form .btn-sendCash{
-	text-align:center;
-	padding:25px 0 15px 0;
-	}
+    text-align:center;
+    padding:25px 0 15px 0;
+}
 .btn-sendCash button.submit-button {
   background: #000 none repeat scroll 0 0;
   border: 0 none;
