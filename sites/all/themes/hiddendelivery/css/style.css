@@ -24,6 +24,9 @@
  .page-wishlist .view-widget-link a:hover{
     color: #20b29b;
  }
+ .page-wishlist .view-widget-link a:focus{
+    color: #20b29b;
+ }
  .add-bank-account-alert{
     background: rgb(0, 178, 154) none repeat scroll 0 0;
     margin-top: 25px;
