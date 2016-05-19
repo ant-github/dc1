@@ -200,10 +200,12 @@ function commerce_stripe_gift_charge($wishlist_id){
                       "source" => $stripe_token,
                       "description" => "Gift order: $gift_voucher_nid"
                     ));    
-        //      print "<pre>"; print($charge->paid);   die('hii');
+//              print "<pre>"; print($charge);   die('hii');
                 if($charge->paid == 1){
-
-
+                    $load_gift_nid = node_load($gift_voucher_nid);    
+                    $load_gift_nid->field_stripe_transaction_id['und'][0]['value'] = $charge->id;
+                    node_save($load_gift_nid);
+                   
         /*
          * Send email to model regarding gift received
          */
