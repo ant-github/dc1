@@ -24,7 +24,7 @@
 ?>
 <?php 
 
-if($row->field_field_model_redeemed_as[0]['raw']['value'] == 2){
+if($row->field_field_model_redeemed_as[0]['raw']['value'] == 2 && $row->field_field_net_amount[0]['raw']['value'] != ''){
 
     if($row->field_field_gift_currency[0]['raw']['value'] == 'usd'){
         $currency_sign = '$';
