@@ -200,10 +200,17 @@ function commerce_stripe_gift_charge($wishlist_id){
                       "source" => $stripe_token,
                       "description" => "Gift order: $gift_voucher_nid"
                     ));    
-//              print "<pre>"; print($charge);   die('hii');
+              
+                    $balance_transaction_details = \Stripe\BalanceTransaction::retrieve($charge->balance_transaction);
+
+//              print "<pre>"; print($charge_details);   die('hii');
                 if($charge->paid == 1){
                     $load_gift_nid = node_load($gift_voucher_nid);    
                     $load_gift_nid->field_stripe_transaction_id['und'][0]['value'] = $charge->id;
+                    $load_gift_nid->field_balance_transaction_id['und'][0]['value'] = $charge->balance_transaction;
+                    $load_gift_nid->field_stripe_fee['und'][0]['value'] = $balance_transaction_details->fee/100;
+                    $load_gift_nid->field_gross_amount['und'][0]['value'] = $balance_transaction_details->amount/100;
+                    $load_gift_nid->field_net_amount['und'][0]['value'] = $balance_transaction_details->net/100;
                     node_save($load_gift_nid);
                    
         /*
@@ -327,10 +334,17 @@ function update_user_gift_voucher_balance($nid){
         if($user->uid == $node->field_model_id['und'][0]['value']){
         $currency = $node->field_gift_currency['und'][0]['value'];
         $amount = $node->field_gift_amount['und'][0]['value'];
+        
         $hold_status = $node->field_hold_gift['und'][0]['value'];
+        $manually_hold_status = $node->field_manually_hold_gift['und'][0]['value'];
+
+        if(isset($manually_hold_status) && $manually_hold_status == 'yes'){
+            drupal_set_message('You can not redeemed this gift for now. Please contact to <a href="mailto:support@deliverycode.com">support@deliverycode.com</a> for further information.','error');
+            drupal_goto($base_url.'/user/gifts');             
+        }        
         
         if(isset($hold_status) && $hold_status == 'yes'){
-            drupal_set_message('You can not redeemed this gift for now. Please contact to support for further information.','error');
+            drupal_set_message('You can not redeemed this gift for now. Please contact to <a href="mailto:support@deliverycode.com">support@deliverycode.com</a> for further information.','error');
             drupal_goto($base_url.'/user/gifts');             
         }
 
@@ -437,9 +451,14 @@ function send_cash_user_bank_account($nid) {
     if($user->uid == $node->field_model_id['und'][0]['value']){
         
     $hold_status = $node->field_hold_gift['und'][0]['value'];
+    $manually_hold_status = $node->field_manually_hold_gift['und'][0]['value'];
 
+    if(isset($manually_hold_status) && $manually_hold_status == 'yes'){
+        drupal_set_message('You can not redeemed this gift for now. Please contact to <a href="mailto:support@deliverycode.com">support@deliverycode.com</a> for further information.','error');
+        drupal_goto($base_url.'/user/gifts');             
+    }   
     if(isset($hold_status) && $hold_status == 'yes'){
-        drupal_set_message('You can not redeemed this gift for now. Please contact to support for further information.','error');
+        drupal_set_message('You can not redeemed this gift for now. Please contact to <a href="mailto:support@deliverycode.com">support@deliverycode.com</a> for further information.','error');
         drupal_goto($base_url.'/user/gifts');             
     }   
 
@@ -466,13 +485,13 @@ function send_cash_user_bank_account($nid) {
                       "description" => $desc
                     )); 
                 }else{     
-                    drupal_set_message('Amount could not be transferred. Please try again later or contact support@deliverycode.com regarding this issue.','error');
+                    drupal_set_message('We are currently unable to process this withdrawal. Please try again shortly or contact <a href="mailto:support@deliverycode.com">support@deliverycode.com</a>.','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
                 }
             }
             catch (Exception $e) {
                     $error = $e->getMessage();
-                    drupal_set_message('Amount can not be send to your bank account. Please try after some time. ','error');
+                    drupal_set_message('We are currently unable to process this withdrawal. Please try again shortly or contact <a href="mailto:support@deliverycode.com">support@deliverycode.com</a>.','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
             }
             if($transfer->status == 'paid'){   
@@ -514,7 +533,7 @@ function send_cash_user_bank_account($nid) {
 //                    $update_gift_node = node_load($nid);
 //                    $update_gift_node->field_model_redeem['und'][0]['value'] = 0;
 //                    node_save($update_gift_node);  
-                    drupal_set_message('Some error occured while making trasfers. Please contact to support for further information.','error');
+                    drupal_set_message('We are currently unable to process this withdrawal. Please try again shortly or contact <a href="mailto:support@deliverycode.com">support@deliverycode.com</a>.','error');
                     drupal_goto($base_url.'/user/gifts');                    
                 }            
                      
