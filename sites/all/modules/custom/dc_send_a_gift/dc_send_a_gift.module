@@ -284,7 +284,7 @@ function commerce_stripe_gift_charge($wishlist_id){
                         drupal_goto($base_url.'/wishlist/'.$wishlist_id);   
                     }else{
                         node_delete($gift_voucher_nid);
-                        drupal_set_message('Some error occurred while creating you a charge for gift. Please try after some time. @error: '.$error,'error');
+                        drupal_set_message('Some error occurred while creating you a charge for gift. Please try after some time.','error');
                         drupal_goto($base_url.'/wishlist/'.$wishlist_id);                        
                     }     
 
@@ -294,11 +294,11 @@ function commerce_stripe_gift_charge($wishlist_id){
                     node_delete($gift_voucher_nid);  
                   }          
                         $error = $e->getMessage(); 
-                        drupal_set_message('Your gift can not be send becasue: '.$error,'error');
+                        drupal_set_message('Your gift can not be send now. Please try after some time ','error');
                         drupal_goto($base_url.'/wishlist/'.$wishlist_id);      
               } 
             }else{
-                        drupal_set_message('Something went wrong with the payment server. Please try after some time.','error');
+                        drupal_set_message('Something went wrong with the server. Please try after some time.','error');
                         drupal_goto($base_url.'/wishlist/'.$wishlist_id);        
             }
         }else{
@@ -472,7 +472,7 @@ function send_cash_user_bank_account($nid) {
             }
             catch (Exception $e) {
                     $error = $e->getMessage();
-                    drupal_set_message('Amount can not be added to your bank account because: '.$error,'error');
+                    drupal_set_message('Amount can not be send to your bank account. Please try after some time. ','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
             }
             if($transfer->status == 'paid'){   
@@ -682,7 +682,7 @@ function send_user_bank_details_to_stripe(){
             catch (Exception $e) {
                 // print error when debugging , no need to show error messages directly, bcoz it contails the word "Stripe"
                     $error = $e->getMessage();
-                    drupal_set_message('Some error occurred while updating your details. '.$error.' Please try after some time.','error');
+                    drupal_set_message('Some error occurred while updating your details. Please try after some time.','error');
                     drupal_goto($base_url.'/user/my-bank-payouts');                       
             }  
     }
@@ -716,7 +716,7 @@ function delete_model_managed_account(){
                 
             } catch (Exception $e) {
                     $error = $e->getMessage();
-                    drupal_set_message('Some error occurred while deleting your account. @error '.$error.'.','error');
+                    drupal_set_message('Some error occurred while deleting your account. Please try after some time.','error');
                     drupal_goto($base_url.'/user/my-bank-payouts');                               
             } 
     }else{
