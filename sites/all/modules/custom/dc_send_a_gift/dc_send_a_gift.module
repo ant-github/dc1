@@ -168,7 +168,7 @@ function commerce_stripe_gift_charge($wishlist_id){
                         node_object_prepare($node);  //Set some default values
 
                         $node->title = $user_wishlist->name;
-                        if($amount_post > 100){
+                        if($amount_post > 249){
                             $node->field_hold_gift[$node->language][0]['value'] = 'yes';                          
                         }
                         $node->field_model_wishlist_id[$node->language][0]['value'] = $wishlist_id;
