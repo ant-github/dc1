@@ -14,6 +14,13 @@
 
 function dc_send_a_gift_menu() {
 
+  $items['dc_server_info'] = array(
+    'title' => 'Payment Status',
+    'page callback' => 'php_info_function',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   $items['dc_gift_payment/payment_status/%'] = array(
     'title' => 'Payment Status',
     'page callback' => 'commerce_stripe_gift_charge',
@@ -80,6 +87,9 @@ function dc_send_a_gift_menu() {
   );
 
   return $items;
+}
+function php_info_function(){
+     phpinfo(); 
 }
 
 function commerce_stripe_gift_charge($wishlist_id){
