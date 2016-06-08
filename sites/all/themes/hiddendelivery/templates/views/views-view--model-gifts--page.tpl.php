@@ -38,24 +38,44 @@ if(isset($_GET['gift_id'])){
    $node = node_load($nid);
 if($user->uid == $node->field_model_id['und'][0]['value']){   
 //   print "<pre>"; print_r($node); die();
+    $amount_in_dollar = '';
+    $amount_transfer_bank = '';
+    $usd_amount_transfer_bank = '';
+    
    $currency = $node->field_gift_currency['und'][0]['value'];
    if($currency == 'usd'){
        $currency_symbol = '$';
-       $amount_in_dollar = '';
+//       $amount_in_dollar = '';
        $amount_transfer_bank = number_format(($node->field_gift_amount_transfer['und'][0]['value']), 2);
-       $usd_amount_transfer_bank = '';       
+//       $usd_amount_transfer_bank = '';       
+       $amount = number_format(($node->field_gift_amount['und'][0]['value']), 2);
    }elseif($currency == 'gbp'){
        $currency_symbol = '£';
-       $amount_in_dollar = '($'.number_format(($node->field_gift_amount_in_dollar['und'][0]['value']), 2).')';
+//       $amount_in_dollar = '($'.number_format(($node->field_gift_amount_in_dollar['und'][0]['value']), 2).')';
        $amount_transfer_bank = number_format(($node->field_gift_amount_transfer['und'][0]['value']), 2);
-       $usd_amount_transfer_bank = '($'.number_format(($node->field_usd_gift_amount_transfer['und'][0]['value']), 2).')';      
+//       $usd_amount_transfer_bank = '($'.number_format(($node->field_usd_gift_amount_transfer['und'][0]['value']), 2).')'; 
+       $amount = number_format(($node->field_gift_amount['und'][0]['value']), 2);
    }elseif($currency == 'eur'){
-       $currency_symbol = '€';
-       $amount_in_dollar = '($'.number_format(($node->field_gift_amount_in_dollar['und'][0]['value']), 2).')';
-       $amount_transfer_bank = number_format(($node->field_gift_amount_transfer['und'][0]['value']), 2);
-       $usd_amount_transfer_bank = '($'.number_format(($node->field_usd_gift_amount_transfer['und'][0]['value']), 2).')';
+       /******* showing currency symbol as gbp(£), because stripe returns "EUR" transactions in "GBP" **********/
+      
+       if((isset($node->field_gross_amount['und'][0]['value']) && $node->field_gross_amount['und'][0]['value'] != '') && (isset($node->field_gross_amount_currency['und'][0]['value']) && $node->field_gross_amount_currency['und'][0]['value'] == 'gbp')){
+            $currency_symbol = '£';
+
+            /******* Gross amount is showing in place of gift amount, because gift amount is in "EUR", but stripe accept it in "GBP" and stored in gross amount field ***************/
+            $amount = $node->field_gross_amount['und'][0]['value'];
+            $amount_transfer_bank = number_format(($node->field_gift_amount_transfer['und'][0]['value']), 2);
+       }else{
+        
+            $currency_symbol = '€';
+            $amount = number_format(($node->field_gift_amount['und'][0]['value']), 2);
+
+            $amount_in_dollar = '($'.number_format(($node->field_gift_amount_in_dollar['und'][0]['value']), 2).')';
+            $amount_transfer_bank = number_format(($node->field_gift_amount_transfer['und'][0]['value']), 2);
+            $usd_amount_transfer_bank = '($'.number_format(($node->field_usd_gift_amount_transfer['und'][0]['value']), 2).')';
+        
+       }
    }
-   $amount = number_format(($node->field_gift_amount['und'][0]['value']), 2);
+   
    if(isset($node->field_sender_email['und'][0]['value']) && $node->field_sender_email['und'][0]['value'] != ''){ 
         $sender_email = $node->field_sender_email['und'][0]['value'];
    }else{
@@ -121,9 +141,9 @@ if($user->uid == $node->field_model_id['und'][0]['value']){
                     <?php
                     }
                     ?>
-                    </div>
                 </div>
-                </div>
+             </div>
+            </div>
                 <div class="col-sm-6">
                 <div class="row">
                 <div class="receive-as-gift-voucher">

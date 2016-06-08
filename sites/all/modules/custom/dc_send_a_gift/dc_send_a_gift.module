@@ -202,15 +202,42 @@ function commerce_stripe_gift_charge($wishlist_id){
                     ));    
               
                     $balance_transaction_details = \Stripe\BalanceTransaction::retrieve($charge->balance_transaction);
-
-//              print "<pre>"; print($charge_details);   die('hii');
+//                     print "<pre>"; print($balance_transaction_details);   die('hii');
                 if($charge->paid == 1){
-                    $load_gift_nid = node_load($gift_voucher_nid);    
+                    $load_gift_nid = node_load($gift_voucher_nid);   
+                    if($load_gift_nid->field_gift_currency['und'][0]['value'] == 'eur' && $balance_transaction_details->fee_details[0]->currency == 'gbp')                    {
+//                        if($balance_transaction_details->currency == 'usd'){
+//                            $load_gift_nid->field_gift_amount_in_dollar['und'][0]['value'] = $balance_transaction_details->amount/100;
+//                        }
+
+                        $amount_post_stripe = $balance_transaction_details->amount/100;
+                        $amount_trasfer_percent_new = ($percentage_stripe / 100) * $amount_post_stripe;
+                        $amount_trasfer_bank_new = $amount_post_stripe - $amount_trasfer_percent_new;                        
+                        
+                        if($balance_transaction_details->currency == 'gbp'){
+                            
+                            $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                            foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                    $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                            }
+                            $stripe_amount_in_gbp = $balance_transaction_details->amount/100;
+                            $amount_in_usd_new = $stripe_amount_in_gbp / $gbp_rate;
+                            $usd_amount_trasfer_bank_new = $amount_trasfer_bank_new / $gbp_rate;
+                            
+                            $load_gift_nid->field_gift_amount_in_dollar['und'][0]['value'] = $amount_in_usd_new;
+                            $load_gift_nid->field_gift_amount_transfer[$node->language][0]['value'] = $amount_trasfer_bank_new;
+                            $load_gift_nid->field_usd_gift_amount_transfer['und'][0]['value'] = $usd_amount_trasfer_bank_new;
+                            
+                        }
+                    }
                     $load_gift_nid->field_stripe_transaction_id['und'][0]['value'] = $charge->id;
                     $load_gift_nid->field_balance_transaction_id['und'][0]['value'] = $charge->balance_transaction;
-                    $load_gift_nid->field_stripe_fee['und'][0]['value'] = $balance_transaction_details->fee/100;
+                    $load_gift_nid->field_stripe_fee['und'][0]['value'] = $balance_transaction_details->fee_details[0]->amount/100;
+                    $load_gift_nid->field_stripe_fee_currency['und'][0]['value'] = $balance_transaction_details->fee_details[0]->currency;
                     $load_gift_nid->field_gross_amount['und'][0]['value'] = $balance_transaction_details->amount/100;
+                    $load_gift_nid->field_gross_amount_currency['und'][0]['value'] = $balance_transaction_details->currency;
                     $load_gift_nid->field_net_amount['und'][0]['value'] = $balance_transaction_details->net/100;
+                    $load_gift_nid->field_net_amount_currency['und'][0]['value'] = $balance_transaction_details->fee_details[0]->currency;
                     node_save($load_gift_nid);
                    
         /*
@@ -369,14 +396,29 @@ function update_user_gift_voucher_balance($nid){
                         $user_balance = $amount_usd;
 
                 }else if($currency == 'eur'){
+                    
+                        /***** For new gift vouchers, Gift amount currency in EUR but stripe returns in GBP *****/
+                        $gross_amount_currency = $node->field_gross_amount_currency['und'][0]['value'];
+                        $gross_amount = $node->field_gross_amount['und'][0]['value'];
+                    
+                        if($gross_amount == '' && $gross_amount_currency == ''){
+                            $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                            foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                    $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                            }
 
-                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
-                        foreach($usd_vs_eur AS $res_usd_vs_eur){
-                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                            $amount_eur = $amount / $eur_rate;
+                            $user_balance =  $amount_eur;
+                        }else{
+                            
+                            $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                            foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                    $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                            }
+
+                            $amount_usd = $gross_amount / $gbp_rate;
+                            $user_balance = $amount_usd;                                                        
                         }
-
-                        $amount_eur = $amount / $eur_rate;
-                        $user_balance =  $amount_eur;
 
                 }				
                 //$user_balance = number_format(($user_balance), 2);
@@ -401,13 +443,28 @@ function update_user_gift_voucher_balance($nid){
 
                 }else if($currency == 'eur'){
 
-                        $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
-                        foreach($usd_vs_eur AS $res_usd_vs_eur){
-                                $eur_rate = $res_usd_vs_eur->field__1_eur_value;
-                        }
+                        /***** For new gift vouchers, Gift amount currency in EUR but stripe returns in GBP *****/
+                        $gross_amount_currency = $node->field_gross_amount_currency['und'][0]['value'];
+                        $gross_amount = $node->field_gross_amount['und'][0]['value'];
+                    
+                        if($gross_amount == '' && $gross_amount_currency == ''){
+                            $usd_vs_eur = db_query("SELECT field__1_eur_value FROM field_data_field__1_eur WHERE entity_id ='".$currency_rates_nid."'");
+                            foreach($usd_vs_eur AS $res_usd_vs_eur){
+                                    $eur_rate = $res_usd_vs_eur->field__1_eur_value;
+                            }
 
-                        $amount_eur = number_format(($amount / $eur_rate), 2);
-                        $user_balance = $usd_balance + $amount_eur;
+                            $amount_eur = $amount / $eur_rate;
+                            $user_balance =  $amount_eur;
+                        }else{
+                            
+                            $usd_vs_gbp = db_query("SELECT field__1_gbp_value FROM field_data_field__1_gbp WHERE entity_id ='".$currency_rates_nid."'");
+                            foreach($usd_vs_gbp AS $res_usd_vs_gbp){
+                                    $gbp_rate = $res_usd_vs_gbp->field__1_gbp_value;
+                            }
+
+                            $amount_usd = $gross_amount / $gbp_rate;
+                            $user_balance = $amount_usd;                                                        
+                        }
 
                 }
                  //$user_balance = number_format(($user_balance), 2); 
@@ -466,7 +523,19 @@ function send_cash_user_bank_account($nid) {
 //        $currency = $node->field_gift_currency['und'][0]['value'];
         $node->field_model_redeem['und'][0]['value'] = 2;
         node_save($node);        
-        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
+//        $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
+        $amount_get = $node->field_gift_amount_transfer['und'][0]['value'];
+        $amount_get_currency = $node->field_gift_currency['und'][0]['value'];
+        $gift_gross_amount_currency = $node->field_gross_amount_currency['und'][0]['value'];
+        
+        if($amount_get_currency == 'eur'){
+            if($gift_gross_amount_currency == 'gbp'){
+                $amount_get_currency = 'gbp';                 
+            }else{
+                $amount_get_currency = 'usd';  
+                $amount_get = $node->field_usd_gift_amount_transfer['und'][0]['value'];
+            }
+        }
         $amount = number_format(($amount_get), 2); 
         $amount = str_replace(',', '', $amount);
         $amount = str_replace('.', '', $amount);
@@ -480,7 +549,7 @@ function send_cash_user_bank_account($nid) {
                     $desc = "Transfer for ".$model_real_name;
                     $transfer =  Transfer::create(array(
                       "amount" => $amount,
-                      "currency" => 'usd',
+                      "currency" => $amount_get_currency,
                       "destination" => $user_fields->field_bank_payout_account_id['und'][0]['value'],
                       "description" => $desc
                     )); 
@@ -494,7 +563,8 @@ function send_cash_user_bank_account($nid) {
                     drupal_set_message('We are currently unable to process this withdrawal. Please try again shortly or contact <a href="mailto:support@deliverycode.com">support@deliverycode.com</a>.','error');
                     drupal_goto($base_url.'/user/gifts?gift_id='.$nid);                    
             }
-            if($transfer->status == 'paid'){   
+            if($transfer->status == 'paid'){  
+//                print "<pre>"; print_r($transfer); die();
                     $paid_amount = ($transfer->amount/100);
                     $status =  'Success';
                     $tansferDate = $transfer->created;
@@ -512,6 +582,7 @@ function send_cash_user_bank_account($nid) {
                     $node->field_payout_date[$node->language][0]['value'] = $payout_date;
                     $node->field_payout_status[$node->language][0]['value'] = $status;
                     $node->field_model_id[$node->language][0]['value'] = $user->uid;
+                    $node->field_payout_currency[$node->language][0]['value'] = $amount_get_currency;
                     $node->field_payout_amount[$node->language][0]['value'] = $paid_amount;
 
                     $node->status = 1;   // (1 or 0): published or unpublished

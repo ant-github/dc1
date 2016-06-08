@@ -26,17 +26,24 @@
 if($row->field_field_gift_currency[0]['raw']['value'] == 'usd'){
     echo '$'.$output;
 }elseif($row->field_field_gift_currency[0]['raw']['value'] == 'gbp'){
-    if(isset($row->field_field_gift_amount_in_dollar[0]['raw']['value']) && $row->field_field_gift_amount_in_dollar[0]['raw']['value'] !=''){
-        echo '£'.$output.' ($'.number_format(($row->field_field_gift_amount_in_dollar[0]['raw']['value']), 2).')';
-    }else{
+//    if(isset($row->field_field_gift_amount_in_dollar[0]['raw']['value']) && $row->field_field_gift_amount_in_dollar[0]['raw']['value'] !=''){
+//        echo '£'.$output.' ($'.number_format(($row->field_field_gift_amount_in_dollar[0]['raw']['value']), 2).')';
+//    }else{
         echo '£'.$output;
-    }
+//    }
 }elseif($row->field_field_gift_currency[0]['raw']['value'] == 'eur'){
-    if(isset($row->field_field_gift_amount_in_dollar[0]['raw']['value']) && $row->field_field_gift_amount_in_dollar[0]['raw']['value'] !=''){
-        echo '€'.$output.' ($'.number_format(($row->field_field_gift_amount_in_dollar[0]['raw']['value']), 2).')';
-    }else{
-        echo '€'.$output;
-    }    
+
+    if((isset($row->field_field_gross_amount[0]['raw']['value']) && $row->field_field_gross_amount[0]['raw']['value'] != '') && (isset($row->field_field_gross_amount_currency[0]['raw']['value']) && $row->field_field_gross_amount_currency[0]['raw']['value'] == 'gbp')){
+        
+        echo '€'.$output.' (£'.$row->field_field_gross_amount[0]['raw']['value'].')';
+        
+    }else{    
+        if(isset($row->field_field_gift_amount_in_dollar[0]['raw']['value']) && $row->field_field_gift_amount_in_dollar[0]['raw']['value'] !=''){
+            echo '€'.$output.' ($'.number_format(($row->field_field_gift_amount_in_dollar[0]['raw']['value']), 2).')';
+        }else{
+            echo '€'.$output;
+        }    
+    }
 }
     
 ?>
