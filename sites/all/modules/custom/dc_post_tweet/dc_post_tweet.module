@@ -44,7 +44,6 @@ global $base_url;
 //                         $gv_node = $res_gv_node->entity_id;
 //                }			
 //                $node = node_load($gv_node);
-//                //print "<pre>"; print_r($node); die('hi');
 //
 //                $sender_name = $node->title;
 //                $gift_message = $node->your_message_gift_voucher['und'][0]['value'];
