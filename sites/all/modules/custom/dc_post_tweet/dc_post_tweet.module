@@ -24,37 +24,46 @@ global $base_url;
                         $user_twitter_account = $res_twitter_accounts->twitter_uid;
                         if($user_twitter_account){
                            $twitter_account = twitter_account_load($user_twitter_account);
+                           
                            $message= 'Somebody just bought "'.$product_title.'" off my #deliverycode #wishlist! Check out my list here: '.$base_url.'/wishlist/'.$wishlist_id.' @delivery_code';                           
                            $abc = twitter_set_status($twitter_account, $message);
+//                           print "<pre>"; print_r($abc); die();
                            
                         }                             
                 }       
-        }else{
-            
-                $select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
-                foreach($select_gv_node AS $res_gv_node){
-                         $gv_node = $res_gv_node->entity_id;
-                }			
-                $node = node_load($gv_node);
-                //print "<pre>"; print_r($node); die('hi');
-
-                $sender_name = $node->title;
-                $gift_message = $node->your_message_gift_voucher['und'][0]['value'];
-                $user_id = $node->receiver_user_id_gift_voucher['und'][0]['value'];  
-                
-                $user_details = user_load($user_id);
-                $select_user_twitter_accounts = db_query('SELECT twitter_uid FROM twitter_account WHERE uid ='.$user_id);
-                foreach($select_user_twitter_accounts AS $res_twitter_accounts){
-                        $user_twitter_account = $res_twitter_accounts->twitter_uid;
-
-                    if($user_twitter_account){
-                        $twitter_account = twitter_account_load($user_twitter_account);
-                        $message= 'Somebody just sent me a #deliverycode #giftvoucher! To send me a gift, click here: '.$user_details->field_profile_wishlist_url['und'][0]['value'].' @delivery_code';
-                       
-                        twitter_set_status($twitter_account, $message);
-                    }                             
-                }             
         }
+        
+        /*
+         *  'dc_gift_voucher' was old gift voucher process, now gift voucher tweets are sending in "dc_send_gift" module file.
+         */
+        
+//        else{
+//            
+//                $select_gv_node = db_query('SELECT entity_id FROM field_data_order_id_gift_voucher WHERE order_id_gift_voucher_value ='.$transaction->order_id);
+//                foreach($select_gv_node AS $res_gv_node){
+//                         $gv_node = $res_gv_node->entity_id;
+//                }			
+//                $node = node_load($gv_node);
+//                //print "<pre>"; print_r($node); die('hi');
+//
+//                $sender_name = $node->title;
+//                $gift_message = $node->your_message_gift_voucher['und'][0]['value'];
+//                $user_id = $node->receiver_user_id_gift_voucher['und'][0]['value'];  
+//                
+//                $user_details = user_load($user_id);
+//                $select_user_twitter_accounts = db_query('SELECT twitter_uid FROM twitter_account WHERE uid ='.$user_id);
+//                foreach($select_user_twitter_accounts AS $res_twitter_accounts){
+//                        $user_twitter_account = $res_twitter_accounts->twitter_uid;
+//
+//                    if($user_twitter_account){
+//                        $twitter_account = twitter_account_load($user_twitter_account);
+//                        
+//                        $message= 'Somebody just sent me a #deliverycode #giftvoucher! To send me a gift, click here: '.$user_details->field_profile_wishlist_url['und'][0]['value'].' @delivery_code';
+//                       
+//                        twitter_set_status($twitter_account, $message);
+//                    }                             
+//                }             
+//        }
     }    
    
 }
