@@ -78,6 +78,8 @@ if($checkUserDetails && $checkUserDetails->status != 0){
                         form$.get(0).submit();
                     }
                 }
+                
+                
                 $(document).ready(function() {
                     $("#payment-form").submit(function(event) {
                         var user_name = $('#payment-form .user_name').val();
@@ -117,6 +119,26 @@ if($checkUserDetails && $checkUserDetails->status != 0){
                             $('html,body').animate({'scrollTop' : 200},1000);
                             return false;
                         }
+                        if (validateEmail(user_email)) {
+                            $(".send-a-gift-section-body #payment-form .user_email").css("border", "none");
+                        } else {
+                            $(".payment-errors").css("display", "block");
+                            $(".payment-errors").html('Please enter a valid email address.');
+                            $(".send-a-gift-section-body #payment-form .user_email").css("border", "1px solid red");
+                            $('html,body').animate({'scrollTop' : 200},1000);
+                            return false;                            
+                        } 
+                        if(/^\d+$/.test(address_zip)) {
+                            $(".send-a-gift-section-body #payment-form .address_zip").css("border", "none");
+                        }else{
+                            $(".payment-errors").css("display", "block");
+                            $(".payment-errors").html('Please enter numeric value for Postal Code field.');
+                            $(".send-a-gift-section-body #payment-form .address_zip").css("border", "1px solid red");
+                            $('html,body').animate({'scrollTop' : 200},1000);
+                            return false; 
+                        }
+//                        return false;
+                        
                         // disable the submit button to prevent repeated clicks
                         $('.submit-button').attr("disabled", "disabled");
                         // createToken returns immediately - the supplied callback submits the form if there are no errors
@@ -135,6 +157,12 @@ if($checkUserDetails && $checkUserDetails->status != 0){
                         return false; // submit from callback
                     });
                 });
+                
+                function validateEmail(email) {
+                  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                  return re.test(email);
+                }          
+                
             </script>
     <?php
     }
