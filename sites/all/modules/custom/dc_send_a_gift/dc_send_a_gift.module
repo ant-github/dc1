@@ -14,6 +14,13 @@
 
 function dc_send_a_gift_menu() {
 
+  $items['dc_check_php_version'] = array(
+    'title' => 'Payment Status',
+    'page callback' => 'check_php_version',
+    'page arguments' => '',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   $items['dc_gift_payment/payment_status/%'] = array(
     'title' => 'Payment Status',
     'page callback' => 'commerce_stripe_gift_charge',
@@ -968,4 +975,8 @@ function dc_send_a_gift_mail($key, &$message, $params) {
 
   $message['subject'] = $params['subject'];
   $message['body'] = $params['body'];
+}
+
+function check_php_version(){
+    phpinfo();
 }
